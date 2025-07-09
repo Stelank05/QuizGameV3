@@ -1,0 +1,29 @@
+{
+    "Question ID": "Q0013",
+    "Discarded Question": false,
+    "Question Type": "Open",
+    "Question Text": "How many Space Shuttle Vehicles were built in Total?",
+    "Question Difficulty": "Easy",
+    "Question Points": "2",
+    "Question Topics": ["T0005"],
+    "Hints":
+        {
+            "Add Text Hint": true,
+            "Text Hint": "Include Enterprise",
+            "Add Provide Word Hint": false,
+            "Provided Word": ""
+        },
+    "Images":
+        {
+            "Is Image Question": false,
+            "Image File": ""
+        },
+    "Answers":
+        {
+            "Required Words": [""],
+            "Acceptable Words": ["4", "four"]
+        },
+    "Fun Fact": "6 Vehicles were built, Enterprise as the Test Vehicle, as well as 5 Flight-Capable Orbiters, starting with Columbia",
+    "Correct Audio": "A0005",
+    "Incorrect Audio": "A0006"
+}

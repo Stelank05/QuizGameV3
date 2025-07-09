@@ -1,0 +1,14 @@
+{
+    "User ID": "U0002",
+    "Username": "test_account",
+    "Password": "quttxisf234",
+    "Password Shift": "ASRK",
+    "Colours": {
+        "Window Colours": ["C0008", "C0001"],
+        "Button Colours": ["C0006", "C0002"],
+        "Label Colours": ["C0014", "C0002"],
+        "Entry Colours": ["C0011", "C0002"]
+    },
+    "High Score": 0.0,
+    "Previous Quizzes": []
+}

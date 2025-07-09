@@ -1,0 +1,26 @@
+{
+    "Question ID": "Q0003",
+    "Discarded Question": false,
+    "Question Type": "Order",
+    "Question Text": "In What Order were the 6 Space Shuttles Built? (Order Oldest to Newest)",
+    "Question Difficulty": "Medium",
+    "Question Points": 2.0,
+    "Question Topics": [ "T0005" ],
+    "Hints" : {
+        "Add Text Hint": true,
+        "Text Hint": "Excellent Conservative Crows Don't Actually Eat",
+        "Add Place One Hint": true,
+        "Placed Item": ["Any", -1]
+    },
+    "Images" : {
+        "Is Image Question": false,
+        "Image File": ""
+    },
+    "Answers": {
+        "Correct Order": ["Enterprise", "Columbia", "Challenger", "Discovery", "Atlantis", "Endeavour"],
+        "Display Order": "Random"
+    },
+    "Fun Fact": "Enterprise was considered twice for retrofit into a Space-Worthy Orbiter",
+    "Correct Audio": "A0003",
+    "Incorrect Audio": "A0002"
+}

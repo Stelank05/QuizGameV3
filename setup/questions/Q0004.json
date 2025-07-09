@@ -1,0 +1,51 @@
+{
+    "Question ID": "Q0004",
+    "Discarded Question": false,
+    "Question Type": "Closed",
+    "Question Text": "In what year did Audi win their final 24 Heures du Mans (to date)",
+    "Question Difficulty": "Easy",
+    "Question Points": "1",
+    "Question Topics": [ "T0001" ],
+    "Hints": {
+        "Add Text Hint": true,
+        "Text Hint": "Russia",
+        "Add 50/50 Hint": true
+    },
+    "Images": {
+        "Is Image Question": true,
+        "Image File": "F:\\Aimee's Game V3\\setup\\images\\Desktop-2013.png"
+    },
+    "Answers": [
+        {
+            "Answer Text": "2013",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": false,
+            "Answer Number": 1
+        },
+        {
+            "Answer Text": "2014",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": true,
+            "Answer Number": 2
+        },
+        {
+            "Answer Text": "2015",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": false,
+            "Answer Number": 3
+        },
+        {
+            "Answer Text": "2016",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": false,
+            "Answer Number": 4
+        }
+    ],
+    "Fun Fact": "The VW Group won 8 straight Le Mans overall, from 2010 to 2017.",
+    "Correct Audio": "A0001",
+    "Incorrect Audio": "A0002"
+}

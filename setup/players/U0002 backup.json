@@ -1,0 +1,14 @@
+{
+    "User ID": "U0002",
+    "Username": "test_account_3",
+    "Password": "duhhligs456",
+    "Password Shift": "LIKM",
+    "Colours": {
+        "Window Colours": ["C0002", "C0001"],
+        "Button Colours": ["C0025", "C0002"],
+        "Label Colours": ["C0025", "C0002"],
+        "Entry Colours": ["C0001", "C0002"]
+    },
+    "High Score": 0.0,
+    "Previous Quizzes": []
+}

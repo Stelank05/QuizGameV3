@@ -1,0 +1,51 @@
+{
+    "Question ID": "Q0001",
+    "Discarded Question": false,
+    "Question Type": "Closed",
+    "Question Text": "Who is Aimee?",
+    "Question Difficulty": "Easy",
+    "Question Points": 1.0,
+    "Question Topics": [ "T0002" ],
+    "Hints" : {
+        "Add Text Hint": false,
+        "Text Hint": "",
+        "Add 50/50 Hint": true
+    },
+    "Images" : {
+        "Is Image Question": false,
+        "Image File": ""
+    },
+    "Answers": [
+        {
+            "Answer Text": "Yes",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": false,
+            "Answer Number": 1
+        },
+        {
+            "Answer Text": "No",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": false,
+            "Answer Number": 2
+        },
+        {
+            "Answer Text": "Maybe",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": false,
+            "Answer Number": 3
+        },
+        {
+            "Answer Text": "*sticks tongue out*",
+            "Answer Back Colour": "C0001",
+            "Answer Text Colour": "C0002",
+            "Correct Answer": true,
+            "Answer Number": 4
+        }
+    ],
+    "Fun Fact": "Very Professional",
+    "Correct Audio": "A0003",
+    "Incorrect Audio": "A0002"
+}
