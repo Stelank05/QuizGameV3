@@ -89,13 +89,17 @@ class AnswerCreator:
         self.correct_answer: bool = False
         self.include_answer: bool = True
 
-        self.answer_entry.delete(0, END)
+        self.answer_entry.delete("1.0", END)
 
         if self.answer_number == 1: self.correct_answer = True
+
         if self.correct_answer: self.is_correct_answer.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        else: self.is_correct_answer.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+
+        self.is_correct_answer.configure(text = f"Correct Answer: {self.correct_answer}")
 
         self.background.set("Background Colour")
         self.foreground.set("Text Colour")
         
         self.output_label.configure(text = "Contrast Ratio: Something", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code)
-        self.include_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        self.include_button.configure(text = f"Include Answer: {self.include_answer}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)

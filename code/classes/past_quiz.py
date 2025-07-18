@@ -1,5 +1,8 @@
-from questions.answer import Answer
 from questions.question_base import BaseQuestion
+
+from quiz.answer_past import PastAnswer
+from quiz.question_closed_past import PastClosedQuestion
+from quiz.question_open_past import PastOpenQuestion
 
 class PastQuiz:
     def __init__(self, past_quiz_data: dict) -> None:

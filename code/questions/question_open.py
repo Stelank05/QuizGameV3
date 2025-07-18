@@ -35,7 +35,7 @@ class OpenQuestion(BaseQuestion):
             "Hints" : {
                 "Add Text Hint" : self.add_text_hint,
                 "Text Hint" : self.text_hint,
-                "Add 50/50 Hint" : self.provide_word_hint,
+                "Add Provide Word Hint" : self.provide_word_hint,
                 "Provided Word": self.provided_word
             },
             "Images" : {
@@ -44,7 +44,7 @@ class OpenQuestion(BaseQuestion):
             },
             "Answers" : {
                 "Required Words" : self.required_words,
-                "Acceptabled Word" : self.acceptable_words
+                "Acceptable Words" : self.acceptable_words
             },
             "Fun Fact": self.fun_fact,
             "Correct Audio" : self.correct_audio,

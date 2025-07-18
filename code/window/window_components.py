@@ -20,6 +20,7 @@ class WindowComponents:
     current_edit_topic: Topic = None
     current_edit_colour: Colour = None
     current_edit_audio: Audio = None
+    current_quiz: type = None
 
 
     # Pages
@@ -308,6 +309,7 @@ class WindowComponents:
     include_image_questions: bool = False
 
     available_questions: list[BaseQuestion] = []
+    available_question_codes: list[str] = []
 
     # Play Quiz Button
 

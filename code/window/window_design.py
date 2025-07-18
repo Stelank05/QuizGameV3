@@ -341,11 +341,11 @@ class WindowDesign:
         quiz_length_header.place(x = 205, y = 200, width = 355, height = 30)
 
         WindowComponents.quiz_length = DoubleVar()
-        WindowComponents.quiz_length_set = Scale(WindowComponents.quiz_setup_page, variable = WindowComponents.quiz_length, from_ = -1, to = 1, orient = HORIZONTAL, bg = WindowComponents.window_colours[0].colour_code, fg = WindowComponents.window_colours[1].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_length_set = Scale(WindowComponents.quiz_setup_page, variable = WindowComponents.quiz_length, from_ = 0, to = 0, orient = HORIZONTAL, bg = WindowComponents.window_colours[0].colour_code, fg = WindowComponents.window_colours[1].colour_code, font = WindowComponents.main_font)
         WindowComponents.quiz_length_set.place(x = 205, y = 235, width = 355, height = 30)
 
         # Play Quiz Button
-        begin_quiz: Button = Button(WindowComponents.quiz_setup_page, text = "Begin Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
+        begin_quiz: Button = Button(WindowComponents.quiz_setup_page, text = "Begin Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.setup_quiz)
         begin_quiz.place(x = 25, y = 270, width = 535, height = 30)
 
         # Generic Controls
@@ -1110,7 +1110,7 @@ class WindowDesign:
             # answer_number += 1
 
         # Set Unincluded Answers (If Applicable)
-        if answer_number < 4:
+        if answer_number < 3:
             while answer_number < 4:
                 WindowComponents.answers[answer_number].include_answer = False
                 WindowComponents.answers[answer_number].include_button.configure(text = f"Include Answer: False", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)

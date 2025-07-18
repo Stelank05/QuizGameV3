@@ -8,7 +8,7 @@ class PastAnswer (Answer):
         self.answer_hidden: bool = False
         self.answer_chosen: bool = False
 
-        if len(data) == 2:
+        if data[1] != None:
             self.display_index = data[1]["Display Index"]
             self.answer_chosen = data[1]["Answer Chosen"]
             self.answer_hidden = data[1]["Answer Hidden"]

@@ -38,8 +38,16 @@ class ClosedQuestion(BaseQuestion):
                 "Is Image Question" : self.is_image_question,
                 "Image File" : self.image_file
             },
-            "Answers" : self.answers,
+            "Answers" : self.make_answer_dicts(),
             "Fun Fact": self.fun_fact,
             "Correct Audio" : self.correct_audio,
             "Incorrect Audio" : self.incorrect_audio
         }
+    
+    def make_answer_dicts(self) -> list[dict]:
+        return_list: list[dict] = []
+
+        for answer in self.answers:
+            return_list.append(answer.make_dictionary())
+
+        return return_list

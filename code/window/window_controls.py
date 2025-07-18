@@ -7,6 +7,7 @@ from tkinter import messagebox
 from tkinter import ttk
 
 from classes.colour import Colour
+from classes.quiz import Quiz
 
 from controls.audio_controls import AudioControls
 from controls.colour_controls import ColourControls
@@ -146,7 +147,7 @@ class WindowControls:
         chosen_image: str = WindowComponents.chosen_image_question.get()
         chosen_difficulty: str = WindowComponents.chosen_question_difficulty.get()
         
-        if WindowComponents.display_all or (chosen_type == "All" and chosen_topic == "All" and chosen_image == "All" and chosen_difficulty == "All"): return CommonData.usable_questions.copy() + CommonData.discarded_questions.copy()
+        if WindowComponents.display_all or (chosen_usability == "All" and chosen_type == "All" and chosen_topic == "All" and chosen_image == "All" and chosen_difficulty == "All"): return CommonData.usable_questions.copy() + CommonData.discarded_questions.copy()
 
         # if chosen_usability not in WindowComponents.question_usabilities: return None
         # if chosen_type not in WindowComponents.question_types: return None
@@ -163,6 +164,9 @@ class WindowControls:
                 question_list = CommonData.usable_questions.copy() + CommonData.discarded_questions.copy()
                 sort_questions(question_list)
         
+        # print(question_list)
+        # if len(question_list) == 0: return []
+
         question_index: int = 0
         check_question: BaseQuestion = None
         
@@ -329,12 +333,12 @@ class WindowControls:
             topic_label = Label(WindowComponents.question_view, text = topic_data.topic_name, bg = CommonData.get_colour_from_id(topic_data.topic_colours[0], 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_id(topic_data.topic_colours[1], 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
             topic_label.place(x = 485, y = y_start + (35 * i), width = 175, height = 30)
 
-        WindowComponents.fun_fact_preview = Label(WindowComponents.question_view, text = f"Fun Fact (PREVIEW ONLY): {preview["Fun Fact"]}", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.fun_fact_preview.place(x = 25, y = 400, width = 645, height = 30)
+        WindowComponents.fun_fact_preview = Label(WindowComponents.question_view, text = f"Fun Fact (PREVIEW ONLY): {preview["Fun Fact"]}", wraplength = 600, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        WindowComponents.fun_fact_preview.place(x = 25, y = 400, width = 645, height = 60)
 
     def view_closed_preview(preview: dict) -> None:
         frame_width: int = 695
-        frame_height: int = 450
+        frame_height: int = 480
 
         WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
@@ -360,7 +364,7 @@ class WindowControls:
 
     def view_open_preview(preview: dict) -> None:
         frame_width: int = 695
-        frame_height: int = 425
+        frame_height: int = 455
 
         WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
@@ -432,9 +436,9 @@ class WindowControls:
 
 
     # Insert Question to Frame
-    def insert_closed_question_info(question_data: ClosedQuestion, question_number: int) -> None: pass
-    def insert_open_question_info(question_data: OpenQuestion, question_number: int) -> None: pass
-    def insert_order_question_info(question_data: OrderQuestion, question_number: int) -> None: pass
+    def insert_closed_question_info(question_data: ClosedQuestion, question_number: int, review: bool = False) -> None: pass
+    def insert_open_question_info(question_data: OpenQuestion, question_number: int, review: bool = False) -> None: pass
+    def insert_order_question_info(question_data: OrderQuestion, question_number: int, review: bool = False) -> None: pass
 
 
     # Quiz Setup Functions
@@ -524,11 +528,18 @@ class WindowControls:
 
         WindowComponents.include_image_questions_button.configure(text = f"Include Image Questions: {WindowComponents.include_image_questions}", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
 
-        WindowComponents.quiz_length_set.configure(from_ = -1, to = 1)
+        WindowComponents.quiz_length_set.configure(from_ = 0, to = 0)
         WindowComponents.quiz_length_set.set(0)
+
+        WindowComponents.topic_selection.delete(0, END)
+        id_sort_topics(CommonData.topic_list)
+        for topic in CommonData.topic_list: WindowComponents.topic_selection.insert('end', f"{topic.topic_id} - {topic.topic_name}")
 
     def update_available_questions() -> None:
         WindowComponents.available_questions = CommonData.usable_questions.copy()
+
+        WindowComponents.available_question_codes.clear()
+        for code in WindowComponents.available_questions: WindowComponents.available_question_codes.append(code.question_id)
 
         i: int = 0
         question: BaseQuestion
@@ -538,15 +549,19 @@ class WindowControls:
             
             if WindowComponents.include_image_questions ^ question.is_image_question == 1:
                 WindowComponents.available_questions.remove(question)
+                WindowComponents.available_question_codes.remove(question.question_id)
                 i -= 1
             elif not question.included_topics(WindowComponents.included_topics):
                 WindowComponents.available_questions.remove(question)
+                WindowComponents.available_question_codes.remove(question.question_id)
                 i -= 1
             elif not question.correct_difficulty(WindowComponents.include_easy_questions, WindowComponents.include_medium_questions, WindowComponents.include_hard_questions):
                 WindowComponents.available_questions.remove(question)
+                WindowComponents.available_question_codes.remove(question.question_id)
                 i -= 1
             elif not question.correct_type(WindowComponents.include_closed_questions, WindowComponents.include_open_questions, WindowComponents.include_order_questions):
                 WindowComponents.available_questions.remove(question)
+                WindowComponents.available_question_codes.remove(question.question_id)
                 i -= 1
             
             i += 1
@@ -569,7 +584,9 @@ class WindowControls:
         WindowComponents.quiz_length_set.configure(from_ = min_length, to = total_questions)
         WindowComponents.quiz_length_set.set(min_length)
 
-    def setup_quiz() -> None: pass
+    def setup_quiz() -> None:
+        WindowComponents.current_quiz = Quiz()
+        WindowComponents.current_quiz.select_questions()
 
 
     # Quiz Functions
