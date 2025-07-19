@@ -7,8 +7,6 @@ from tkinter import messagebox
 from tkinter import ttk
 
 from classes.colour import Colour
-from classes.quiz import Quiz
-
 from controls.audio_controls import AudioControls
 from controls.colour_controls import ColourControls
 from controls.generic_controls import *
@@ -21,6 +19,10 @@ from questions.question_base import BaseQuestion
 from questions.question_closed import ClosedQuestion
 from questions.question_open import OpenQuestion
 from questions.question_order import OrderQuestion
+
+from quiz.question_closed_past import PastClosedQuestion
+from quiz.question_open_past import PastOpenQuestion
+from quiz.quiz import Quiz
 
 from window.window_components import WindowComponents
 
@@ -436,9 +438,31 @@ class WindowControls:
 
 
     # Insert Question to Frame
-    def insert_closed_question_info(question_data: ClosedQuestion, question_number: int, review: bool = False) -> None: pass
-    def insert_open_question_info(question_data: OpenQuestion, question_number: int, review: bool = False) -> None: pass
-    def insert_order_question_info(question_data: OrderQuestion, question_number: int, review: bool = False) -> None: pass
+    def insert_common_quiz_items(question: BaseQuestion, y_start: int = 75) -> None:
+        WindowComponents.question_number_output.configure(text = f"Question Number: {WindowComponents.current_quiz.question_number}")
+        WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
+        WindowComponents.question_difficulty_output.configure(text = f"Question Difficulty: {question.question_difficulty}")
+        WindowComponents.question_score_output.configure(text = f"Question Score: {question.question_points}")
+        WindowComponents.question_text_output.configure(text = f"Question:\n{question.question_text}")
+        # WindowComponents.text_hint_output.configure(text = f"Hint Text: {preview["Hints"]["Text Hint"]}")
+
+        # Insert Topics into Shroud
+        topic_label: Label
+        topic_data: Topic
+
+        for i in range(len(question.question_topics)):
+            topic_data = CommonData.get_topic_from_id(question.question_topics[i], 0, len(CommonData.topic_list))
+
+            topic_label = Label(WindowComponents.question_view, text = topic_data.topic_name, bg = CommonData.get_colour_from_id(topic_data.topic_colours[0], 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_id(topic_data.topic_colours[1], 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
+            topic_label.place(x = 485, y = y_start + (35 * i), width = 175, height = 30)
+
+    def insert_closed_question_info(question_data: PastClosedQuestion, review: bool = False) -> None:
+        WindowControls.insert_common_quiz_items(question_data)
+
+    def insert_open_question_info(question_data: PastOpenQuestion, review: bool = False) -> None:
+        WindowControls.insert_common_quiz_items(question_data)
+        
+    def insert_order_question_info(question_data: OrderQuestion, review: bool = False) -> None: pass
 
 
     # Quiz Setup Functions

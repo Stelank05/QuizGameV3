@@ -20,6 +20,8 @@ from questions.question_closed import ClosedQuestion
 from questions.question_open import OpenQuestion
 from questions.question_order import OrderQuestion
 
+from quiz.quiz import Quiz
+
 from window.answer_creator import AnswerCreator
 from window.window_components import WindowComponents
 from window.window_controls import WindowControls
@@ -345,7 +347,7 @@ class WindowDesign:
         WindowComponents.quiz_length_set.place(x = 205, y = 235, width = 355, height = 30)
 
         # Play Quiz Button
-        begin_quiz: Button = Button(WindowComponents.quiz_setup_page, text = "Begin Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.setup_quiz)
+        begin_quiz: Button = Button(WindowComponents.quiz_setup_page, text = "Begin Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowDesign.setup_quiz)
         begin_quiz.place(x = 25, y = 270, width = 535, height = 30)
 
         # Generic Controls
@@ -1311,7 +1313,24 @@ class WindowDesign:
             case "Order": messagebox.showerror("Page Non-Existent", "Question Page Doesn't Exist")
 
 
-    #  Control Functions - Won't Work in WindowControls
+    #  Quiz Functions - Won't Work in WindowControls
+
+    def setup_quiz() -> None:
+        WindowComponents.current_quiz = Quiz()
+        WindowComponents.current_quiz.select_questions()
+
+        # Display First Question
+        question_one: BaseQuestion = WindowComponents.current_quiz.questions[WindowComponents.current_quiz.question_number - 1]
+        print(question_one.is_image_question)
+
+        match question_one.question_type:
+            case "Closed":
+                WindowDesign.create_closed_question_view(question_one.is_image_question)
+                WindowControls.insert_closed_question_info(question_one)
+            case "Open":
+                WindowDesign.create_order_question_view(question_one.is_image_question)
+                WindowControls.insert_order_question_info(question_one)
+            case "Order": print()
 
     #   Login Functions
 

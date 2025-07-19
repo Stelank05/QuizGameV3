@@ -5,7 +5,7 @@ from questions.question_closed import ClosedQuestion
 from quiz.answer_past import PastAnswer
 
 class PastClosedQuestion (ClosedQuestion):
-    def __init__(self, question_data: dict, extra_details: list[dict] | None, question_number: int) -> None:
+    def __init__(self, question_data: dict, extra_details: dict | None, question_number: int) -> None:
         ClosedQuestion.__init__(self, question_data)
 
         self.question_number: int = question_number
@@ -13,12 +13,14 @@ class PastClosedQuestion (ClosedQuestion):
         self.awarded_points: float = 0.0
         if extra_details != None: self.awarded_points = extra_details["Awarded Points"]
         
+        print(self.question_id)
         self.answers: list[PastAnswer] = []
         if extra_details != None: self.answers = self.convert_answers(question_data["Answers"], extra_details["Answers"])
         else: self.answers = self.convert_answers(question_data["Answers"], None)
 
         self.randomise_display_order()
         # self.display_answers()
+        print(self.create_past_dict())
 
     def convert_answers(self, answers: list[dict], details: list[dict] | None) -> list[PastAnswer]:
         return_list: list[PastAnswer] = []
