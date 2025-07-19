@@ -1,7 +1,8 @@
 # QuizGameV3
 
 So I may've started this in December, maybe January, but I've had to deal with Assignments, other Things I like working on, my oversized Garden, and sleeping. That is an incomplete list.<br/>
-Anyway, now it's July, and everything but the stuff relating to doing a Quiz and Answering Questions exists and works, mostly.
+Anyway, now it's July, and everything but the stuff relating to doing a Quiz and Answering Questions exists and works, mostly.<br/>
+(I've also decided that I can make this in a different, better way, that I'll do after I've finished this version so that I have a basis to work off for that)
 
 ---
 
