@@ -23,3 +23,7 @@ class PastOpenQuestion (OpenQuestion):
                 "Entered Answer": self.entered_answer
             }
         }
+    
+    def valid_answer(self, user_answer: str) -> bool:
+        self.entered_answer = user_answer
+        return OpenQuestion.valid_answer(self, user_answer)

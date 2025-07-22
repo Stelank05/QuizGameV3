@@ -106,7 +106,7 @@ class QuestionDesign:
 
         if image_question:
             WindowComponents.review_last_question.place(y = 640)
-            WindowComponents.next_question.place(y = 640)
+            WindowComponents.review_next_question.place(y = 640)
             WindowComponents.exit_quiz_button.place(y = 675)
 
         WindowComponents.question_view.update()
@@ -118,28 +118,28 @@ class QuestionDesign:
         # if image_question: WindowDesign.insert_image()
         
         frame_width: int = 695
-        frame_height: int = 390
+        frame_height: int = 420
 
         WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
 
         WindowComponents.open_answer_entry = Entry(WindowComponents.question_view, bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.open_answer_entry.place(x = 25, y = 195, width = 435, height = 30)
+        WindowComponents.open_answer_entry.place(x = 25, y = 195, width = 435, height = 95)
 
-        WindowComponents.submit_answer.place(y = 230 if not image_question else 540)
+        WindowComponents.submit_answer.place(y = 295 if not image_question else 540)
 
-        WindowComponents.topics_shroud.place(height = 305)
+        # WindowComponents.topics_shroud.place(height = 305)
 
-        WindowComponents.review_last_question.place(y = 265)
-        WindowComponents.next_question.place(y = 265)
-        WindowComponents.exit_quiz_button.place(y = 300)
+        # WindowComponents.review_last_question.place(y = 265)
+        # WindowComponents.review_next_question.place(y = 265)
+        # WindowComponents.exit_quiz_button.place(y = 300)
 
-        WindowComponents.view_text_hint_button.place(x = 25, y = 335, width = 435)
-        WindowComponents.view_relevant_hint_button.place(y = 335)
+        # WindowComponents.view_text_hint_button.place(x = 25, y = 335, width = 435)
+        # WindowComponents.view_relevant_hint_button.place(y = 335)
 
         if image_question:
             WindowComponents.review_last_question.place(y = 575)
-            WindowComponents.next_question.place(y = 575)
+            WindowComponents.review_next_question.place(y = 575)
             WindowComponents.exit_quiz_button.place(y = 610)
 
         WindowComponents.question_view.update()

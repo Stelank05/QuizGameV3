@@ -57,9 +57,7 @@ class Quiz:
 
             match question.question_type:
                 case "Closed": self.questions.append(PastClosedQuestion(question.create_dictionary(), None, question_number + 1))
-                case "Open":
-                    print(question.create_dictionary())
-                    self.questions.append(PastOpenQuestion(question.create_dictionary(), None, question_number + 1))
+                case "Open": self.questions.append(PastOpenQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Order": print()
         
         print()

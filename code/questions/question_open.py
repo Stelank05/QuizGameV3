@@ -16,6 +16,8 @@ class OpenQuestion(BaseQuestion):
         user_answer = user_answer.lower()
 
         for word in user_answer:
+            print(word)
+            print(word in self.required_words) ; print(word in self.acceptable_words)
             if word not in self.required_words and word not in self.acceptable_words:
                 return False
             

@@ -586,21 +586,8 @@ class WindowControls:
         WindowComponents.current_quiz = Quiz()
         WindowComponents.current_quiz.select_questions()
 
-        WindowComponents.permit_answer = True
-
         # Display First Question
-        question_one: BaseQuestion = WindowComponents.current_quiz.questions[0]
-
-        WindowControls.next_question(question_one)
-
-        # match question_one.question_type:
-        #     case "Closed":
-        #         QuestionDesign.create_closed_question_view(question_one.is_image_question)
-        #         WindowControls.insert_closed_question_info(question_one)
-        #     case "Open":
-        #         QuestionDesign.create_order_question_view(question_one.is_image_question)
-        #         WindowControls.insert_order_question_info(question_one)
-        #     case "Order": print()
+        WindowControls.next_question(WindowComponents.current_quiz.questions[0])
 
 
     # Insert Question to Frame
@@ -717,7 +704,8 @@ class WindowControls:
                 WindowComponents.selected_answer = None
                 WindowComponents.selected_button = None
                   
-            case "Open": pass
+            case "Open":
+                correct_answer = question.valid_answer(WindowComponents.open_answer_entry.get())
             case "Order": pass
 
         WindowComponents.current_quiz.theoretical_max += question.question_points
@@ -743,16 +731,16 @@ class WindowControls:
             WindowComponents.current_quiz.question_number += 1
 
         WindowComponents.permit_answer = True
-        
-        if WindowComponents.question_view != None: WindowComponents.question_view.destroy()
+
+        # if WindowComponents.question_view != None: WindowComponents.question_view.destroy()
 
         match question.question_type:
             case "Closed":
                 QuestionDesign.create_closed_question_view(question.is_image_question)
                 WindowControls.insert_closed_question_info(question)
             case "Open":
-                QuestionDesign.create_order_question_view(question.is_image_question)
-                WindowControls.insert_order_question_info(question)
+                QuestionDesign.create_open_question_view(question.is_image_question)
+                WindowControls.insert_open_question_info(question)
             case "Order": print()
 
     def review_question() -> None: pass

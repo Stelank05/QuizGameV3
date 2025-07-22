@@ -1262,7 +1262,7 @@ class WindowDesign:
             messagebox.showerror("No Question Selected", "Please Select a Question to Edit")
             return 0
 
-        match WindowComponents.chosen_question_type.get():
+        match WindowComponents.chosen_question_usability.get():
             case "Question Type": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])# , 0, len(CommonData.discarded_questions))
             case "All": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])# , 0, len(CommonData.discarded_questions))
             case "Usable": WindowComponents.current_edit_question = CommonData.get_usable_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.usable_questions))
