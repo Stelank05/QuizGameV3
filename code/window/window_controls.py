@@ -20,10 +20,12 @@ from questions.question_closed import ClosedQuestion
 from questions.question_open import OpenQuestion
 from questions.question_order import OrderQuestion
 
+from quiz.answer_past import PastAnswer
 from quiz.question_closed_past import PastClosedQuestion
 from quiz.question_open_past import PastOpenQuestion
 from quiz.quiz import Quiz
 
+from window.question_design import QuestionDesign
 from window.window_components import WindowComponents
 
 from common_data import CommonData
@@ -437,34 +439,6 @@ class WindowControls:
         close.place(x = 10, y = 20 + height, width = 85, height = 30)
 
 
-    # Insert Question to Frame
-    def insert_common_quiz_items(question: BaseQuestion, y_start: int = 75) -> None:
-        WindowComponents.question_number_output.configure(text = f"Question Number: {WindowComponents.current_quiz.question_number}")
-        WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
-        WindowComponents.question_difficulty_output.configure(text = f"Question Difficulty: {question.question_difficulty}")
-        WindowComponents.question_score_output.configure(text = f"Question Score: {question.question_points}")
-        WindowComponents.question_text_output.configure(text = f"Question:\n{question.question_text}")
-        # WindowComponents.text_hint_output.configure(text = f"Hint Text: {preview["Hints"]["Text Hint"]}")
-
-        # Insert Topics into Shroud
-        topic_label: Label
-        topic_data: Topic
-
-        for i in range(len(question.question_topics)):
-            topic_data = CommonData.get_topic_from_id(question.question_topics[i], 0, len(CommonData.topic_list))
-
-            topic_label = Label(WindowComponents.question_view, text = topic_data.topic_name, bg = CommonData.get_colour_from_id(topic_data.topic_colours[0], 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_id(topic_data.topic_colours[1], 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
-            topic_label.place(x = 485, y = y_start + (35 * i), width = 175, height = 30)
-
-    def insert_closed_question_info(question_data: PastClosedQuestion, review: bool = False) -> None:
-        WindowControls.insert_common_quiz_items(question_data)
-
-    def insert_open_question_info(question_data: PastOpenQuestion, review: bool = False) -> None:
-        WindowControls.insert_common_quiz_items(question_data)
-        
-    def insert_order_question_info(question_data: OrderQuestion, review: bool = False) -> None: pass
-
-
     # Quiz Setup Functions
 
     def update_quiz_topics(event: Event) -> None:
@@ -612,16 +586,239 @@ class WindowControls:
         WindowComponents.current_quiz = Quiz()
         WindowComponents.current_quiz.select_questions()
 
+        WindowComponents.permit_answer = True
+
+        # Display First Question
+        question_one: BaseQuestion = WindowComponents.current_quiz.questions[0]
+
+        WindowControls.next_question(question_one)
+
+        # match question_one.question_type:
+        #     case "Closed":
+        #         QuestionDesign.create_closed_question_view(question_one.is_image_question)
+        #         WindowControls.insert_closed_question_info(question_one)
+        #     case "Open":
+        #         QuestionDesign.create_order_question_view(question_one.is_image_question)
+        #         WindowControls.insert_order_question_info(question_one)
+        #     case "Order": print()
+
+
+    # Insert Question to Frame
+
+    def insert_common_quiz_items(question: BaseQuestion, y_start: int = 75) -> None:
+        WindowComponents.question_number_output.configure(text = f"Question Number: {question.question_number} / {len(WindowComponents.current_quiz.questions)}")
+        WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
+        WindowComponents.question_difficulty_output.configure(text = f"Question Difficulty: {question.question_difficulty}")
+        WindowComponents.question_score_output.configure(text = f"Points Available: {question.question_points}")
+        WindowComponents.question_text_output.configure(text = f"Question:\n{question.question_text}")
+
+        if question.add_text_hint: WindowComponents.view_text_hint_button.configure(command = functools.partial(WindowControls.use_text_hint, question))
+        else: WindowComponents.view_text_hint_button.configure(text = "View Text Hint (UNAVAILABLE)")
+
+        WindowComponents.submit_answer.configure(command = functools.partial(WindowControls.submit_answer, question))
+
+        WindowComponents.review_next_question.configure(text = "Review Next Question")
+        if question.question_number > 1: WindowComponents.review_last_question.configure(command = functools.partial(WindowControls.review_question, question.question_number - 2))
+        if question.question_number < WindowComponents.current_quiz.question_number: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, question.question_number))
+
+        # Insert Topics into Shroud
+        topic_label: Label
+        topic_data: Topic
+
+        for i in range(len(question.question_topics)):
+            topic_data = CommonData.get_topic_from_id(question.question_topics[i], 0, len(CommonData.topic_list))
+
+            topic_label = Label(WindowComponents.question_view, text = topic_data.topic_name, bg = CommonData.get_colour_from_id(topic_data.topic_colours[0], 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_id(topic_data.topic_colours[1], 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
+            topic_label.place(x = 485, y = y_start + (35 * i), width = 175, height = 30)
+
+    def insert_closed_question_info(question_data: PastClosedQuestion, review: bool = False) -> None:
+        question_data.awarded_points = question_data.question_points
+        WindowControls.insert_common_quiz_items(question_data) #, review)
+
+        if question_data.add_50_50_hint: WindowComponents.view_relevant_hint_button.configure(command = functools.partial(WindowControls.use_50_50_hint, question_data))
+        else: WindowComponents.view_relevant_hint_button.configure(text = "Use 50/50 Hint (UNAVAILABLE)")
+
+        WindowComponents.answers = question_data.answers.copy()
+        WindowControls.sort_answers()
+
+        # Insert Answers
+        answer_count: int = len(WindowComponents.answers)
+
+        if answer_count < 4: WindowComponents.closed_answers[3].destroy()
+        if answer_count < 3: WindowComponents.closed_answers[2].destroy()
+
+        if answer_count == 2:
+            WindowComponents.closed_answers[0].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+            WindowComponents.closed_answers[1].place(x = 25, y = 245, width = 435) # if not preview["Images"]["Is Image Question"] else 555, width = 435)
+        elif answer_count == 3:
+            WindowComponents.closed_answers[2].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+
+        answer_button: Button
+
+        for answer in WindowComponents.answers:
+            answer_button = WindowComponents.closed_answers[answer.display_index]
+
+            answer_button.configure(text = answer.answer_text,
+                bg = CommonData.get_colour_from_id(answer.answer_back_colour, 0, len(CommonData.colour_list)).colour_code,
+                fg = CommonData.get_colour_from_id(answer.answer_text_colour, 0, len(CommonData.colour_list)).colour_code)
+            
+            if answer.correct_answer: WindowComponents.correct_answer_button = answer_button
+            if not review: answer_button.configure(command = functools.partial(WindowControls.select_answer, answer_button, answer))
+
+        if review: print("Do Review Things")
+        
+    def insert_open_question_info(question_data: PastOpenQuestion, review: bool = False) -> None:
+        WindowControls.insert_common_quiz_items(question_data)
+
+    def insert_order_question_info(question_data: OrderQuestion, review: bool = False) -> None: pass
+
 
     # Quiz Functions
 
-    def submit_answer() -> None: pass
-    def next_question() -> None: pass
-    def review_question() -> None: pass
+    def select_answer(answer_button: Button, answer: PastAnswer) -> None:
+        if not WindowComponents.permit_answer: return None
 
-    def use_50_50_hint() -> None: pass
+        if WindowComponents.selected_answer != None:
+            WindowComponents.closed_answers[WindowComponents.selected_answer.display_index].configure(
+                bg = CommonData.get_colour_from_id(WindowComponents.answers[WindowComponents.selected_answer.display_index].answer_back_colour, 0, len(CommonData.colour_list)).colour_code,
+                fg = CommonData.get_colour_from_id(WindowComponents.answers[WindowComponents.selected_answer.display_index].answer_text_colour, 0, len(CommonData.colour_list)).colour_code)
+
+            WindowComponents.selected_answer = None
+            WindowComponents.selected_button = None
+
+        WindowComponents.selected_answer = answer
+        WindowComponents.selected_button = answer_button
+        answer_button.configure(
+            bg = CommonData.get_colour_from_id(answer.answer_text_colour, 0, len(CommonData.colour_list)).colour_code,
+            fg = CommonData.get_colour_from_id(answer.answer_back_colour, 0, len(CommonData.colour_list)).colour_code)
+    
+    def null() -> None: pass
+
+    def submit_answer(question: BaseQuestion) -> None:
+        correct_answer: bool = False
+        WindowComponents.permit_answer = False
+
+        match question.question_type:
+            case "Closed":
+                if WindowComponents.selected_answer.correct_answer:
+                    correct_answer = True
+                    WindowComponents.selected_button.configure(
+                        bg = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code,
+                        fg = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
+                else:
+                    WindowComponents.selected_button.configure(
+                        bg = CommonData.get_colour_from_name("Red", 0, len(CommonData.colour_list)).colour_code,
+                        fg = CommonData.get_colour_from_name("White", 0, len(CommonData.colour_list)).colour_code)
+                    
+                    WindowComponents.correct_answer_button.configure(
+                        bg = CommonData.get_colour_from_name("Indigo", 0, len(CommonData.colour_list)).colour_code,
+                        fg = CommonData.get_colour_from_name("White", 0, len(CommonData.colour_list)).colour_code)
+                    
+                WindowComponents.selected_answer = None
+                WindowComponents.selected_button = None
+                  
+            case "Open": pass
+            case "Order": pass
+
+        WindowComponents.current_quiz.theoretical_max += question.question_points
+
+        if correct_answer:
+            WindowComponents.current_quiz.current_score += question.awarded_points
+            AudioControls.play_audio(CommonData.get_audio_from_id(question.correct_audio, 0, len(CommonData.audio_list)).audio_file)
+        else:
+            AudioControls.play_audio(CommonData.get_audio_from_id(question.incorrect_audio, 0, len(CommonData.audio_list)).audio_file)
+
+        WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
+        fun_fact_label: Label = Label(WindowComponents.question_view, text = f"Fun Fact: {question.fun_fact}", wraplength = 400, bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        fun_fact_label.place(x = 25, y = 330, width = 645, height = 65)
+
+        if question.question_number < len(WindowComponents.current_quiz.questions): WindowComponents.submit_answer.configure(text = "Next Question", command = WindowControls.next_question)
+        else: WindowComponents.submit_answer.configure(text = "Finish Quiz", command = WindowControls.finish_quiz)
+
+
+    def next_question(question: BaseQuestion | None = None) -> None:
+        # Display Question
+        if question == None:
+            question: BaseQuestion = WindowComponents.current_quiz.questions[WindowComponents.current_quiz.question_number]
+            WindowComponents.current_quiz.question_number += 1
+
+        WindowComponents.permit_answer = True
+        
+        if WindowComponents.question_view != None: WindowComponents.question_view.destroy()
+
+        match question.question_type:
+            case "Closed":
+                QuestionDesign.create_closed_question_view(question.is_image_question)
+                WindowControls.insert_closed_question_info(question)
+            case "Open":
+                QuestionDesign.create_order_question_view(question.is_image_question)
+                WindowControls.insert_order_question_info(question)
+            case "Order": print()
+
+    def review_question() -> None: pass
+    
+    def finish_quiz() -> None:
+        WindowComponents.question_view.destroy()
+        QuestionDesign.make_finish_quiz_page(WindowComponents.window)
+        
+        # Insert Page Functions
+        WindowComponents.retake_quiz_button.configure(command = None) # I will write these Functions another time but for now they aren't entirely necessary
+        WindowComponents.review_quiz_button_finish.configure(command = None) # I will write these Functions another time but for now they aren't entirely necessary
+        WindowComponents.exit_quiz_button_finish.configure(command = None) # I will write these Functions another time but for now they aren't entirely necessary
+
+    #  Hints
+
+    def use_text_hint(question: BaseQuestion) -> None:
+        if question.text_hint_used: return 0
+
+        question.awarded_points -= question.hint_penalty
+        WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
+
+        question.text_hint_used = True
+
+        WindowComponents.text_hint_output.configure(text = f"Hint Text: {question.text_hint}")
+
+    def use_50_50_hint(question: ClosedQuestion) -> None:
+        if question.relevant_hint_used: return 0
+
+        question.awarded_points -= question.hint_penalty
+        WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
+
+        question.relevant_hint_used = True
+
+        answers: list[PastAnswer] = WindowComponents.answers.copy()
+        buttons: list[Button] = WindowComponents.closed_answers.copy()
+
+        for i in range(len(answers)):
+            if answers[i].correct_answer:
+                answers.pop(i); buttons.pop(i)
+                break
+        
+        kept_answer: int = random.randint(0, 2)
+        answers.pop(kept_answer); buttons.pop(kept_answer)
+
+        for i in range(len(answers)):
+            answers[i].answer_hidden = True
+            buttons[i].place_forget()   
+
     def use_provide_word_hint() -> None: pass
     def use_place_one_hint() -> None: pass
+
+    def sort_answers() -> None:
+        temp: PastAnswer
+        swap: bool
+
+        for i in range(len(WindowComponents.answers) - 1):
+            swap = False
+
+            for j in range(len(WindowComponents.answers) - i - 1):
+                if WindowComponents.answers[j].display_index > WindowComponents.answers[j + 1].display_index:
+                    swap = True
+                    temp = WindowComponents.answers[j]
+                    WindowComponents.answers[j] = WindowComponents.answers[j + 1]
+                    WindowComponents.answers[j + 1] = temp
+
+            if not swap: break
 
     # Clear Functions
 
@@ -630,12 +827,3 @@ class WindowControls:
     def clear_edit_accounts_page() -> None:
         WindowComponents.update_username_entry.delete(0, len(WindowComponents.update_username_entry.get()))
         WindowComponents.update_password_entry.delete(0, len(WindowComponents.update_password_entry.get()))
-
-
-    # Position Frame
-    
-    def make_active(frame: Toplevel) -> None:
-        # frame.withdraw()
-        frame.update()
-        frame.deiconify()
-

@@ -23,6 +23,7 @@ from questions.question_order import OrderQuestion
 from quiz.quiz import Quiz
 
 from window.answer_creator import AnswerCreator
+from window.question_design import QuestionDesign
 from window.window_components import WindowComponents
 from window.window_controls import WindowControls
 
@@ -41,8 +42,7 @@ class WindowDesign:
         WindowComponents.login_page.config(bg = WindowComponents.default_window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.login_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.login_page)
+        WindowComponents.make_active(WindowComponents.login_page)
 
         header_label: Label = Label(WindowComponents.login_page, text = "Login Page", bg = WindowComponents.default_label_colours[0].colour_code, fg = WindowComponents.default_label_colours[1].colour_code, font = WindowComponents.main_font)
         header_label.place(x = 25, y = 25, width = 175, height = 30)
@@ -82,8 +82,7 @@ class WindowDesign:
         WindowComponents.create_account_page.config(bg = WindowComponents.default_window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.create_account_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.create_account_page)
+        WindowComponents.make_active(WindowComponents.create_account_page)
 
         login_header: Label = Label(WindowComponents.create_account_page, text = "Create Account Page", bg = WindowComponents.default_label_colours[0].colour_code, fg = WindowComponents.default_label_colours[1].colour_code, font = WindowComponents.main_font)
         login_header.place(x = 25, y = 25, width = 175, height = 30)
@@ -148,8 +147,7 @@ class WindowDesign:
         WindowComponents.choose_colours.config(bg = WindowComponents.default_window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.choose_colours, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.choose_colours)
+        WindowComponents.make_active(WindowComponents.choose_colours)
 
         WindowDesign.create_colour_selector(WindowComponents.choose_colours, selector_type, "Window", 25, 25)
         WindowDesign.create_colour_selector(WindowComponents.choose_colours, selector_type, "Button", 200, 25)
@@ -243,8 +241,7 @@ class WindowDesign:
         WindowComponents.home_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.home_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.home_page)
+        WindowComponents.make_active(WindowComponents.home_page)
 
         username_label: Label = Label(WindowComponents.home_page, text = f"Username: {WindowComponents.active_user.username}", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         username_label.place(x = 25, y = 25, width = 175, height = 30)
@@ -295,7 +292,7 @@ class WindowDesign:
         WindowComponents.quiz_setup_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.quiz_setup_page, [frame_width, frame_height])
-        WindowControls.make_active(WindowComponents.quiz_setup_page)
+        WindowComponents.make_active(WindowComponents.quiz_setup_page)
 
         # Chosen Topics
         topics_header: Label = Label(WindowComponents.quiz_setup_page, text = "Select Question Topics", bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
@@ -347,7 +344,7 @@ class WindowDesign:
         WindowComponents.quiz_length_set.place(x = 205, y = 235, width = 355, height = 30)
 
         # Play Quiz Button
-        begin_quiz: Button = Button(WindowComponents.quiz_setup_page, text = "Begin Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowDesign.setup_quiz)
+        begin_quiz: Button = Button(WindowComponents.quiz_setup_page, text = "Begin Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.setup_quiz)
         begin_quiz.place(x = 25, y = 270, width = 535, height = 30)
 
         # Generic Controls
@@ -373,8 +370,7 @@ class WindowDesign:
         WindowComponents.edit_question_select_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.edit_question_select_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.edit_question_select_page)
+        WindowComponents.make_active(WindowComponents.edit_question_select_page)
 
         WindowComponents.current_question_set = Label(WindowComponents.edit_question_select_page, text = "Select Question", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         WindowComponents.current_question_set.place(x = 25, y = 25, width = 175, height = 30)
@@ -477,8 +473,7 @@ class WindowDesign:
         WindowComponents.edit_topic_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.edit_topic_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.edit_topic_page)
+        WindowComponents.make_active(WindowComponents.edit_topic_page)
 
         # Controls
         WindowComponents.topics_listbox = Listbox(WindowComponents.edit_topic_page, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
@@ -549,8 +544,7 @@ class WindowDesign:
         WindowComponents.edit_colour_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.edit_colour_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.edit_colour_page)
+        WindowComponents.make_active(WindowComponents.edit_colour_page)
 
         # Controls
         WindowComponents.colours_listbox = Listbox(WindowComponents.edit_colour_page, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
@@ -614,8 +608,7 @@ class WindowDesign:
         WindowComponents.edit_audio_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.edit_audio_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.edit_audio_page)
+        WindowComponents.make_active(WindowComponents.edit_audio_page)
 
         # Controls
         WindowComponents.audios_listbox = Listbox(WindowComponents.edit_audio_page, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
@@ -673,8 +666,7 @@ class WindowDesign:
         WindowComponents.view_account_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.view_account_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.view_account_page)
+        WindowComponents.make_active(WindowComponents.view_account_page)
 
         login_header: Label = Label(WindowComponents.view_account_page, text = WindowComponents.active_user.username, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         login_header.place(x = 25, y = 25, width = 175, height = 30)
@@ -705,8 +697,7 @@ class WindowDesign:
         WindowComponents.edit_account_page.config(bg = WindowComponents.window_colours[0].colour_code)
 
         WindowComponents.position_frame(WindowComponents.edit_account_page, [frame_width, frame_height])
-
-        WindowControls.make_active(WindowComponents.edit_account_page)
+        WindowComponents.make_active(WindowComponents.edit_account_page)
 
         login_header: Label = Label(WindowComponents.edit_account_page, text = "Update Account Page", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         login_header.place(x = 25, y = 25, width = 175, height = 30)
@@ -961,7 +952,7 @@ class WindowDesign:
         WindowComponents.edit_question_page.update()
         WindowComponents.edit_question_page.deiconify()
 
-        WindowControls.make_active(WindowComponents.edit_question_page)
+        WindowComponents.make_active(WindowComponents.edit_question_page)
 
     def create_edit_open_question_page() -> None:
         WindowComponents.edit_question_page = WindowDesign.create_edit_question_page_template()
@@ -1025,7 +1016,7 @@ class WindowDesign:
         WindowComponents.edit_question_page.update()
         WindowComponents.edit_question_page.deiconify()
 
-        WindowControls.make_active(WindowComponents.edit_question_page)
+        WindowComponents.make_active(WindowComponents.edit_question_page)
 
     def create_edit_order_question_page() -> None:
         WindowComponents.edit_question_page = WindowDesign.create_edit_question_page_template()
@@ -1033,7 +1024,7 @@ class WindowDesign:
         WindowComponents.edit_question_page.update()
         WindowComponents.edit_question_page.deiconify()
 
-        WindowControls.make_active(WindowComponents.edit_question_page)
+        WindowComponents.make_active(WindowComponents.edit_question_page)
 
 
     # Insert Question Data (Editing)
@@ -1148,154 +1139,6 @@ class WindowDesign:
     def edit_order_question() -> None: pass
 
 
-    # Create Question Frames
-
-    def create_question_view_template() -> Toplevel:
-        return_frame: Toplevel = Toplevel(WindowComponents.window)
-        return_frame.withdraw()
-
-        frame_width: int = 1000
-        frame_height: int = 600
-
-        return_frame.geometry(f"{frame_width}x{frame_height}")
-        return_frame.config(bg = WindowComponents.window_colours[0].colour_code)
-
-        WindowComponents.position_frame(return_frame, [frame_width, frame_height])
-
-        # Question Number
-        WindowComponents.question_number_output = Label(return_frame, text = "Question Number: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.question_number_output.place(x = 25, y = 25, width = 175, height = 30)
-
-        # Current Score
-        WindowComponents.current_score_output = Label(return_frame, text = "Current Score: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.current_score_output.place(x = 285, y = 25, width = 175, height = 30)
-
-        # Question Difficulty
-        WindowComponents.question_difficulty_output = Label(return_frame, text = "Question Difficulty: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.question_difficulty_output.place(x = 25, y = 60, width = 175, height = 30)
-
-        WindowComponents.filler_label = Label(return_frame, bg = WindowComponents.label_colours[0].colour_code)
-        WindowComponents.filler_label.place(x = 200, y = 60, width = 85, height = 30)
-
-        # Question Score
-        WindowComponents.question_score_output = Label(return_frame, text = "Question Score: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.question_score_output.place(x = 285, y = 60, width = 175, height = 30)
-
-        # Question Text
-        WindowComponents.question_text_output = Label(return_frame, text = "Question Text: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.question_text_output.place(x = 25, y = 90, width = 435, height = 65)
-
-        WindowComponents.text_hint_output = Label(return_frame, text = "Hint Text: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.text_hint_output.place(x = 25, y = 160, width = 435, height = 30)
-
-        # Topics
-        WindowComponents.topics_shroud = Label(return_frame, bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code)
-        WindowComponents.topics_shroud.place(x = 475, y = 25, width = 195, height = 300) # (5 * 30) + (4 * 5) + (10 * 2) = 150 + 20 + 20 = 150 + 40 = 190
-
-        WindowComponents.topics_shroud_header = Label(return_frame, text = "Question Topics", bg = WindowComponents.window_colours[0].colour_code, fg = WindowComponents.window_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.topics_shroud_header.place(x = 485, y = 35, width = 175, height = 30)
-
-        # Hints Available
-        WindowComponents.view_text_hint_button = Button(return_frame, text = "View Text Hint", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.view_text_hint_button.place(x = 475, y = 330, width = 195, height = 30)
-
-        WindowComponents.view_relevant_hint_button = Button(return_frame, text = "View Relevant Hint", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.view_relevant_hint_button.place(x = 475, y = 365, width = 195, height = 30)
-
-        # Answer Area (Set by each Question Type)
-
-        WindowComponents.submit_answer = Button(return_frame, text = "Submit Answer", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.submit_answer.place(x = 25, y = 195, width = 435, height = 30)
-
-        WindowComponents.review_last_question = Button(return_frame, text = f"Review Last Question", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.review_last_question.place(x = 25, y = 330, width = 215, height = 30)
-
-        WindowComponents.next_question = Button(return_frame, text = f"Review Next Question (If Applicable)", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.next_question.place(x = 245, y = 330, width = 215, height = 30)
-
-        WindowComponents.exit_quiz_button = Button(return_frame, text = f"Exit Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.exit_quiz_button.place(x = 25, y = 365, width = 435, height = 30)
-
-        return return_frame
-
-    def insert_image() -> Toplevel: return None
-
-    def create_closed_question_view(image_question: bool = False) -> None:
-        WindowComponents.question_view = WindowDesign.create_question_view_template()
-        # if image_question: WindowDesign.insert_image()
-        
-        frame_width: int = 695
-        frame_height: int = 420
-
-        WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
-        WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
-
-        WindowComponents.view_relevant_hint_button.config(text = "Use 50/50 Hint")
-
-        x_values: int = [25, 245, 25, 245]
-        y_values: int = [195, 195, 245, 245]
-
-        WindowComponents.closed_answers.clear()
-        answer_button: Button
-
-        for i in range(4):
-            answer_button = Button(WindowComponents.question_view, text = f"Answer {i + 1}", wraplength = 175, bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
-            answer_button.place(x = x_values[i], y = y_values[i] if not image_question else y_values[i] + 310, width = 215, height = 45)
-
-            WindowComponents.closed_answers.append(answer_button)
-
-        WindowComponents.submit_answer.place(y = 295 if not image_question else 605)
-
-        if image_question:
-            WindowComponents.review_last_question.place(y = 640)
-            WindowComponents.next_question.place(y = 640)
-            WindowComponents.exit_quiz_button.place(y = 675)
-
-        WindowComponents.question_view.update()
-        WindowComponents.question_view.deiconify()
-        WindowControls.make_active(WindowComponents.question_view)
-
-    def create_open_question_view(image_question: bool = False) -> None:
-        WindowComponents.question_view = WindowDesign.create_question_view_template()
-        # if image_question: WindowDesign.insert_image()
-        
-        frame_width: int = 695
-        frame_height: int = 390
-
-        WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
-        WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
-
-        WindowComponents.open_answer_entry = Entry(WindowComponents.question_view, bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.open_answer_entry.place(x = 25, y = 195, width = 435, height = 30)
-
-        WindowComponents.submit_answer.place(y = 230 if not image_question else 540)
-
-        WindowComponents.topics_shroud.place(height = 305)
-
-        WindowComponents.review_last_question.place(y = 265)
-        WindowComponents.next_question.place(y = 265)
-        WindowComponents.exit_quiz_button.place(y = 300)
-
-        WindowComponents.view_text_hint_button.place(x = 25, y = 335, width = 435)
-        WindowComponents.view_relevant_hint_button.place(y = 335)
-
-        if image_question:
-            WindowComponents.review_last_question.place(y = 575)
-            WindowComponents.next_question.place(y = 575)
-            WindowComponents.exit_quiz_button.place(y = 610)
-
-        WindowComponents.question_view.update()
-        WindowComponents.question_view.deiconify()
-        WindowControls.make_active(WindowComponents.question_view)
-
-    def create_order_question_view(image_question: bool = False) -> None:
-        WindowComponents.question_view = WindowDesign.create_question_view_template()
-        if image_question: WindowDesign.insert_image()
-        WindowComponents.question_view.update()
-        WindowComponents.question_view.deiconify()
-
-
-
     # Question Editor Functions
 
     def view_question_preview(question_type: str) -> None:
@@ -1304,33 +1147,14 @@ class WindowDesign:
         match question_type:
             case "Closed":
                 if not QuestionController.valid_closed_question(): return 0
-                WindowDesign.create_closed_question_view() # WindowComponents.is_image_question)
+                QuestionDesign.create_closed_question_view() # WindowComponents.is_image_question)
                 WindowControls.view_closed_preview(QuestionController.create_partial_closed_dict())
             case "Open":
                 if not QuestionController.valid_open_question(): return 0
-                WindowDesign.create_open_question_view() # WindowComponents.is_image_question)
+                QuestionDesign.create_open_question_view() # WindowComponents.is_image_question)
                 WindowControls.view_open_preview(QuestionController.create_partial_open_dict())
             case "Order": messagebox.showerror("Page Non-Existent", "Question Page Doesn't Exist")
 
-
-    #  Quiz Functions - Won't Work in WindowControls
-
-    def setup_quiz() -> None:
-        WindowComponents.current_quiz = Quiz()
-        WindowComponents.current_quiz.select_questions()
-
-        # Display First Question
-        question_one: BaseQuestion = WindowComponents.current_quiz.questions[WindowComponents.current_quiz.question_number - 1]
-        print(question_one.is_image_question)
-
-        match question_one.question_type:
-            case "Closed":
-                WindowDesign.create_closed_question_view(question_one.is_image_question)
-                WindowControls.insert_closed_question_info(question_one)
-            case "Open":
-                WindowDesign.create_order_question_view(question_one.is_image_question)
-                WindowControls.insert_order_question_info(question_one)
-            case "Order": print()
 
     #   Login Functions
 

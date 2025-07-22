@@ -11,7 +11,6 @@ class ClosedQuestion(BaseQuestion):
         # Answers
         self.answers: list[Answer] = self.create_answers(question_data["Answers"])
 
-
     def create_answers(self, answers: list[dict]) -> list[Answer]:
         return_list: list[Answer] = []
 
@@ -19,7 +18,7 @@ class ClosedQuestion(BaseQuestion):
             return_list.append(Answer(answer))
 
         return return_list
-    
+
     def create_dictionary(self) -> dict:
         return {
             "Question ID" : self.question_id,

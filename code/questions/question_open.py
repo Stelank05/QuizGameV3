@@ -4,11 +4,9 @@ class OpenQuestion(BaseQuestion):
     def __init__(self, question_data: dict) -> None:
         BaseQuestion.__init__(self, question_data)
 
-
         # Hints
         self.provide_word_hint: bool = question_data["Hints"]["Add Provide Word Hint"]
         self.provided_word: str = question_data["Hints"]["Provided Word"]
-
 
         # Answers
         self.required_words: list[str] = question_data["Answers"]["Required Words"]
@@ -22,7 +20,7 @@ class OpenQuestion(BaseQuestion):
                 return False
             
         return True
-    
+
     def create_dictionary(self) -> dict:
         return {
             "Question ID" : self.question_id,

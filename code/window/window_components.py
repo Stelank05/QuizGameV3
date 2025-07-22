@@ -12,6 +12,8 @@ from classes.topic import Topic
 
 from questions.question_base import BaseQuestion
 
+from quiz.answer_past import PastAnswer
+
 class WindowComponents:
     window: Tk
 
@@ -40,13 +42,14 @@ class WindowComponents:
     edit_colour_page: Toplevel = None
     edit_audio_page: Toplevel = None
 
-    #  Question Pages
+    #  Quiz Pages
     edit_question_select_page: Toplevel = None
     edit_question_page: Toplevel = None
     image_preview_frame: Toplevel = None
     display_question_page: Toplevel = None
     question_view: Toplevel = None
     quiz_setup_page: Toplevel = None
+    finish_quiz_page: Toplevel = None
 
     active_pages: list[Toplevel] = []
 
@@ -264,6 +267,7 @@ class WindowComponents:
 
     exit_quiz_button: Button
     review_last_question: Button
+    review_next_question: Button
     next_question: Button
 
     closed_answers: list[Button] = []
@@ -313,9 +317,26 @@ class WindowComponents:
 
     # Play Quiz Button
 
+    answers: list[PastAnswer]
+    selected_answer: PastAnswer = None
+    selected_button: Button = None
+
+    correct_answer_button: Button = None
+
+    # Finish Quiz Frame Items
+    permit_answer: bool # = True
+
+    retake_quiz_button: Button
+    review_quiz_button_finish: Button
+    exit_quiz_button_finish: Button
+
     # Position Frame Function (I don't remember why I put it here but there probably was a reason)
     def position_frame(frame: Toplevel, frame_dimensions) -> None:
         x_offset: int = (frame.winfo_screenwidth() - frame_dimensions[0]) // 2
         y_offset: int = (frame.winfo_screenheight() - frame_dimensions[1]) // 2
 
         frame.geometry(f"{frame_dimensions[0]}x{frame_dimensions[1]}+{x_offset}+{y_offset}")
+    
+    def make_active(frame: Toplevel) -> None:
+        frame.update()
+        frame.deiconify()

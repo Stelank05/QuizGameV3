@@ -4,7 +4,7 @@ class PastOpenQuestion (OpenQuestion):
     def __init__(self, question_data: dict, extra_details: list[dict] | None, question_number: int) -> None:
         OpenQuestion.__init__(self, question_data)
 
-        self.question_number: int = question_number
+        self.question_number = question_number
 
         self.entered_answer: str = ""
 

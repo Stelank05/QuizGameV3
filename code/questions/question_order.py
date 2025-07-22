@@ -11,5 +11,5 @@ class OrderQuestion(BaseQuestion):
         # Answers
         self.correct_order: list[str] = question_data["Answers"]["Correct Order"]
         self.display_order: str | list[str] = question_data["Answers"]["Display Order"]
-        
+
     def create_dictionary(self) -> dict: return {}

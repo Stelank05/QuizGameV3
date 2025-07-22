@@ -8,7 +8,7 @@ class PastClosedQuestion (ClosedQuestion):
     def __init__(self, question_data: dict, extra_details: dict | None, question_number: int) -> None:
         ClosedQuestion.__init__(self, question_data)
 
-        self.question_number: int = question_number
+        self.question_number = question_number
 
         self.awarded_points: float = 0.0
         if extra_details != None: self.awarded_points = extra_details["Awarded Points"]
@@ -20,7 +20,7 @@ class PastClosedQuestion (ClosedQuestion):
 
         self.randomise_display_order()
         # self.display_answers()
-        print(self.create_past_dict())
+        # print(self.create_past_dict())
 
     def convert_answers(self, answers: list[dict], details: list[dict] | None) -> list[PastAnswer]:
         return_list: list[PastAnswer] = []

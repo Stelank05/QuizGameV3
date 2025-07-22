@@ -4,14 +4,14 @@ class BaseQuestion:
     def __init__(self, question_data: dict) -> None:
         # Question Details
         self.question_id: str = question_data["Question ID"]
-        #self.question_index: int = question_index
+        self.question_number: int
 
         self.question_type: str = question_data["Question Type"]
         self.discarded: bool = question_data["Discarded Question"]
 
         self.question_text: str = question_data["Question Text"]
         self.question_difficulty: str = question_data["Question Difficulty"]
-        self.question_points: str = question_data["Question Points"]
+        self.question_points: int = int(question_data["Question Points"])
         self.fun_fact: str = question_data["Fun Fact"]
 
         self.question_topics: list[str] = [] # question_data["Question Topics"]
@@ -21,6 +21,11 @@ class BaseQuestion:
         # Question Hints
         self.add_text_hint: bool = question_data["Hints"]["Add Text Hint"]
         self.text_hint: str = question_data["Hints"]["Text Hint"]
+
+        self.text_hint_used: bool = False
+        self.relevant_hint_used: bool = False
+
+        self.hint_penalty: float = round(self.question_points / 3, 1)
 
 
         # Images
