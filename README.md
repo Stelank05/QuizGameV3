@@ -1,16 +1,24 @@
 # QuizGameV3
 
 So I may've started this in December, maybe January, but I've had to deal with Assignments, other Things I like working on, my oversized Garden, and sleeping. That is an incomplete list.<br/>
-Anyway, now it's July, and everything but the stuff relating to doing a Quiz and Answering Questions exists and works, mostly.<br/>
-(I've also decided that I can make this in a different, better way, that I'll do after I've finished this version so that I have a basis to work off for that)<br/>
+Anyway, now it's July, and I've gotten to making good progress.<br/>
+
+<br/>(I've also decided that I can make this in a different, better way, that I'll do after I've finished this version so that I have a basis to work off for that)<br/>
 
 ---
 
 # Account Details
 ## Login
+If you dont want to create an account, then use 'stephenaccount3' as the username, and 'coloursyay' as the password, in order to access the application.
 ## Create Account
+You can create your own account, using the Create Account Page.<br/>
+You provide a Username and a Password, and then choose the Colours you'd like for your profile.<br/>
+You can select Window Colours, Button Colours, Label Colours, and Entry Colours. Each has Background and Foreground Options, which must have a minimum of a 4.5:1 Colour Contrast Ratio, to be legal.<br/>
+Label, Button and Entry Colours also must have a minimum of a 7:1 Colour Contrast Ratio to the Window Colour, in order to be permitted.
 ## Password Encryption
 ## Guest Accounts
+These don't function yet, these will be added closer to the end of development, as I'm thinking of limiting Guest Accounts to only being able to do Quizzes.<br/>
+I also consider this a Low Priority Feature.
 
 ---
 

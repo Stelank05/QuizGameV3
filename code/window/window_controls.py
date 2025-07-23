@@ -248,13 +248,15 @@ class WindowControls:
         return WindowComponents.question_topics
 
     def update_discard_button(event: Event) -> None:
-        sort_questions(CommonData.usable_questions)
-        # print(WindowComponents.question_list.curselection()[0])
-        # print(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])
-        working_question: BaseQuestion = CommonData.get_usable_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.usable_questions))
+        if WindowComponents.question_select_visible: # and len(WindowComponents.question_list.curselection()) > 0:
+            sort_questions(CommonData.usable_questions)
+            print(WindowComponents.question_list.curselection())
+            print(WindowComponents.question_list.curselection()[0])
+            print(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])
+            working_question: BaseQuestion = CommonData.get_usable_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.usable_questions))
 
-        if working_question.discarded: WindowComponents.discard_question_button.configure(command = WindowControls.reinstate_question)
-        else: WindowComponents.discard_question_button.configure(command = WindowControls.discard_question)
+            if working_question.discarded: WindowComponents.discard_question_button.configure(command = WindowControls.reinstate_question)
+            else: WindowComponents.discard_question_button.configure(command = WindowControls.discard_question)
 
     def discard_question() -> None:
         sort_questions(CommonData.usable_questions)
@@ -587,6 +589,7 @@ class WindowControls:
         WindowComponents.current_quiz.select_questions()
 
         # Display First Question
+        WindowComponents.quiz_setup_page.withdraw()
         WindowControls.next_question(WindowComponents.current_quiz.questions[0])
 
 
@@ -655,6 +658,7 @@ class WindowControls:
         if review: print("Do Review Things")
         
     def insert_open_question_info(question_data: PastOpenQuestion, review: bool = False) -> None:
+        question_data.awarded_points = question_data.question_points
         WindowControls.insert_common_quiz_items(question_data)
 
     def insert_order_question_info(question_data: OrderQuestion, review: bool = False) -> None: pass
@@ -705,7 +709,15 @@ class WindowControls:
                 WindowComponents.selected_button = None
                   
             case "Open":
-                correct_answer = question.valid_answer(WindowComponents.open_answer_entry.get())
+                correct_answer = question.valid_answer(WindowComponents.open_answer_entry.get("1.0", END)[:-1])
+
+                if correct_answer:
+                    result_label: Label = Label(WindowComponents.question_view, text = "Correct Answer!", bg = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
+                    result_label.place(x = 25, y = 260, width = 435, height = 30)
+                else:
+                    result_label: Label = Label(WindowComponents.question_view, text = f"Wrong Answer. Correct Answer: {question.create_correct_answer_string()}", bg = CommonData.get_colour_from_name("Red", 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_name("White", 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
+                    result_label.place(x = 25, y = 260, width = 435, height = 30)
+                
             case "Order": pass
 
         WindowComponents.current_quiz.theoretical_max += question.question_points
@@ -732,7 +744,7 @@ class WindowControls:
 
         WindowComponents.permit_answer = True
 
-        # if WindowComponents.question_view != None: WindowComponents.question_view.destroy()
+        if WindowComponents.question_view != None: WindowComponents.question_view.destroy()
 
         match question.question_type:
             case "Closed":
@@ -752,8 +764,16 @@ class WindowControls:
         # Insert Page Functions
         WindowComponents.retake_quiz_button.configure(command = None) # I will write these Functions another time but for now they aren't entirely necessary
         WindowComponents.review_quiz_button_finish.configure(command = None) # I will write these Functions another time but for now they aren't entirely necessary
-        WindowComponents.exit_quiz_button_finish.configure(command = None) # I will write these Functions another time but for now they aren't entirely necessary
+        WindowComponents.exit_quiz_button_finish.configure(command = WindowControls.return_to_setup) # I will write these Functions another time but for now they aren't entirely necessary
 
+    def return_to_setup() -> None:
+        # Destroy Finish Page
+        WindowComponents.finish_quiz_page.destroy()
+
+        # Open Setup Page (Retain Quiz Setup Data?)
+        WindowComponents.quiz_setup_page.update()
+        WindowComponents.quiz_setup_page.deiconify()
+        
     #  Hints
 
     def use_text_hint(question: BaseQuestion) -> None:

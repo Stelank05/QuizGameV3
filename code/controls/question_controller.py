@@ -196,7 +196,8 @@ class QuestionController:
         WindowComponents.current_edit_question.text_hint = WindowComponents.text_hint_entry.get("1.0", END)[:-1]
         
         # Images
-        WindowComponents.current_edit_question.is_image_question = WindowComponents.is_image_question,
+        print(WindowComponents.is_image_question)
+        WindowComponents.current_edit_question.is_image_question = WindowComponents.is_image_question
         WindowComponents.current_edit_question.image_file = QuestionController.image_file_location
 
         # Fun Fact Text

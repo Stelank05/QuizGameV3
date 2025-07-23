@@ -72,7 +72,7 @@ class WindowDesign:
         exit_button.place(x = 25, y = 315, width = 175, height = 30)
 
     def create_create_account_page() -> None:
-        WindowComponents.login_page.withdraw()
+        # WindowComponents.login_page.withdraw()
         WindowComponents.create_account_page = Toplevel(WindowComponents.window)
 
         frame_width: int = 445
@@ -422,7 +422,7 @@ class WindowDesign:
         choose_image_question.place(x = 215, y = 130, width = 175, height = 30)
         WindowComponents.chosen_image_question = StringVar()
         choose_image_question.configure(textvariable = WindowComponents.chosen_image_question)
-        WindowComponents.chosen_image_question.set("Image Question")
+        WindowComponents.chosen_image_question.set("Is Image Question")
 
         # Question Difficulties
         choose_question_difficulty: ttk.Combobox = ttk.Combobox(WindowComponents.edit_question_select_page)
@@ -1067,9 +1067,6 @@ class WindowDesign:
         WindowComponents.correct_audio_selector.set(CommonData.get_audio_from_id(WindowComponents.current_edit_question.correct_audio, 0, len(CommonData.audio_list)).audio_name)
         WindowComponents.incorrect_audio_selector.set(CommonData.get_audio_from_id(WindowComponents.current_edit_question.incorrect_audio, 0, len(CommonData.audio_list)).audio_name)
 
-        # Set 'Create Question' to 'Update Question'
-        WindowComponents.create_question.configure(text = "Update Question", command = QuestionController.update_closed_question)
-
     def edit_closed_question() -> None:
         WindowDesign.create_edit_closed_question_page()
         WindowDesign.insert_common_items()
@@ -1110,6 +1107,9 @@ class WindowDesign:
 
                 answer_number += 1
 
+        # Set 'Create Question' to 'Update Question'
+        WindowComponents.create_question.configure(text = "Update Question", command = QuestionController.update_closed_question)
+
     def edit_open_question() -> None:
         WindowDesign.create_edit_open_question_page()
         WindowDesign.insert_common_items()
@@ -1135,6 +1135,9 @@ class WindowDesign:
 
         WindowComponents.open_answer_required.insert(0, required_words)
         WindowComponents.open_answer_acceptable.insert(0, acceptable_words)
+
+        # Set 'Create Question' to 'Update Question'
+        WindowComponents.create_question.configure(text = "Update Question", command = QuestionController.update_open_question)
 
     def edit_order_question() -> None: pass
 
@@ -1263,7 +1266,7 @@ class WindowDesign:
             return 0
 
         match WindowComponents.chosen_question_usability.get():
-            case "Question Type": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])# , 0, len(CommonData.discarded_questions))
+            case "Question Usability": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])# , 0, len(CommonData.discarded_questions))
             case "All": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])# , 0, len(CommonData.discarded_questions))
             case "Usable": WindowComponents.current_edit_question = CommonData.get_usable_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.usable_questions))
             case "Discarded": WindowComponents.current_edit_question = CommonData.get_discarded_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.discarded_questions))
@@ -1293,6 +1296,7 @@ class WindowDesign:
             case "Home Page": WindowComponents.home_page.destroy()
             case "Setup Quiz": WindowComponents.quiz_setup_page.destroy()
             case "Edit Question Selector":
+                WindowComponents.question_select_visible = False
                 if not do_hide: WindowComponents.edit_question_select_page.destroy()
                 else: WindowComponents.edit_question_select_page.withdraw()
             case "Edit Question":
@@ -1318,6 +1322,7 @@ class WindowDesign:
             case "Home Page": WindowDesign.create_home_page()
             case "Setup Quiz": WindowDesign.create_quiz_setup_page()
             case "Edit Question Selector":
+                WindowComponents.question_select_visible = True
                 WindowComponents.current_edit_question = None
                 if WindowComponents.edit_question_select_page == None or not WindowComponents.edit_question_select_page.winfo_exists(): WindowDesign.create_edit_question_selector_page()
                 else:

@@ -77,6 +77,8 @@ class WindowComponents:
     audio_file_entry: Entry
 
     #  Edit Question Selector Features
+    question_select_visible: bool = False
+
     current_question_set: Label
     question_list: Listbox
 
@@ -271,7 +273,7 @@ class WindowComponents:
     next_question: Button
 
     closed_answers: list[Button] = []
-    open_answer_entry: Entry
+    open_answer_entry: Text
     # Idk how I'm gonna do the Order Questions lol
 
     # UI Controls
