@@ -56,6 +56,6 @@ May replace these with Audio Questions so I don't have to make design modificati
 ---
 
 # Quiz System
-Currently, only a Closed Question Quiz can be completed, Order Questions don't exist, and Open Questions haven't had their Logic implemented yet.<br/>
-You can't review your previously placed answers.<br/>
-It also doesn't save your Quizzes so you can review them at a later date.
+As it stands currently, you can only do Closed and Open Questions, both of the Text Only Variety.<br/>
+You can't review your previously answered questions, however this feature will be implemented before the addition of Order and Image Questions.<br/>
+It also doesn't save your Quizzes so you can review them at a later date, which will also be included later.
