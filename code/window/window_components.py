@@ -323,6 +323,8 @@ class WindowComponents:
     selected_answer: PastAnswer = None
     selected_button: Button = None
 
+    open_hint_output: Label = None
+
     correct_answer_button: Button = None
 
     # Finish Quiz Frame Items

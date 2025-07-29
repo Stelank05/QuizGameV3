@@ -49,17 +49,13 @@ def read_json_file(file_path: str) -> dict:
 
 def relocate_file(old_path: str, new_path: str) -> None:
     file_contents: list[str] = read_file(old_path)
-    # delete_file(old_path)
     write_file(new_path, file_contents)
 
 def copy_file(old_path: str, new_path: str) -> None:
     file_contents = open(old_path, "r")
-    # delete_file(old_path)
     write_file(new_path, file_contents)
 
 def copy_image_file(old_path: str, new_path: str) -> None:
-    print(old_path)
-    print(new_path)
     old_image = PIL.Image.open(old_path)
     new_image = old_image.save(new_path)
 

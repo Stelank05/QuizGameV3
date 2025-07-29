@@ -51,6 +51,9 @@ class CommonData:
     colour_names: list[str] = []
     topic_names: list[str] = []
 
+
+    # Setup
+
     def setup() -> None:
         CommonData.root_folder = get_root()
         CommonData.setup_folder = os.path.join(CommonData.root_folder, "setup")
@@ -78,6 +81,7 @@ class CommonData:
         CommonData.load_guest_players()
 
         CommonData.load_past_quizzes()
+
 
     # Loaders
 

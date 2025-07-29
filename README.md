@@ -7,6 +7,12 @@ Anyway, now it's July, and I've gotten to making good progress.<br/>
 
 ---
 
+# WARNING
+If it doesn't run properly, it might be because so far it has only been ran and tested in Visual Studio Code, with the Folder Open, not running from the main.py file, which will produce different starting files.<br/>
+There is a provision to try and offset this issue, however I'm not sure if it works, as I haven't tested it yet.
+
+---
+
 # Account Details
 ## Login
 If you dont want to create an account, then use 'stephenaccount3' as the username, and 'coloursyay' as the password, in order to access the application.

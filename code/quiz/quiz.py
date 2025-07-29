@@ -24,6 +24,8 @@ class Quiz:
         self.theoretical_max: float = 0.0
         self.score_percentage: float = 0.0
 
+        self.quiz_complete: bool = False
+
     def select_questions(self) -> None:
         question_list: list[tuple[str, int]] = []
 
@@ -53,14 +55,14 @@ class Quiz:
 
         for question_number in range(int(WindowComponents.quiz_length.get())): #len(question_list)):
             question = CommonData.get_question(question_list[question_number][0], CommonData.usable_questions, 0, len(CommonData.usable_questions))
-            print(f"{question.question_id} - {question.question_difficulty} / {question.question_type} / {question.is_image_question}")
+            # print(f"{question.question_id}") # - {question.question_difficulty} / {question.question_type} / {question.is_image_question}")
 
             match question.question_type:
                 case "Closed": self.questions.append(PastClosedQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Open": self.questions.append(PastOpenQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Order": print()
         
-        print()
+        # print()
 
 
         # self.questions = question_list

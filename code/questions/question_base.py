@@ -24,6 +24,7 @@ class BaseQuestion:
 
         self.text_hint_used: bool = False
         self.relevant_hint_used: bool = False
+        self.answered_correctly: bool = False
 
         self.hint_penalty: float = round(self.question_points / 3, 1)
 

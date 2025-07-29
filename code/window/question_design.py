@@ -123,6 +123,8 @@ class QuestionDesign:
         WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
 
+        WindowComponents.view_relevant_hint_button.config(text = "Provide Word Hint")
+
         WindowComponents.open_answer_entry = Text(WindowComponents.question_view, bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
         WindowComponents.open_answer_entry.place(x = 25, y = 195, width = 435, height = 95)
 

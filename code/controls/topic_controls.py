@@ -100,7 +100,6 @@ class TopicControls:
         WindowComponents.current_edit_topic = None
         TopicControls.clear_edit_topics_page()
 
-
     def clear_edit_topics_page() -> None:
         WindowComponents.topic_name_entry.delete(0, len(WindowComponents.topic_name_entry.get()))
         WindowComponents.topic_back_colour.set("")
