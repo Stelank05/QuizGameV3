@@ -7,9 +7,12 @@ Anyway, now it's July, and I've gotten to making good progress.<br/>
 
 ---
 
-# WARNING
+# WARNINGS
+## File Issues
 If it doesn't run properly, it might be because so far it has only been ran and tested in Visual Studio Code, with the Folder Open, not running from the main.py file, which will produce different starting files.<br/>
 There is a provision to try and offset this issue, however I'm not sure if it works, as I haven't tested it yet.
+## Required Python Packages
+This Application uses the PyGame and Pillow Python Packages in order to play Audio Clips and handle Image Files, ensure you have these Packages Installed before attempting to run the program.
 
 ---
 
