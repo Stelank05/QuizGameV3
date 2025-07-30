@@ -32,13 +32,29 @@ I also consider this a Low Priority Feature.
 ---
 
 # Home Page
+At the top of the Home Page, the Users Username, and High Score is displayed, along with a range of Menu Options, which allow the user to:
+- Setup + Play a Quiz
+- Edit Questions
+- Edit Topics, Colours, or Audios
+- View their Account
+- View a Leaderboard (Not Implemented Yet)
+- Logout, Exit, or Center the Application
 
 ---
 
 # Components
 ## Audios
+Audio Clips are used after Each Question to add a bit of auditory feedback that you have answered the question.<br/>
+Audios aren't categorised, so an Audio used for a Correct Answer on one Question, may be uesd for an Incorrect Answer on another Question, this will potentially be rectified in the future, to provide consistency, and to minimise confusion over whether an answer was Correct or not.
 ## Colours
+Colours are used throughout the program, customisable on a per Account Basis for the Window Background, Buttons, Entries, and Labels.<br/>
+There is a minimum Colour Contrast Ratio of 4.5:1, for Widget Background and Text Colours, and also Widgets compared to the Background, to ensure that there is a clear difference between the Background, and the Foreground, and that Text is readable.<br/>
+Colours used on Closed Question Answers don't have a Minimum Contrast to the Background, due to the wide array of colours that can be used, however Answers can't use Red, Green, or Indigo as Colours, due to their Use in Answer Checking.
 ## Topics
+Topics are used to allow the Users decide what they would like Questions about, such as Coding Questions, or Questions about the Space Shuttle.<br/>
+Topics have a Background and Foreground Colour, and are displayed on the Right Hand Side during the Quiz.<br/>
+A Question can have at most 7 Topics attatched to it.<br/>
+When setting up their Quiz, the User can select as many topics as they like.
 
 ---
 
@@ -65,6 +81,4 @@ May replace these with Audio Questions so I don't have to make design modificati
 ---
 
 # Quiz System
-As it stands currently, you can only do Closed and Open Questions, both of the Text Only Variety.<br/>
-You can't review your previously answered questions, however this feature will be implemented before the addition of Order and Image Questions.<br/>
-It also doesn't save your Quizzes so you can review them at a later date, which will also be included later.
+I need to write this section properly, but i cba at the minute lol.
