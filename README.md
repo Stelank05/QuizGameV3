@@ -75,10 +75,23 @@ May replace these with Audio Questions so I don't have to make design modificati
 
 ---
 
+# Hints
+## Text Hints
+## Closed Question Hint: 50/50
+## Open Question Hint: Provide Word
+## Order Question Hint: Place One
+
+---
+
 ## Question Creation
 ## Question Editing
 
 ---
 
 # Quiz System
-I need to write this section properly, but i cba at the minute lol.
+## Closed Questions
+## Open Questions
+## Order Questions
+## Hints
+## Scoring
+## Question Review
