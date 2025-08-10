@@ -11,6 +11,7 @@ class PastOpenQuestion (OpenQuestion):
         self.awarded_points: float = 0.0
 
         if extra_details != None:
+            self.answered_correctly = extra_details["Answered Correctly"]
             self.awarded_points = extra_details["Awarded Points"]
             self.entered_answer = extra_details["Entered Answer"]
 
@@ -19,6 +20,7 @@ class PastOpenQuestion (OpenQuestion):
             "Question ID": self.question_id,
             "Question Type": self.question_type,
             "Extra Details": {
+                "Answered Correctly": self.answered_correctly,
                 "Awarded Points": self.awarded_points,
                 "Entered Answer": self.entered_answer
             }

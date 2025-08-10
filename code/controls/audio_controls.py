@@ -29,7 +29,9 @@ class AudioControls:
 
         if len(audio_parts) == 1: audio_file = os.path.join(CommonData.audio_folder, audio_parts[-1])
         if not AudioControls.valid_audio_file(audio_file): audio_file = os.path.join(CommonData.audio_folder, audio_parts[-1])
-        if not os.path.exists(audio_file): messagebox.showerror("Audio File Doesn't Exist", "Audio File Can't Be Played, It Doesn't Exist")
+        
+        if not os.path.exists(audio_file):
+            messagebox.showerror("Audio File Doesn't Exist", "Audio File Can't Be Played, It Doesn't Exist")
         else:
             pygame.mixer.music.load(audio_file)
             pygame.mixer.music.play(loops = 0)
@@ -64,11 +66,12 @@ class AudioControls:
         if AudioControls.valid_audio("Create", audio_file):
             if not file_in_folder(CommonData.audio_folder, audio_parts[-1], ["mp3", "midi", "wav"]): relocate_file(audio_file, os.path.join(CommonData.audio_folder, audio_parts[-1]))
 
-            CommonData.audio_list.append(Audio([AudioControls.generate_audio_id(), WindowComponents.audio_name_entry.get(), audio_file]))
+            CommonData.audio_list.append(Audio([AudioControls.generate_audio_id(), WindowComponents.audio_name_entry.get(), audio_parts[-1]], os.path.join(CommonData.audio_folder, audio_parts[-1])))
 
             AudioControls.update_audio_list()
             AudioControls.update_audio_file()
-        else: messagebox.showerror("Error Creating Audio", "Something has gone wrong creating the Audio, please ensure all details are correct and try again")
+        else:
+            messagebox.showerror("Error Creating Audio", "Something has gone wrong creating the Audio, please ensure all details are correct and try again")
 
     def update_audio() -> None:
         audio_file: str = WindowComponents.audio_file_entry.get()
@@ -114,7 +117,8 @@ class AudioControls:
     
     def unique_audio_file(compare_file: str) -> bool:
         for audio in CommonData.audio_list:
-            if open(compare_file, "rb") == open(audio.audio_file, "rb") and audio != WindowComponents.current_edit_audio:
+            print(audio.full_file)
+            if open(compare_file, "rb") == open(audio.full_file, "rb") and audio != WindowComponents.current_edit_audio:
                 return False
         return True
 

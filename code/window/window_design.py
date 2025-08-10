@@ -22,7 +22,8 @@ from questions.question_order import OrderQuestion
 
 from quiz.quiz import Quiz
 
-from window.answer_creator import AnswerCreator
+from window.answer_creator_closed import ClosedAnswerCreator
+from window.answer_creator_order import OrderAnswerCreator
 from window.question_design import QuestionDesign
 from window.window_components import WindowComponents
 from window.window_controls import WindowControls
@@ -315,7 +316,7 @@ class WindowDesign:
         WindowComponents.include_open_questions_button = Button(WindowComponents.quiz_setup_page, text = f"Add Open Questions: {WindowComponents.include_open_questions}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowControls.toggle_question_type, "Open"))
         WindowComponents.include_open_questions_button.place(x = 205, y = 95, width = 175, height = 30)
         
-        WindowComponents.include_order_questions_button = Button(WindowComponents.quiz_setup_page, text = f"Add Order Questions: {WindowComponents.include_order_questions}", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code, font = WindowComponents.main_font) # , command = functools.partial(WindowControls.toggle_question_type, "Order"))
+        WindowComponents.include_order_questions_button = Button(WindowComponents.quiz_setup_page, text = f"Add Order Questions: {WindowComponents.include_order_questions}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font , command = functools.partial(WindowControls.toggle_question_type, "Order"))
         WindowComponents.include_order_questions_button.place(x = 205, y = 130, width = 175, height = 30)
 
         # Chosen Difficulty (/ies)
@@ -914,7 +915,7 @@ class WindowDesign:
         x_start: int = 25
 
         WindowComponents.answers.clear()
-        for i in range(4): WindowComponents.answers.append(AnswerCreator(WindowComponents.edit_question_page, i + 1, x_start + (i * (175 + 5))))
+        for i in range(4): WindowComponents.answers.append(ClosedAnswerCreator(WindowComponents.edit_question_page, i + 1, x_start + (i * (175 + 5))))
         
         # Relocate Sidebar Controls
         WindowComponents.topic_selector.place(height = 445)
@@ -1024,6 +1025,56 @@ class WindowDesign:
         WindowComponents.edit_question_page.update()
         WindowComponents.edit_question_page.deiconify()
 
+        x_starts: list[int] = [25, 205, 385, 565]
+        y_starts: list[int] = [235, 270, 305]
+
+        answer_number: int = 1
+
+        WindowComponents.order_answers.clear()
+
+        for y_start in y_starts:
+            for x_start in x_starts:
+                WindowComponents.order_answers.append(OrderAnswerCreator(WindowComponents.edit_question_page, answer_number, x_start, y_start))
+                answer_number += 1
+
+        # Relocate Bottom Control Buttons
+        WindowComponents.view_preview.place(y = 340)
+        WindowComponents.create_question.place(y = 340)
+        WindowComponents.back_button.place(y = 375)
+        WindowComponents.centre_window.place(y = 375)
+        WindowComponents.clear_window.place(y = 375)
+
+        # Reset Toggle
+        WindowComponents.add_place_one_hint = False
+
+        # Set Button Commands
+        WindowComponents.relevant_hint_button.configure(text = f"Add Place One Hint: {WindowComponents.add_place_one_hint}", command = WindowControls.toggle_place_one_hint)
+        WindowComponents.view_preview.configure(command = functools.partial(WindowDesign.view_question_preview, "Order"))
+        WindowComponents.clear_window.configure(command = functools.partial(WindowControls.clear_edit_questions_page, "Order"))
+
+        WindowComponents.text_hint_header.destroy()
+        WindowComponents.text_hint_entry.place(x = 385)
+        
+        WindowComponents.relevant_hint_button.place(x = 565, y = 60)
+        WindowComponents.image_question_button.place(x = 565)
+
+        WindowComponents.relevant_hint_entry = Entry(WindowComponents.edit_question_page, bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
+        WindowComponents.relevant_hint_entry.place(x = 565, y = 95, width = 175, height = 30)
+
+        # Set Frame Geometry + Center
+        frame_width: int = 955
+        frame_height: int = 430
+
+        WindowComponents.edit_question_page.geometry(f"{frame_width}x{frame_height}")
+
+        WindowComponents.position_frame(WindowComponents.edit_question_page, [frame_width, frame_height])
+        WindowComponents.centre_window.configure(command = functools.partial(WindowComponents.position_frame, WindowComponents.edit_question_page, [frame_width, frame_height]))
+
+        WindowComponents.create_question.configure(command = QuestionController.create_order_question)
+
+        WindowComponents.edit_question_page.update()
+        WindowComponents.edit_question_page.deiconify()
+
         WindowComponents.make_active(WindowComponents.edit_question_page)
 
 
@@ -1056,11 +1107,6 @@ class WindowDesign:
         if not WindowComponents.add_text_hint: WindowComponents.text_hint_button.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
         if WindowComponents.is_image_question: WindowComponents.image_question_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
 
-        # Select Topics (Needs Work)
-        # for topic in WindowComponents.current_edit_question.question_topics:
-        #     print(int(topic.replace("T","")) - 1)
-        #     WindowComponents.topic_selector.activate(int(topic.replace("T","")) - 1)
-            
         # Insert Difficulty, Score + Audios
         WindowComponents.difficulty_selector.set(WindowComponents.current_edit_question.question_difficulty)
         WindowComponents.question_score_selector.set(int(WindowComponents.current_edit_question.question_points))
@@ -1077,7 +1123,7 @@ class WindowDesign:
         if WindowComponents.add_50_50_hint: WindowComponents.relevant_hint_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
 
         answer: Answer
-        answer_region: AnswerCreator
+        answer_region: ClosedAnswerCreator
 
         for answer_number in range(len(WindowComponents.current_edit_question.answers)):
             answer = WindowComponents.current_edit_question.answers[answer_number]
@@ -1139,7 +1185,31 @@ class WindowDesign:
         # Set 'Create Question' to 'Update Question'
         WindowComponents.create_question.configure(text = "Update Question", command = QuestionController.update_open_question)
 
-    def edit_order_question() -> None: pass
+    def edit_order_question() -> None:
+        WindowDesign.create_edit_order_question_page()
+        WindowDesign.insert_common_items()
+
+        # Set States of Hint Buttons
+        WindowComponents.add_place_one_hint = WindowComponents.current_edit_question.place_one_hint
+        WindowComponents.relevant_hint_button.configure(text = f"Add Place One Hint: {WindowComponents.current_edit_question.place_one_hint}")
+
+        if WindowComponents.add_place_one_hint:
+            WindowComponents.relevant_hint_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+            WindowComponents.relevant_hint_entry.delete(0, len(WindowComponents.relevant_hint_entry.get()))
+            WindowComponents.relevant_hint_entry.insert(0, WindowComponents.current_edit_question.placed_word)
+
+        answer_index: int = 0
+
+        for answer in WindowComponents.current_edit_question.correct_order:
+            WindowComponents.order_answers[answer_index].answer_input.insert(0, answer)
+            answer_index += 1
+        
+        while answer_index < 12:
+            WindowComponents.order_answers[answer_index].toggle_include()
+            answer_index += 1
+
+        # Set 'Create Question' to 'Update Question'
+        WindowComponents.create_question.configure(text = "Update Question", command = QuestionController.update_order_question)
 
 
     # Question Editor Functions
@@ -1156,7 +1226,10 @@ class WindowDesign:
                 if not QuestionController.valid_open_question(): return 0
                 QuestionDesign.create_open_question_view() # WindowComponents.is_image_question)
                 WindowControls.view_open_preview(QuestionController.create_partial_open_dict())
-            case "Order": messagebox.showerror("Page Non-Existent", "Question Page Doesn't Exist")
+            case "Order":
+                if not QuestionController.valid_order_question(): return 0
+                QuestionDesign.create_order_question_view() # WindowComponents.is_image_question)
+                WindowControls.view_order_preview(QuestionController.create_partial_order_dict())
 
 
     #   Login Functions
@@ -1266,8 +1339,8 @@ class WindowDesign:
             return 0
 
         match WindowComponents.chosen_question_usability.get():
-            case "Question Usability": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])# , 0, len(CommonData.discarded_questions))
-            case "All": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]])# , 0, len(CommonData.discarded_questions))
+            case "Question Usability": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], [])# , 0, len(CommonData.discarded_questions))
+            case "All": WindowComponents.current_edit_question = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], [])# , 0, len(CommonData.discarded_questions))
             case "Usable": WindowComponents.current_edit_question = CommonData.get_usable_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.usable_questions))
             case "Discarded": WindowComponents.current_edit_question = CommonData.get_discarded_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.discarded_questions))
 
@@ -1283,7 +1356,7 @@ class WindowDesign:
             WindowComponents.choose_colours.deiconify()
 
     def page_controller(from_frame: str, to_frame: str, do_hide: bool = False) -> None:
-        incomplete: list[str] = ["View Past Quizzes", "View Leaderboard", "Create Order Question"]
+        incomplete: list[str] = ["View Past Quizzes", "View Leaderboard"] #, "Create Order Question"]
 
         if to_frame in incomplete:
             messagebox.showinfo("Page Doesn't Exist", "This Page Can't Be Displayed As It Doesn't Exist")

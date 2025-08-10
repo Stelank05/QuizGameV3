@@ -1,6 +1,6 @@
 from classes.audio import Audio
 from classes.colour import Colour
-from classes.past_quiz import PastQuiz
+from quiz.quiz_past import PastQuiz
 from classes.player import Player
 from classes.topic import Topic
 

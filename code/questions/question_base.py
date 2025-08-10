@@ -38,6 +38,9 @@ class BaseQuestion:
         self.correct_audio: str = question_data["Correct Audio"]
         self.incorrect_audio: str = question_data["Incorrect Audio"]
     
+    def __str__(self) -> str:
+        return self.question_id
+
     def set_topics(self, topics: list[str]) -> None:
         for topic in topics: self.question_topics.append(topic)
 

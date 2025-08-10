@@ -93,14 +93,14 @@ class QuestionDesign:
         x_values: int = [25, 245, 25, 245]
         y_values: int = [195, 195, 245, 245]
 
-        WindowComponents.closed_answers.clear()
+        WindowComponents.closed_answer_buttons.clear()
         answer_button: Button
 
         for i in range(4):
             answer_button = Button(WindowComponents.question_view, text = f"Answer {i + 1}", wraplength = 175, bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
             answer_button.place(x = x_values[i], y = y_values[i] if not image_question else y_values[i] + 310, width = 215, height = 45)
 
-            WindowComponents.closed_answers.append(answer_button)
+            WindowComponents.closed_answer_buttons.append(answer_button)
 
         WindowComponents.submit_answer.place(y = 295 if not image_question else 605)
 
@@ -151,6 +151,38 @@ class QuestionDesign:
     def create_order_question_view(image_question: bool = False) -> None:
         WindowComponents.question_view = QuestionDesign.create_question_view_template()
         if image_question: QuestionDesign.insert_image()
+
+        WindowComponents.topics_shroud.place(height = 410)
+
+        WindowComponents.submit_answer.place(y = 405)
+        WindowComponents.view_text_hint_button.place(y = 440)
+        WindowComponents.view_relevant_hint_button.place(y = 475)
+
+        WindowComponents.review_last_question.place(y = 440)
+        WindowComponents.review_next_question.place(y = 440)
+        WindowComponents.exit_quiz_button.place(y = 475)
+
+        # Insert Answer Entries
+        #  Entry (Input) + Label (Answer)
+
+        x_values: list[int] = [25, 245]
+        y_values: list[int] = [195, 230, 265, 300, 335, 370]
+
+        position_entry: Entry
+        answer_output: Label
+
+        WindowComponents.order_answer_entries.clear()
+
+        for i in range(2):
+            for j in range(6):
+                position_entry = Entry(WindowComponents.question_view, bg = WindowComponents.entry_colours[1].colour_code, fg = WindowComponents.entry_colours[0].colour_code, font = WindowComponents.main_font)
+                position_entry.place(x = x_values[i], y = y_values[j], width = 40, height = 30)
+                
+                answer_output = Label(WindowComponents.question_view, bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
+                answer_output.place(x = x_values[i] + 40, y = y_values[j], width = 175, height = 30)
+
+                WindowComponents.order_answer_entries.append([position_entry, answer_output])
+
         WindowComponents.question_view.update()
         WindowComponents.question_view.deiconify()
 

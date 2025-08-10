@@ -15,12 +15,13 @@ class PastClosedQuestion (ClosedQuestion):
         
         # print(self.question_id)
         self.answers: list[PastAnswer] = []
-        if extra_details != None: self.answers = self.convert_answers(question_data["Answers"], extra_details["Answers"])
-        else: self.answers = self.convert_answers(question_data["Answers"], None)
+        if extra_details != None:
+            self.answered_correctly = extra_details["Answered Correctly"]
+            self.answers = self.convert_answers(question_data["Answers"], extra_details["Answers"])
+        else:
+            self.answers = self.convert_answers(question_data["Answers"], None)
 
         self.randomise_display_order()
-        # self.display_answers()
-        # print(self.create_past_dict())
 
     def convert_answers(self, answers: list[dict], details: list[dict] | None) -> list[PastAnswer]:
         return_list: list[PastAnswer] = []
@@ -54,6 +55,7 @@ class PastClosedQuestion (ClosedQuestion):
             "Question ID": self.question_id,
             "Question Type": self.question_type,
             "Extra Details": {
+                "Answered Correctly": self.answered_correctly,
                 "Awarded Points": self.awarded_points,
                 "Answers": self.make_answer_details()
             }

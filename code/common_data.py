@@ -10,7 +10,7 @@ from controls.sort_functions import *
 
 from classes.audio import Audio
 from classes.colour import Colour
-from classes.past_quiz import PastQuiz
+from quiz.quiz_past import PastQuiz
 from classes.player import Player
 from classes.topic import Topic
 
@@ -264,7 +264,7 @@ class CommonData:
         elif CommonData.discarded_questions[mid_point].question_id > question_id: return CommonData.get_discarded_question(question_id, start_index, mid_point - 1)
         else: return CommonData.get_discarded_question(question_id, mid_point + 1, end_index)
         
-    def get_question(question_id: str, question_list: list[BaseQuestion] = [], start_index: int = -1, end_index: int = -1) -> BaseQuestion:
+    def get_question(question_id: str, question_list: list[BaseQuestion], start_index: int = -1, end_index: int = -1) -> BaseQuestion:
         if question_list == []:
             question_list = CommonData.usable_questions + CommonData.discarded_questions
             sort_questions(question_list)

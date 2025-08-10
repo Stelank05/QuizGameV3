@@ -13,7 +13,7 @@ from questions.question_closed import ClosedQuestion
 from questions.question_open import OpenQuestion
 from questions.question_order import OrderQuestion
 
-from window.answer_creator import AnswerCreator
+from window.answer_creator_closed import ClosedAnswerCreator
 from window.window_components import WindowComponents
 
 from common_data import CommonData
@@ -56,7 +56,21 @@ class QuestionController:
         write_json_file(QuestionController.question_file, question_dictionary)
         CommonData.usable_questions.append(OpenQuestion(question_dictionary))
     
-    def create_order_question() -> None: pass
+    def create_order_question() -> None:
+        if not QuestionController.valid_order_question(): return 0
+        
+        # Image File Handling
+        if WindowComponents.is_image_question:
+            QuestionController.image_file_location = os.path.join(CommonData.images_folder, WindowComponents.image_file_entry.get().strip().split("\\")[-1])
+            copy_image_file(WindowComponents.image_file_entry.get().strip(), QuestionController.image_file_location)
+        else: QuestionController.image_file_location = ""
+
+        question_dictionary: dict = QuestionController.create_order_dict()
+        
+        QuestionController.question_file = os.path.join(CommonData.question_folder, f"{question_dictionary["Question ID"]}.json")
+        
+        write_json_file(QuestionController.question_file, question_dictionary)
+        CommonData.usable_questions.append(OrderQuestion(question_dictionary))
 
 
     # Create Question Dictionaries
@@ -90,13 +104,13 @@ class QuestionController:
             "Question ID" : QuestionController.generate_question_id(),
             "Discarded Question": False,
             "Question Type" : "Open",
-            "Question Text" : WindowComponents.question_text_input.get("1.0", END)[:-1],
+            "Question Text" : WindowComponents.question_text_input.get("1.0", END)[:-1].strip(),
             "Question Difficulty" : WindowComponents.chosen_difficulty.get(),
             "Question Points" : WindowComponents.chosen_question_score.get(),
             "Question Topics" : QuestionController.compile_topic_list(),
             "Hints" : {
                 "Add Text Hint" : WindowComponents.add_text_hint,
-                "Text Hint" : WindowComponents.text_hint_entry.get("1.0", END)[:-1],
+                "Text Hint" : WindowComponents.text_hint_entry.get("1.0", END)[:-1].strip(),
                 "Add Provide Word Hint" : WindowComponents.add_provide_word_hint,
                 "Provided Word": WindowComponents.relevant_hint_entry.get()
             },
@@ -110,7 +124,30 @@ class QuestionController:
             "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), 0, len(CommonData.audio_list)).audio_id
         }
     
-    def create_order_dict() -> dict: pass
+    def create_order_dict() -> dict:
+        return {
+            "Question ID" : QuestionController.generate_question_id(),
+            "Discarded Question": False,
+            "Question Type" : "Order",
+            "Question Text" : WindowComponents.question_text_input.get("1.0", END)[:-1].strip(),
+            "Question Difficulty" : WindowComponents.chosen_difficulty.get(),
+            "Question Points" : WindowComponents.chosen_question_score.get(),
+            "Question Topics" : QuestionController.compile_topic_list(),
+            "Hints" : {
+                "Add Text Hint" : WindowComponents.add_text_hint,
+                "Text Hint" : WindowComponents.text_hint_entry.get("1.0", END)[:-1].strip(),
+                "Add Place One Hint" : WindowComponents.add_place_one_hint,
+                "Provided Word": QuestionController.get_order_hint_details()
+            },
+            "Images" : {
+                "Is Image Question" : WindowComponents.is_image_question,
+                "Image File" : QuestionController.image_file_location
+            },
+            "Answers" : QuestionController.get_order_answers(),
+            "Fun Fact": WindowComponents.fun_fact_entry.get(),
+            "Correct Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), 0, len(CommonData.audio_list)).audio_id,
+            "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), 0, len(CommonData.audio_list)).audio_id
+        }
 
 
     # Create Partial Question Dictionaries
@@ -136,13 +173,13 @@ class QuestionController:
 
     def create_partial_open_dict() -> dict:
         return {
-            "Question Text" : WindowComponents.question_text_input.get("1.0", END)[:-1],
+            "Question Text" : WindowComponents.question_text_input.get("1.0", END)[:-1].strip(),
             "Question Difficulty" : WindowComponents.chosen_difficulty.get(),
             "Question Points" : WindowComponents.chosen_question_score.get(),
             "Question Topics" : QuestionController.compile_topic_list(),
             "Hints" : {
                 "Add Text Hint" : WindowComponents.add_text_hint,
-                "Text Hint" : WindowComponents.text_hint_entry.get("1.0", END)[:-1],
+                "Text Hint" : WindowComponents.text_hint_entry.get("1.0", END)[:-1].strip(),
                 "Add Provide Word Hint" : WindowComponents.add_provide_word_hint,
                 "Provided Word": WindowComponents.relevant_hint_entry.get()
             },
@@ -154,7 +191,25 @@ class QuestionController:
             "Fun Fact": WindowComponents.fun_fact_entry.get()
         }
     
-    def create_partial_order_dict() -> dict: pass
+    def create_partial_order_dict() -> dict:
+        return {
+            "Question Text" : WindowComponents.question_text_input.get("1.0", END)[:-1].strip(),
+            "Question Difficulty" : WindowComponents.chosen_difficulty.get(),
+            "Question Points" : WindowComponents.chosen_question_score.get(),
+            "Question Topics" : QuestionController.compile_topic_list(),
+            "Hints" : {
+                "Add Text Hint" : WindowComponents.add_text_hint,
+                "Text Hint" : WindowComponents.text_hint_entry.get("1.0", END)[:-1].strip(),
+                "Add Place One Hint" : WindowComponents.add_place_one_hint,
+                "Provided Word": QuestionController.get_order_hint_details()
+            },
+            "Images" : {
+                "Is Image Question" : WindowComponents.is_image_question,
+                "Image File" : QuestionController.image_file_location
+            },
+            "Answers" : QuestionController.get_order_answers(),
+            "Fun Fact": WindowComponents.fun_fact_entry.get(),
+        }
 
 
     # Create Answer Dictionaries
@@ -163,7 +218,7 @@ class QuestionController:
         answers: list[dict] = []
 
         for i in range(len(WindowComponents.answers)):
-            answer: AnswerCreator = WindowComponents.answers[i]
+            answer: ClosedAnswerCreator = WindowComponents.answers[i]
 
             if answer.include_answer:
                 answers.append({
@@ -182,8 +237,25 @@ class QuestionController:
             "Acceptable Words": list(set(WindowComponents.open_answer_acceptable.get().lower().split(' ')))
         }
     
-    def get_order_answers() -> dict: pass
+    def get_order_answers() -> list[str]:
+        answers: list[str] = []
 
+        for closed_answer in WindowComponents.order_answers:
+            if closed_answer.include_answer: answers.append(closed_answer.answer_input.get().strip())
+
+        return answers
+
+    def get_order_hint_details() -> tuple[str, int]:
+        hint_word: str = WindowComponents.relevant_hint_entry.get()
+        hint_index: int = 0
+
+        answers: list[str] = QuestionController.get_order_answers()
+
+        for i in range(len(answers)):
+            if answers[i] == hint_word:
+                hint_index = i + 1; break
+
+        return (hint_word, hint_index)
 
     # Update Questions
     
@@ -235,10 +307,26 @@ class QuestionController:
         WindowComponents.current_edit_question.add_provide_word_hint = WindowComponents.add_provide_word_hint
         WindowComponents.current_edit_question.provided_word = WindowComponents.relevant_hint_entry.get()
 
+        WindowComponents.current_edit_question.required_words = QuestionController.get_open_answers()["Required Words"]
+        WindowComponents.current_edit_question.acceptable_words = QuestionController.get_open_answers()["Acceptable Words"]
+
         QuestionController.question_file = os.path.join(CommonData.question_folder, f"{WindowComponents.current_edit_question.question_id}.json")
         write_json_file(QuestionController.question_file, WindowComponents.current_edit_question.create_dictionary())
 
-    def update_order_question() -> None: pass
+    def update_order_question() -> None:
+        if not QuestionController.valid_order_question(): return 0
+
+        QuestionController.update_common_details()
+
+        # WindowComponents.current_edit_question
+        WindowComponents.current_edit_question.place_one_hint = WindowComponents.add_place_one_hint
+        WindowComponents.current_edit_question.placed_word = QuestionController.get_order_hint_details()[0]
+        WindowComponents.current_edit_question.placed_index = QuestionController.get_order_hint_details()[1]
+
+        WindowComponents.current_edit_question.correct_order = QuestionController.get_order_answers()
+
+        QuestionController.question_file = os.path.join(CommonData.question_folder, f"{WindowComponents.current_edit_question.question_id}.json")
+        write_json_file(QuestionController.question_file, WindowComponents.current_edit_question.create_dictionary())
 
 
     # Validation
@@ -315,6 +403,10 @@ class QuestionController:
                     messagebox.showerror("Invalid Background Colour", f"You have an Invalid Answer Background for Answer {answer.answer_number}")
                     return False
                 
+                if answer.selected_foreground.get() in ["Red", "Green", "Indigo"]:
+                    messagebox.showerror("Invalid Text Colour", f"You have an Invalid Answer Text for Answer {answer.answer_number}")
+                    return False
+                
                 if not ColourControls.check_contrast_ratio(CommonData.get_colour_from_name(answer.selected_background.get(), 0, len(CommonData.colour_list)).luminance, CommonData.get_colour_from_name(answer.selected_foreground.get(), 0, len(CommonData.colour_list)).luminance):
                     messagebox.showerror("Invalid Colour Contrast Ratio", f"You have an Invalid Answer Contrast Ratio for Answer {answer.answer_number}")
                     return False
@@ -337,6 +429,8 @@ class QuestionController:
         return True
 
     def valid_open_question() -> bool:
+        if not QuestionController.valid_details(): return False
+
         requireds: list[str] = WindowComponents.open_answer_required.get().upper().split(' ')
         acceptables: list[str] = WindowComponents.open_answer_acceptable.get().upper().split(' ')
 
@@ -351,7 +445,27 @@ class QuestionController:
 
         return True
 
-    def valid_order_question() -> bool: return False
+    def valid_order_question() -> bool:
+        if not QuestionController.valid_details(): return False
+
+        answers: list[str] = []
+
+        for closed_answer in WindowComponents.order_answers:
+            if closed_answer.include_answer and closed_answer.answer_input.get().strip() != "": answers.append(closed_answer.answer_input.get().strip())
+
+        if len(answers) < 3:
+            messagebox.showerror("Insufficient Answers", "You need at least 4 Answers for an Order Question")
+            return False
+        
+        if len(answers) != len(set(answers)):
+            messagebox.showerror("Duplicate Answers", "You have Duplicate Answers, please remove one of them")
+            return False
+        
+        if WindowComponents.add_place_one_hint and WindowComponents.relevant_hint_entry.get() not in answers:
+            messagebox.showerror("Place One Hint Error", "The word provided for the 'Place One' Hint isn't in the answers provided")
+            return False
+    
+        return True
 
     def valid_image_file() -> bool:
         file_path: str = WindowComponents.image_file_entry.get().strip()

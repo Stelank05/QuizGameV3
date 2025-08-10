@@ -87,6 +87,8 @@ class WindowComponents:
     display_all: bool = True
     display_image_questions: bool = False
 
+    display_questions: list[BaseQuestion]
+
     chosen_question_type: StringVar
     chosen_question_topic: StringVar
     chosen_image_question: StringVar
@@ -235,6 +237,7 @@ class WindowComponents:
     answers: list[type] = []
     open_answer_required: Entry
     open_answer_acceptable: Entry
+    order_answers: list[type] = []
 
     # Other Details
     topic_selector: Listbox
@@ -272,8 +275,9 @@ class WindowComponents:
     review_next_question: Button
     next_question: Button
 
-    closed_answers: list[Button] = []
+    closed_answer_buttons: list[Button] = []
     open_answer_entry: Text
+    order_answer_entries: list[tuple[Entry, Label]] = []
     # Idk how I'm gonna do the Order Questions lol
 
     # UI Controls
@@ -306,7 +310,7 @@ class WindowComponents:
 
     include_closed_questions: bool = True
     include_open_questions: bool = True
-    include_order_questions: bool = False
+    include_order_questions: bool = True
     
     include_easy_questions: bool = True
     include_medium_questions: bool = True
@@ -319,7 +323,7 @@ class WindowComponents:
 
     # Play Quiz Button
 
-    answers: list[PastAnswer]
+    quiz_answers: list[PastAnswer]
     selected_answer: PastAnswer = None
     selected_button: Button = None
 

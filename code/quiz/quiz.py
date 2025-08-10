@@ -7,6 +7,7 @@ from questions.question_base import BaseQuestion
 
 from quiz.question_closed_past import PastClosedQuestion
 from quiz.question_open_past import PastOpenQuestion
+from quiz.question_order_past import PastOrderQuestion
 
 from window.window_components import WindowComponents
 
@@ -60,7 +61,7 @@ class Quiz:
             match question.question_type:
                 case "Closed": self.questions.append(PastClosedQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Open": self.questions.append(PastOpenQuestion(question.create_dictionary(), None, question_number + 1))
-                case "Order": print()
+                case "Order": self.questions.append(PastOrderQuestion(question.create_dictionary(), None, question_number + 1))
         
         # print()
 

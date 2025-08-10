@@ -23,6 +23,7 @@ from questions.question_order import OrderQuestion
 from quiz.answer_past import PastAnswer
 from quiz.question_closed_past import PastClosedQuestion
 from quiz.question_open_past import PastOpenQuestion
+from quiz.question_order_past import PastOrderQuestion
 from quiz.quiz import Quiz
 
 from window.question_design import QuestionDesign
@@ -122,13 +123,14 @@ class WindowControls:
         
         display_question_list: list[BaseQuestion] = WindowControls.get_questions()
 
-
         if display_question_list == None:
             messagebox.showerror("ERROR", "Questions can't be found")
             return None
         if len(display_question_list) == 0:
             messagebox.showinfo("No Questions", "There are Currently No Questions that Fit that Criteria")
             return None
+    
+        WindowComponents.display_questions = display_question_list
 
         WindowComponents.question_list.delete(0, END)
         WindowComponents.question_keys.clear()
@@ -230,34 +232,47 @@ class WindowControls:
         return WindowComponents.question_topics
 
     def update_discard_button(event: Event) -> None:
-        if WindowComponents.question_select_visible:
-            sort_questions(CommonData.usable_questions)
-            working_question: BaseQuestion = CommonData.get_usable_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.usable_questions))
-
-            if working_question.discarded: WindowComponents.discard_question_button.configure(command = WindowControls.reinstate_question)
-            else: WindowComponents.discard_question_button.configure(command = WindowControls.discard_question)
-
-    def discard_question() -> None:
+        if len(WindowComponents.question_list.curselection()) == 0: return None
+        if not WindowComponents.question_select_visible: return None
+        
         sort_questions(CommonData.usable_questions)
-        working_question: BaseQuestion = CommonData.get_usable_question(WindowComponents.question_list.curselection()[0])
+        working_question: BaseQuestion = CommonData.get_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], [], 0, len(CommonData.usable_questions))
 
-        working_question.discarded = True
+        if working_question.discarded: WindowComponents.discard_question_button.configure(text = "Reinstate Question", command = WindowControls.invert_usability)
+        else: WindowComponents.discard_question_button.configure(text = "Discard Question", command = WindowControls.invert_usability)
 
-        CommonData.usable_questions.remove(working_question)
-        CommonData.discarded_questions.append(working_question)
+    def invert_usability() -> None:
+        if len(WindowComponents.question_list.curselection()) == 0: return None
 
-        WindowControls.display_questions()
+        working_question: BaseQuestion = WindowComponents.display_questions[WindowComponents.question_list.curselection()[0]]
 
-    def reinstate_question() -> None:
-        sort_questions(CommonData.discarded_questions)
-        working_question: BaseQuestion = CommonData.get_discarded_question(WindowComponents.question_list.curselection()[0])
+        working_question.discarded = not working_question.discarded
 
-        working_question.discarded = False
+        if not working_question.discarded:
+            CommonData.discarded_questions.remove(working_question)
+            CommonData.usable_questions.append(working_question)
+            WindowComponents.discard_question_button.configure(text = "Discard Question", command = WindowControls.invert_usability)
+        else:
+            CommonData.usable_questions.remove(working_question)
+            CommonData.discarded_questions.append(working_question)
+            WindowComponents.discard_question_button.configure(text = "Reinstate Question", command = WindowControls.invert_usability)
 
-        CommonData.discarded_questions.remove(working_question)
-        CommonData.usable_questions.append(working_question)
+        question_file: str = os.path.join(CommonData.question_folder, f"{working_question.question_id}.json")
+        write_json_file(question_file, working_question.create_dictionary())
 
-        WindowControls.display_questions()
+        match WindowControls.decide_display_option():
+            case "Select": WindowControls.display_questions()
+            case "All": WindowControls.display_all_questions()
+
+    def decide_display_option() -> str:
+        def_type: bool = WindowComponents.chosen_question_type.get() == "Question Type"
+        def_topic: bool = WindowComponents.chosen_question_topic.get() == "Question Topic"
+        def_image: bool = WindowComponents.chosen_image_question.get() == "Is Image Question"
+        def_difficulty: bool = WindowComponents.chosen_question_difficulty.get() == "Question Difficulty"
+        def_usability: bool = WindowComponents.chosen_question_usability.get() == "Question Usability"
+
+        if def_type or def_topic or def_image or def_difficulty or def_usability: return "All"
+        return "Select"
 
     def toggle_text_hint() -> None:
         WindowComponents.add_text_hint = not WindowComponents.add_text_hint
@@ -286,7 +301,7 @@ class WindowControls:
     def toggle_place_one_hint() -> None:
         WindowComponents.add_place_one_hint = not WindowComponents.add_place_one_hint
 
-        WindowComponents.relevant_hint_button.configure(text = f"Add Place One Hint: {WindowComponents.add_50_50_hint}")
+        WindowComponents.relevant_hint_button.configure(text = f"Add Place One Hint: {WindowComponents.add_place_one_hint}")
 
         if WindowComponents.add_place_one_hint: WindowComponents.relevant_hint_button.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
         else: WindowComponents.relevant_hint_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
@@ -302,7 +317,7 @@ class WindowControls:
 
     # Question Creator Functions
     
-    def insert_common_preview_items(preview: dict, y_start: int = 75) -> None:
+    def insert_common_preview_items(preview: dict, y_start: int = 75, topic_height: int = 30) -> None:
         WindowComponents.question_difficulty_output.configure(text = f"Question Difficulty: {preview["Question Difficulty"]}")
         WindowComponents.question_score_output.configure(text = f"Question Score: {preview["Question Points"]}")
         WindowComponents.question_text_output.configure(text = f"Question:\n{preview["Question Text"]}")
@@ -316,7 +331,7 @@ class WindowControls:
             topic_data = CommonData.get_topic_from_id(preview["Question Topics"][i], 0, len(CommonData.topic_list))
 
             topic_label = Label(WindowComponents.question_view, text = topic_data.topic_name, bg = CommonData.get_colour_from_id(topic_data.topic_colours[0], 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_id(topic_data.topic_colours[1], 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
-            topic_label.place(x = 485, y = y_start + (35 * i), width = 175, height = 30)
+            topic_label.place(x = 485, y = y_start + ((topic_height + 5) * i), width = 175, height = topic_height)
 
         WindowComponents.fun_fact_preview = Label(WindowComponents.question_view, text = f"Fun Fact (PREVIEW ONLY): {preview["Fun Fact"]}", wraplength = 600, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         WindowComponents.fun_fact_preview.place(x = 25, y = 400, width = 645, height = 60)
@@ -333,30 +348,43 @@ class WindowControls:
         # Insert Answers
         answer_count: int = len(preview["Answers"])
 
-        if answer_count < 4: WindowComponents.closed_answers[3].destroy()
-        if answer_count < 3: WindowComponents.closed_answers[2].destroy()
+        if answer_count < 4: WindowComponents.closed_answer_buttons[3].destroy()
+        if answer_count < 3: WindowComponents.closed_answer_buttons[2].destroy()
 
         if answer_count == 2:
-            WindowComponents.closed_answers[0].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
-            WindowComponents.closed_answers[1].place(x = 25, y = 245, width = 435) # if not preview["Images"]["Is Image Question"] else 555, width = 435)
+            WindowComponents.closed_answer_buttons[0].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+            WindowComponents.closed_answer_buttons[1].place(x = 25, y = 245, width = 435) # if not preview["Images"]["Is Image Question"] else 555, width = 435)
         elif answer_count == 3:
-            WindowComponents.closed_answers[2].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+            WindowComponents.closed_answer_buttons[2].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
 
         for i in range(answer_count):
-            WindowComponents.closed_answers[i].configure(text = preview["Answers"][i]["Answer Text"],
+            WindowComponents.closed_answer_buttons[i].configure(text = preview["Answers"][i]["Answer Text"],
                 bg = CommonData.get_colour_from_id(preview["Answers"][i]["Answer Back Colour"], 0, len(CommonData.colour_list)).colour_code,
                 fg = CommonData.get_colour_from_id(preview["Answers"][i]["Answer Text Colour"], 0, len(CommonData.colour_list)).colour_code)
 
     def view_open_preview(preview: dict) -> None:
         frame_width: int = 695
-        frame_height: int = 455
+        frame_height: int = 485
+
+        WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
+        WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
+        
+        WindowControls.insert_common_preview_items(preview, 80)
+
+        WindowComponents.fun_fact_preview.place(y = 400)
+
+    def view_order_preview(preview: dict) -> None:
+        frame_width: int = 695
+        frame_height: int = 595
 
         WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
 
-        WindowControls.insert_common_preview_items(preview, 80)
+        for i in range(len(preview["Answers"])): WindowComponents.order_answer_entries[i][1].configure(text = preview["Answers"][i])
 
-        WindowComponents.fun_fact_preview.place(y = 370)
+        WindowControls.insert_common_preview_items(preview, 80, 45)
+
+        WindowComponents.fun_fact_preview.place(y = 510)
 
     def clear_edit_questions_page(question_type: str) -> None:
         WindowComponents.question_text_input.delete("1.0", END)
@@ -449,8 +477,8 @@ class WindowControls:
                 WindowComponents.include_order_questions = not WindowComponents.include_order_questions
                 WindowComponents.include_order_questions_button.configure(text = f"Add Order Questions: {WindowComponents.include_order_questions}")
 
-                if WindowComponents.include_order_questions: WindowComponents.include_order_questions_button.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
-                else: WindowComponents.include_order_questions_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+                if WindowComponents.include_order_questions: WindowComponents.include_order_questions_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+                else: WindowComponents.include_order_questions_button.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
 
         WindowControls.update_available_questions()
 
@@ -574,7 +602,7 @@ class WindowControls:
 
     # Insert Question to Frame
 
-    def insert_common_quiz_items(question: BaseQuestion, y_start: int = 75) -> None:
+    def insert_common_quiz_items(question: BaseQuestion, y_start: int = 75, topic_height: int = 30) -> None:
         WindowComponents.question_number_output.configure(text = f"Question Number: {question.question_number} / {len(WindowComponents.current_quiz.questions)}")
         WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
         WindowComponents.question_difficulty_output.configure(text = f"Question Difficulty: {question.question_difficulty}")
@@ -600,7 +628,7 @@ class WindowControls:
             topic_data = CommonData.get_topic_from_id(question.question_topics[i], 0, len(CommonData.topic_list))
 
             topic_label = Label(WindowComponents.question_view, text = topic_data.topic_name, bg = CommonData.get_colour_from_id(topic_data.topic_colours[0], 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_id(topic_data.topic_colours[1], 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
-            topic_label.place(x = 485, y = y_start + (35 * i), width = 175, height = 30)
+            topic_label.place(x = 485, y = y_start + ((topic_height + 5) * i), width = 175, height = topic_height)
 
     def insert_closed_question_info(question_data: PastClosedQuestion) -> None:
         question_data.awarded_points = question_data.question_points
@@ -609,25 +637,25 @@ class WindowControls:
         if question_data.add_50_50_hint: WindowComponents.view_relevant_hint_button.configure(command = functools.partial(WindowControls.use_50_50_hint, question_data))
         else: WindowComponents.view_relevant_hint_button.configure(text = "Use 50/50 Hint (UNAVAILABLE)")
 
-        WindowComponents.answers = question_data.answers.copy()
+        WindowComponents.quiz_answers = question_data.answers.copy()
         WindowControls.sort_answers()
 
         # Insert Answers
-        answer_count: int = len(WindowComponents.answers)
+        answer_count: int = len(WindowComponents.quiz_answers)
 
-        if answer_count < 4: WindowComponents.closed_answers[3].destroy()
-        if answer_count < 3: WindowComponents.closed_answers[2].destroy()
+        if answer_count < 4: WindowComponents.closed_answer_buttons[3].destroy()
+        if answer_count < 3: WindowComponents.closed_answer_buttons[2].destroy()
 
         if answer_count == 2:
-            WindowComponents.closed_answers[0].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
-            WindowComponents.closed_answers[1].place(x = 25, y = 245, width = 435) # if not preview["Images"]["Is Image Question"] else 555, width = 435)
+            WindowComponents.closed_answer_buttons[0].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+            WindowComponents.closed_answer_buttons[1].place(x = 25, y = 245, width = 435) # if not preview["Images"]["Is Image Question"] else 555, width = 435)
         elif answer_count == 3:
-            WindowComponents.closed_answers[2].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+            WindowComponents.closed_answer_buttons[2].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
 
         answer_button: Button
 
-        for answer in WindowComponents.answers:
-            answer_button = WindowComponents.closed_answers[answer.display_index]
+        for answer in WindowComponents.quiz_answers:
+            answer_button = WindowComponents.closed_answer_buttons[answer.display_index]
 
             answer_button.configure(text = answer.answer_text,
                 bg = CommonData.get_colour_from_id(answer.answer_back_colour, 0, len(CommonData.colour_list)).colour_code,
@@ -643,7 +671,21 @@ class WindowControls:
         if question_data.provide_word_hint: WindowComponents.view_relevant_hint_button.configure(command = functools.partial(WindowControls.use_provide_word_hint, question_data))
         else: WindowComponents.view_relevant_hint_button.configure(text = "Provide Word Hint (UNAVAILABLE)")
 
-    def insert_order_question_info(question_data: OrderQuestion) -> None: pass
+    def insert_order_question_info(question_data: PastOrderQuestion) -> None:
+        question_data.awarded_points = question_data.question_points
+        WindowControls.insert_common_quiz_items(question_data, 80, 40)
+
+        answer_index: int = 0
+        for i in range(len(question_data.displayed_order)):
+            WindowComponents.order_answer_entries[i][1].configure(text = question_data.displayed_order[i])
+            answer_index += 1
+        
+        while answer_index < 12:
+            WindowComponents.order_answer_entries[answer_index][0].configure(state = 'disabled', disabledbackground = WindowComponents.entry_colours[1].colour_code) #, disabledforeground = WindowComponents.entry_colours[0].colour_code)
+            answer_index += 1
+
+        if question_data.place_one_hint: WindowComponents.view_relevant_hint_button.configure(command = functools.partial(WindowControls.use_provide_word_hint, question_data))
+        else: WindowComponents.view_relevant_hint_button.configure(text = "Place One Hint (UNAVAILABLE)")
 
 
     # Set Review Details
@@ -676,28 +718,28 @@ class WindowControls:
         if question_data.add_50_50_hint: WindowComponents.view_relevant_hint_button.configure(command = functools.partial(WindowControls.use_50_50_hint, question_data))
         else: WindowComponents.view_relevant_hint_button.configure(text = "Use 50/50 Hint (UNAVAILABLE)")
 
-        WindowComponents.answers = question_data.answers.copy()
+        WindowComponents.quiz_answers = question_data.answers.copy()
         WindowControls.sort_answers()
 
         # Insert Answers
-        answer_count: int = len(WindowComponents.answers)
+        answer_count: int = len(WindowComponents.quiz_answers)
 
-        if answer_count < 4: WindowComponents.closed_answers[3].destroy()
-        if answer_count < 3: WindowComponents.closed_answers[2].destroy()
+        if answer_count < 4: WindowComponents.closed_answer_buttons[3].destroy()
+        if answer_count < 3: WindowComponents.closed_answer_buttons[2].destroy()
 
         if answer_count == 2:
-            WindowComponents.closed_answers[0].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
-            WindowComponents.closed_answers[1].place(x = 25, y = 245, width = 435) # if not preview["Images"]["Is Image Question"] else 555, width = 435)
+            WindowComponents.closed_answer_buttons[0].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+            WindowComponents.closed_answer_buttons[1].place(x = 25, y = 245, width = 435) # if not preview["Images"]["Is Image Question"] else 555, width = 435)
         elif answer_count == 3:
-            WindowComponents.closed_answers[2].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
+            WindowComponents.closed_answer_buttons [2].place(width = 435) # if not preview["Images"]["Is Image Question"] else 745)
 
         answer_button: Button
 
         answer_background: str # = ""
         answer_foreground: str # = ""
 
-        for answer in WindowComponents.answers:
-            answer_button = WindowComponents.closed_answers[answer.display_index]
+        for answer in WindowComponents.quiz_answers:
+            answer_button = WindowComponents.closed_answer_buttons[answer.display_index]
 
             if answer.answer_hidden: answer_button.place_forget()
 
@@ -744,7 +786,18 @@ class WindowControls:
         result_label: Label = Label(WindowComponents.question_view, text = results_label_text, bg = background_colour, fg = foreground_colour, font = WindowComponents.main_font)
         result_label.place(x = 25, y = 260, width = 435, height = 30)
 
-    def insert_order_review_info(question_data: PastClosedQuestion) -> None: pass # WindowControls.insert_common_quiz_items(question_data)
+    def insert_order_review_info(question_data: PastOrderQuestion) -> None:
+        WindowControls.insert_common_review_items(question_data)
+
+        for i in range(len(question_data.displayed_order)):
+            WindowComponents.order_answer_entries[i][0].insert(0, question_data.entered_order[i][0])
+            WindowComponents.order_answer_entries[i][1].configure(text = question_data.displayed_order[i])
+
+        for i in range(len(WindowComponents.order_answer_entries)):
+            WindowComponents.order_answer_entries[i][0].configure(state = 'disabled', disabledbackground = WindowComponents.entry_colours[1].colour_code)
+
+        if question_data.answered_correctly: WindowControls.set_order_correct(question_data)
+        else: WindowControls.set_order_incorrect(question_data, question_data.entered_order)
 
 
     # Quiz Functions
@@ -754,9 +807,9 @@ class WindowControls:
 
         if WindowComponents.selected_answer != None:
             WindowComponents.selected_answer.answer_chosen = False
-            WindowComponents.closed_answers[WindowComponents.selected_answer.display_index].configure(
-                bg = CommonData.get_colour_from_id(WindowComponents.answers[WindowComponents.selected_answer.display_index].answer_back_colour, 0, len(CommonData.colour_list)).colour_code,
-                fg = CommonData.get_colour_from_id(WindowComponents.answers[WindowComponents.selected_answer.display_index].answer_text_colour, 0, len(CommonData.colour_list)).colour_code)
+            WindowComponents.closed_answer_buttons[WindowComponents.selected_answer.display_index].configure(
+                bg = CommonData.get_colour_from_id(WindowComponents.quiz_answers[WindowComponents.selected_answer.display_index].answer_back_colour, 0, len(CommonData.colour_list)).colour_code,
+                fg = CommonData.get_colour_from_id(WindowComponents.quiz_answers[WindowComponents.selected_answer.display_index].answer_text_colour, 0, len(CommonData.colour_list)).colour_code)
 
             WindowComponents.selected_answer = None
             WindowComponents.selected_button = None
@@ -773,13 +826,14 @@ class WindowControls:
         if question.question_type == "Closed" and WindowComponents.selected_answer == None: return 0
         if question.question_type == "Open" and WindowComponents.open_answer_entry.get("1.0", END)[:-1] == "": return 0
 
+        fun_fact_y_level: int = 330
         correct_answer: bool = False
         WindowComponents.permit_answer = False
 
         match question.question_type:
             case "Closed":
                 if WindowComponents.selected_answer.correct_answer:
-                    correct_answer = True
+                    question.answered_correctly = True
                     WindowComponents.selected_button.configure(
                         bg = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code,
                         fg = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
@@ -807,22 +861,49 @@ class WindowControls:
                 else:
                     result_label: Label = Label(WindowComponents.question_view, text = f"Wrong Answer. Correct Answer: {question.create_correct_answer_string()}", bg = CommonData.get_colour_from_name("Red", 0, len(CommonData.colour_list)).colour_code, fg = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code, font = WindowComponents.main_font)
                     result_label.place(x = 25, y = 260, width = 435, height = 30) 
-            case "Order": pass
+            case "Order":
+                for i in range(len(question.correct_order)): WindowComponents.order_answer_entries[i][0].configure(state = 'disabled')
+
+                fun_fact_y_level = 440
+
+                question.entered_order = WindowControls.create_order_input(question)
+                question.answered_correctly = question.valid_answer(question.entered_order.copy())
+                
+                if question.answered_correctly: WindowControls.set_order_correct(question)
+                else: WindowControls.set_order_incorrect(question, question.entered_order)
 
         WindowComponents.current_quiz.theoretical_max += question.question_points
 
-        if correct_answer:
+        if question.answered_correctly:
             WindowComponents.current_quiz.current_score += question.awarded_points
             AudioControls.play_audio(CommonData.get_audio_from_id(question.correct_audio, 0, len(CommonData.audio_list)).audio_file)
         else:
             AudioControls.play_audio(CommonData.get_audio_from_id(question.incorrect_audio, 0, len(CommonData.audio_list)).audio_file)
 
         WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
-        fun_fact_label: Label = Label(WindowComponents.question_view, text = f"Fun Fact: {question.fun_fact}", wraplength = 400, bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
-        fun_fact_label.place(x = 25, y = 330, width = 645, height = 65)
+        fun_fact_label: Label = Label(WindowComponents.question_view, text = f"Fun Fact: {question.fun_fact}", wraplength = 600, bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        fun_fact_label.place(x = 25, y = fun_fact_y_level, width = 645, height = 65)
 
         if question.question_number < len(WindowComponents.current_quiz.questions): WindowComponents.submit_answer.configure(text = "Next Question", command = WindowControls.next_question)
         else: WindowComponents.submit_answer.configure(text = "Finish Quiz", command = WindowControls.finish_quiz)
+
+    def create_order_input(question: PastOrderQuestion) -> list[tuple[int, str]]:
+        return_list: list[tuple[int, str]] = []
+
+        for i in range(len(question.displayed_order)):
+            return_list.append((WindowComponents.order_answer_entries[i][0].get().strip(), question.displayed_order[i]))
+
+        # print(return_list)
+        return return_list
+    
+    def set_order_correct(question: PastOrderQuestion) -> None:
+        for i in range(len(question.correct_order)):
+            WindowComponents.order_answer_entries[i][0].configure(disabledbackground = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code, disabledforeground = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
+
+    def set_order_incorrect(question: PastOrderQuestion, answer: list[tuple[int, str]]) -> None:
+        for i in range(len(question.correct_order)):
+            if answer[i][1] == question.correct_order[int(answer[i][0]) - 1]: WindowComponents.order_answer_entries[i][0].configure(disabledbackground = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code, disabledforeground = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
+            else: WindowComponents.order_answer_entries[i][0].configure(disabledbackground = CommonData.get_colour_from_name("Red", 0, len(CommonData.colour_list)).colour_code, disabledforeground = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
 
     def next_question(question: BaseQuestion | None = None) -> None:
         # Display Question
@@ -841,7 +922,9 @@ class WindowControls:
             case "Open":
                 QuestionDesign.create_open_question_view(question.is_image_question)
                 WindowControls.insert_open_question_info(question)
-            case "Order": print()
+            case "Order":
+                QuestionDesign.create_order_question_view(question.is_image_question)
+                WindowControls.insert_order_question_info(question)
 
     def review_question(question: BaseQuestion) -> None:
         if WindowComponents.question_view != None: WindowComponents.question_view.destroy()
@@ -853,7 +936,19 @@ class WindowControls:
             case "Open":
                 QuestionDesign.create_open_question_view(question.is_image_question)
                 WindowControls.insert_open_review_info(question)
-            case "Order": print()
+            case "Order":
+                QuestionDesign.create_order_question_view(question.is_image_question)
+                WindowControls.insert_order_review_info(question)
+
+    def begin_review() -> None:
+        WindowComponents.finish_quiz_page.withdraw()
+        WindowControls.review_question(WindowComponents.current_quiz.questions[0])
+    
+    def exit_review() -> None:
+        WindowComponents.question_view.destroy()
+
+        WindowComponents.finish_quiz_page.update()
+        WindowComponents.finish_quiz_page.deiconify()
     
     def finish_quiz() -> None:
         WindowComponents.current_quiz.quiz_complete = True
@@ -867,21 +962,15 @@ class WindowControls:
         WindowComponents.review_quiz_button_finish.configure(command = WindowControls.begin_review) # I will write these Functions another time but for now they aren't entirely necessary
         WindowComponents.exit_quiz_button_finish.configure(command = WindowControls.return_to_setup) # I will write these Functions another time but for now they aren't entirely necessary
 
-    def begin_review() -> None:
-        WindowComponents.finish_quiz_page.withdraw()
-        WindowControls.review_question(WindowComponents.current_quiz.questions[0])
-
     def exit_quiz() -> None:
         WindowComponents.question_view.destroy()
 
-        WindowComponents.quiz_setup_page.update()
-        WindowComponents.quiz_setup_page.deiconify()
-    
-    def exit_review() -> None:
-        WindowComponents.question_view.destroy()
-
-        WindowComponents.finish_quiz_page.update()
-        WindowComponents.finish_quiz_page.deiconify()
+        if WindowComponents.finish_quiz_page != None and WindowComponents.finish_quiz_page.winfo_exists():
+            WindowComponents.finish_quiz_page.update()
+            WindowComponents.finish_quiz_page.deiconify()
+        else:
+            WindowComponents.quiz_setup_page.update()
+            WindowComponents.quiz_setup_page.deiconify()
 
     def return_to_setup() -> None:
         # Destroy Finish Page
@@ -891,6 +980,7 @@ class WindowControls:
         WindowComponents.quiz_setup_page.update()
         WindowComponents.quiz_setup_page.deiconify()
         
+
     #  Hints
 
     def use_text_hint(question: BaseQuestion) -> None:
@@ -911,8 +1001,8 @@ class WindowControls:
 
         question.relevant_hint_used = True
 
-        answers: list[PastAnswer] = WindowComponents.answers.copy()
-        buttons: list[Button] = WindowComponents.closed_answers.copy()
+        answers: list[PastAnswer] = WindowComponents.quiz_answers.copy()
+        buttons: list[Button] = WindowComponents.closed_answer_buttons.copy()
 
         for i in range(len(answers)):
             if answers[i].correct_answer:
@@ -937,23 +1027,30 @@ class WindowControls:
         WindowComponents.open_hint_output = Label(WindowComponents.question_view, text = f"Provided Word: {question.provided_word}", bg = WindowComponents.entry_colours[1].colour_code, fg = WindowComponents.entry_colours[0].colour_code, font = WindowComponents.main_font)
         WindowComponents.open_hint_output.place(x = 25, y = 260, width = 435, height = 30)
 
-    def use_place_one_hint() -> None: pass
+    def use_place_one_hint(question: PastOrderQuestion) -> None:
+        if question.relevant_hint_used: return 0
+
+        question.awarded_points -= question.hint_penalty
+        WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
+
+        question.relevant_hint_used = True
 
     def sort_answers() -> None:
         temp: PastAnswer
         swap: bool
 
-        for i in range(len(WindowComponents.answers) - 1):
+        for i in range(len(WindowComponents.quiz_answers) - 1):
             swap = False
 
-            for j in range(len(WindowComponents.answers) - i - 1):
-                if WindowComponents.answers[j].display_index > WindowComponents.answers[j + 1].display_index:
+            for j in range(len(WindowComponents.quiz_answers) - i - 1):
+                if WindowComponents.quiz_answers[j].display_index > WindowComponents.quiz_answers[j + 1].display_index:
                     swap = True
-                    temp = WindowComponents.answers[j]
-                    WindowComponents.answers[j] = WindowComponents.answers[j + 1]
-                    WindowComponents.answers[j + 1] = temp
+                    temp = WindowComponents.quiz_answers[j]
+                    WindowComponents.quiz_answers[j] = WindowComponents.quiz_answers[j + 1]
+                    WindowComponents.quiz_answers[j + 1] = temp
 
             if not swap: break
+
 
     # Clear Functions
 
