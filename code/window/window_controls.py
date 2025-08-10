@@ -684,7 +684,7 @@ class WindowControls:
             WindowComponents.order_answer_entries[answer_index][0].configure(state = 'disabled', disabledbackground = WindowComponents.entry_colours[1].colour_code) #, disabledforeground = WindowComponents.entry_colours[0].colour_code)
             answer_index += 1
 
-        if question_data.place_one_hint: WindowComponents.view_relevant_hint_button.configure(command = functools.partial(WindowControls.use_provide_word_hint, question_data))
+        if question_data.place_one_hint: WindowComponents.view_relevant_hint_button.configure(command = functools.partial(WindowControls.use_place_one_hint, question_data))
         else: WindowComponents.view_relevant_hint_button.configure(text = "Place One Hint (UNAVAILABLE)")
 
 
@@ -890,12 +890,45 @@ class WindowControls:
     def create_order_input(question: PastOrderQuestion) -> list[tuple[int, str]]:
         return_list: list[tuple[int, str]] = []
 
+        # Go through User Input + Put Inputs to list with Index
+        input_index: list[tuple[int, int]] = []
         for i in range(len(question.displayed_order)):
-            return_list.append((WindowComponents.order_answer_entries[i][0].get().strip(), question.displayed_order[i]))
+            input_index.append((int(WindowComponents.order_answer_entries[i][0].get().strip()), i))
 
-        # print(return_list)
+        # Order List by Input
+        WindowControls.reorder_list(input_index, 0)
+        
+        # Go back through the list, dropping each input to 1-X
+        for i in range(len(input_index)): input_index[i] = (i + 1, input_index[i][1])
+
+        # Reorder the list by Index
+        WindowControls.reorder_list(input_index, 1)
+
+        # Put new Order Indexes into new List with Displayed Item
+        for i in range(len(question.displayed_order)):
+            return_list.append((input_index[i][0], question.displayed_order[i]))
+
         return return_list
     
+    def reorder_list(input_index: list[tuple[int, int]], index: int) -> list[tuple[int, int]]:
+        swap: bool
+        temp: tuple[int, int]
+        
+        for i in range(len(input_index) - 1):
+            swap = False
+
+            for j in range(len(input_index) - i - 1):
+                if input_index[j][index] > input_index[j + 1][index]:
+                    swap = True
+            
+                    temp = input_index[j]
+                    input_index[j] = input_index[j + 1]
+                    input_index[j + 1] = temp
+            
+            if not swap: break
+
+        return input_index
+
     def set_order_correct(question: PastOrderQuestion) -> None:
         for i in range(len(question.correct_order)):
             WindowComponents.order_answer_entries[i][0].configure(disabledbackground = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code, disabledforeground = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
@@ -986,7 +1019,7 @@ class WindowControls:
     def use_text_hint(question: BaseQuestion) -> None:
         if question.text_hint_used: return 0
 
-        question.awarded_points -= question.hint_penalty
+        question.awarded_points = round(question.awarded_points - question.hint_penalty, 2)
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.text_hint_used = True
@@ -996,7 +1029,7 @@ class WindowControls:
     def use_50_50_hint(question: PastClosedQuestion) -> None:
         if question.relevant_hint_used: return 0
 
-        question.awarded_points -= question.hint_penalty
+        question.awarded_points = round(question.awarded_points - question.hint_penalty, 2)
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
@@ -1019,7 +1052,7 @@ class WindowControls:
     def use_provide_word_hint(question: PastOpenQuestion) -> None:
         if question.relevant_hint_used: return 0
 
-        question.awarded_points -= question.hint_penalty
+        question.awarded_points = round(question.awarded_points - question.hint_penalty, 2)
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
@@ -1030,10 +1063,20 @@ class WindowControls:
     def use_place_one_hint(question: PastOrderQuestion) -> None:
         if question.relevant_hint_used: return 0
 
-        question.awarded_points -= question.hint_penalty
+        question.awarded_points = round(question.awarded_points - question.hint_penalty, 2)
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
+
+        entry_widget: Entry
+        
+        for i in range(len(question.displayed_order)):
+            if question.displayed_order[i] == question.placed_word:
+                entry_widget = WindowComponents.order_answer_entries[i][0]
+
+        entry_widget.delete(0, len(entry_widget.get()))
+        entry_widget.insert(0, question.placed_index)
+        entry_widget.configure(state = 'disabled', disabledbackground = WindowComponents.entry_colours[1].colour_code, disabledforeground = WindowComponents.entry_colours[0].colour_code)
 
     def sort_answers() -> None:
         temp: PastAnswer

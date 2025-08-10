@@ -152,6 +152,14 @@ class QuestionDesign:
         WindowComponents.question_view = QuestionDesign.create_question_view_template()
         if image_question: QuestionDesign.insert_image()
 
+        frame_width: int = 695
+        frame_height: int = 530
+
+        WindowComponents.question_view.geometry(f"{frame_width}x{frame_height}")
+        WindowComponents.position_frame(WindowComponents.question_view, [frame_width, frame_height])
+
+        WindowComponents.view_relevant_hint_button.config(text = "Place One Hint")
+
         WindowComponents.topics_shroud.place(height = 410)
 
         WindowComponents.submit_answer.place(y = 405)

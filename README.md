@@ -68,8 +68,6 @@ Open Questions are Questions that allow the Player to enter their own Answer, wh
 Order Questions allow the Player to order a series of Items in order to Answer the question, such as ordering Space Shuttle Orbiters by Missions Flown.
 The Items, of which there are up to 12, are displayed to the user, where they can then order the Items, from 1 to (up to) 12.
 The Player will only get the Available Points if they get all the Items ordered correctly.
-**NOTE**: Order Question Hints aren't yet functional, but do cost points
-**NOTE**: If the Player doesn't use the standard 1-x Consecutive Indexing (ie 1-2-3-4-...), the System will break, and you won't be able to continue the quiz. This will be patched at some point.
 ## Image Questions
 **HALF IMPLEMENTED**<br/>
 I've decided I'm not adding these til I'm done with all the first 2 types of questions, and til the quiz and all related things work.<br/>

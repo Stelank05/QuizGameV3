@@ -34,7 +34,6 @@ class OpenQuestion(BaseQuestion):
         return return_string
 
     def create_dictionary(self) -> dict:
-        # print(self.is_image_question)
         return {
             "Question ID" : self.question_id,
             "Discarded Question": self.discarded,

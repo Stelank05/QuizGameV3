@@ -117,7 +117,6 @@ class AudioControls:
     
     def unique_audio_file(compare_file: str) -> bool:
         for audio in CommonData.audio_list:
-            print(audio.full_file)
             if open(compare_file, "rb") == open(audio.full_file, "rb") and audio != WindowComponents.current_edit_audio:
                 return False
         return True

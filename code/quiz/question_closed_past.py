@@ -47,8 +47,7 @@ class PastClosedQuestion (ClosedQuestion):
             answer.display_answer()
             print(f"Display Index: {answer.display_index}")
             print(f"Answer Chosen: {answer.answer_chosen}")
-            print(f"Answer Hidden: {answer.answer_hidden}")
-            print()
+            print(f"Answer Hidden: {answer.answer_hidden}\n")
     
     def create_past_dict(self) -> dict:
         return {

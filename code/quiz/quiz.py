@@ -56,14 +56,9 @@ class Quiz:
 
         for question_number in range(int(WindowComponents.quiz_length.get())): #len(question_list)):
             question = CommonData.get_question(question_list[question_number][0], CommonData.usable_questions, 0, len(CommonData.usable_questions))
-            # print(f"{question.question_id}") # - {question.question_difficulty} / {question.question_type} / {question.is_image_question}")
-
+        
             match question.question_type:
                 case "Closed": self.questions.append(PastClosedQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Open": self.questions.append(PastOpenQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Order": self.questions.append(PastOrderQuestion(question.create_dictionary(), None, question_number + 1))
         
-        # print()
-
-
-        # self.questions = question_list
