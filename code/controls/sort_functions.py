@@ -156,11 +156,28 @@ def name_sort_users(user_list: list[Player]) -> None:
         swap = False
 
         for j in range(len(user_list) - i - 1):
-            if user_list[j].user_id > user_list[j + 1].user_id:
+            if user_list[j].username > user_list[j + 1].username:
                 swap = True
 
                 temp_user = user_list[j]
                 user_list[j] = user_list[j + 1]
                 user_list[j + 1] = temp_user
+
+        if not swap: break
+
+def id_sort_quizzes(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+    temp_quiz: PastQuiz
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].quiz_id > quiz_list[j + 1].quiz_id:
+                swap = True
+
+                temp_quiz = quiz_list[j]
+                quiz_list[j] = quiz_list[j + 1]
+                quiz_list[j + 1] = temp_quiz
 
         if not swap: break

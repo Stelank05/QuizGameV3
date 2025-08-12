@@ -54,6 +54,7 @@ class PastClosedQuestion (ClosedQuestion):
             "Question ID": self.question_id,
             "Question Type": self.question_type,
             "Extra Details": {
+                "Question Number": self.question_number,
                 "Answered Correctly": self.answered_correctly,
                 "Awarded Points": self.awarded_points,
                 "Answers": self.make_answer_details()

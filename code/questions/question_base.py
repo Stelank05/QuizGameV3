@@ -39,7 +39,7 @@ class BaseQuestion:
         self.incorrect_audio: str = question_data["Incorrect Audio"]
     
     def __str__(self) -> str:
-        return self.question_id
+        return f"{self.question_id} - {self.question_type}"
 
     def set_topics(self, topics: list[str]) -> None:
         for topic in topics: self.question_topics.append(topic)

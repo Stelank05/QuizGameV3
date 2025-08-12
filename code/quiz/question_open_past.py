@@ -20,6 +20,7 @@ class PastOpenQuestion (OpenQuestion):
             "Question ID": self.question_id,
             "Question Type": self.question_type,
             "Extra Details": {
+                "Question Number": self.question_number,
                 "Answered Correctly": self.answered_correctly,
                 "Awarded Points": self.awarded_points,
                 "Entered Answer": self.entered_answer

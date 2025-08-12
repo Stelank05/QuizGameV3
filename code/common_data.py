@@ -19,6 +19,10 @@ from questions.question_closed import ClosedQuestion
 from questions.question_open import OpenQuestion
 from questions.question_order import OrderQuestion
 
+from quiz.question_closed_past import PastClosedQuestion
+from quiz.question_open_past import PastOpenQuestion
+from quiz.question_order_past import PastOrderQuestion
+
 class CommonData:
     min_password_length: int = 10
     
@@ -30,6 +34,7 @@ class CommonData:
     images_folder: str
     player_folder: str
     question_folder: str
+    quizzes_folder: str
     topics_folder: str
 
     audio_file: str
@@ -64,6 +69,7 @@ class CommonData:
         CommonData.images_folder = os.path.join(CommonData.setup_folder, "images")
         CommonData.player_folder = os.path.join(CommonData.setup_folder, "players")
         CommonData.question_folder = os.path.join(CommonData.setup_folder, "questions")
+        CommonData.quizzes_folder = os.path.join(CommonData.setup_folder, "past quizzes")
         CommonData.topics_folder = os.path.join(CommonData.setup_folder, "topics")
 
         CommonData.audio_file = os.path.join(CommonData.setup_folder, "audio data.csv")
@@ -120,7 +126,7 @@ class CommonData:
             CommonData.topic_list.append(Topic(read_json_file(os.path.join(CommonData.topics_folder, topic_file))))
             CommonData.topic_names.append(CommonData.topic_list[-1].topic_id)
 
-    def load_questions() -> None: #This needs entirely rewriting lol
+    def load_questions() -> None:
         question_files: list[str] = get_files_in_folder(CommonData.question_folder, ".json")
 
         new_question: BaseQuestion
@@ -147,7 +153,37 @@ class CommonData:
             current_topic.total_questions += 1
 
     def load_past_quizzes() -> None:
-        print("Load Past Quizzes")
+        quiz_files: list[str] = get_files_in_folder(CommonData.quizzes_folder, ".json")
+
+        quiz_data: dict
+        questions: list[BaseQuestion]
+
+        for quiz_file in quiz_files:
+            quiz_data = read_json_file(os.path.join(CommonData.quizzes_folder, quiz_file))
+            questions = CommonData.load_past_questions(quiz_data["Questions"])
+
+            CommonData.past_quizzes.append(PastQuiz(quiz_data, questions))
+
+    def load_past_questions(questions: list[dict]) -> list[BaseQuestion]:
+        return_list: list[BaseQuestion] = []
+
+        question_dict: dict
+        for question in questions:
+            match question["Question Type"]:
+                case "Closed":
+                    question_dict = CommonData.get_question(question["Question ID"], [])
+                    question_dict = question_dict.create_dictionary()
+                    return_list.append(PastClosedQuestion(question_dict, question["Extra Details"], question["Extra Details"]["Question Number"]))
+                case "Open":
+                    question_dict = CommonData.get_question(question["Question ID"], [])
+                    question_dict = question_dict.create_dictionary()
+                    return_list.append(PastOpenQuestion(question_dict, question["Extra Details"], question["Extra Details"]["Question Number"]))
+                case "Order":
+                    question_dict = CommonData.get_question(question["Question ID"], [])
+                    question_dict = question_dict.create_dictionary()
+                    return_list.append(PastOrderQuestion(question_dict, question["Extra Details"], question["Extra Details"]["Question Number"]))
+
+        return return_list
 
 
     # Getters

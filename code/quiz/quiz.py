@@ -1,6 +1,6 @@
 import random
 
-# from copy import copy, deepcopy
+from controls.sort_functions import *
 
 from questions.answer import Answer
 from questions.question_base import BaseQuestion
@@ -25,7 +25,37 @@ class Quiz:
         self.theoretical_max: float = 0.0
         self.score_percentage: float = 0.0
 
+        self.correct_count: int = 0
+        self.incorrect_count: int = 0
+        self.hints_used: int = 0
+
         self.quiz_complete: bool = False
+
+    def create_dictionary(self, player_id: str) -> dict:
+        return {
+            "Quiz ID": self.generate_quiz_id(),
+            "Player ID": player_id,
+            "Score": self.current_score,
+            "Max Score": self.theoretical_max,
+            "Percentage": self.score_percentage,
+            "Correct Count": self.correct_count,
+            "Incorrect Count": self.incorrect_count,
+            "Hints Used": self.hints_used,
+            "Questions": self.create_question_list()
+        }
+    
+    def generate_quiz_id(self) -> str:
+        if len(CommonData.past_quizzes) == 0: return "PQ0001"
+        id_sort_quizzes(CommonData.past_quizzes)
+        return f"PQ{str(int(CommonData.past_quizzes[-1].quiz_id.replace("PQ", "")) + 1).rjust(4, "0")}"
+    
+    def create_question_list(self) -> list[dict]:
+        return_list: list[dict] = []
+
+        for question in self.questions:
+            return_list.append(question.create_past_dict())
+
+        return return_list
 
     def select_questions(self) -> None:
         question_list: list[tuple[str, int]] = []

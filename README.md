@@ -4,6 +4,7 @@ So I may've started this in December, maybe January, but I've had to deal with A
 Anyway, now it's July, and I've gotten to making good progress.<br/>
 
 <br/>(I've also decided that I can make this in a different, better way, that I'll do after I've finished this version so that I have a basis to work off for that)<br/>
+Unfinished Sections of this README indicate features that are included within the Code already, or will be in the future
 
 ---
 
@@ -70,7 +71,7 @@ The Items, of which there are up to 12, are displayed to the user, where they ca
 The Player will only get the Available Points if they get all the Items ordered correctly.
 ## Image Questions
 **HALF IMPLEMENTED**<br/>
-I've decided I'm not adding these til I'm done with all the first 2 types of questions, and til the quiz and all related things work.<br/>
+These currently half exist, an Image Question can be created and edited, however it can't previewed, used during a Quiz<br/>
 It is possible to create and edit Image Questions, however they will be unusable in the Quiz, as the Toggle to include them, like with Order Questions, is disabled.<br/>
 May replace these with Audio Questions so I don't have to make design modifications to the page, or just not include either all together
 
@@ -96,3 +97,10 @@ May replace these with Audio Questions so I don't have to make design modificati
 ## Hints
 ## Scoring
 ## Question Review
+## Retaking Quizzes
+
+---
+
+# Future Review
+## Past Quizzes
+## Leaderboards

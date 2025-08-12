@@ -1,16 +1,122 @@
 {
     "Quiz ID": "PQ0001",
-    "Score": 1.0,
-    "Percentage": 100,
+    "Player ID": "U0001",
+    "Score": 9.0,
+    "Max Score": 9.0,
+    "Percentage": 100.0,
+    "Correct Count": 6,
+    "Incorrect Count": 0,
+    "Hints Used": 0,
     "Questions": [
         {
-            "Question ID" : "Q0001",
-            "Answers": [2, 4],
-            "Lifeline Used": "Hint"
+            "Question ID": "Q0014",
+            "Question Type": "Closed",
+            "Extra Details": {
+                "Question Number": 1,
+                "Answered Correctly": true,
+                "Awarded Points": 3,
+                "Answers": [
+                    {
+                        "Display Index": 1, "Answer Chosen": true, "Answer Hidden": false
+                    }, {
+                        "Display Index": 2, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 0, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 3, "Answer Chosen": false, "Answer Hidden": false
+                    }
+                ]
+            }
         }, {
-            "Question ID": "Q0002",
-            "Answers": "Porsche 919",
-            "Lifeline Used": "None"
+            "Question ID": "Q0001",
+            "Question Type": "Closed",
+            "Extra Details": {
+                "Question Number": 2,
+                "Answered Correctly": true,
+                "Awarded Points": 1,
+                "Answers": [
+                    {
+                        "Display Index": 3, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 1, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 2, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 0, "Answer Chosen": true, "Answer Hidden": false
+                    }
+                ]
+            }
+        }, {
+            "Question ID": "Q0015",
+            "Question Type": "Closed",
+            "Extra Details": {
+                "Question Number": 3,
+                "Answered Correctly": true,
+                "Awarded Points": 1,
+                "Answers": [
+                    {
+                        "Display Index": 1, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 0, "Answer Chosen": true, "Answer Hidden": false
+                    }
+                ]
+            }
+        }, {
+
+            "Question ID": "Q0012",
+            "Question Type": "Closed",
+            "Extra Details": {
+                "Question Number": 4,
+                "Answered Correctly": true,
+                "Awarded Points": 2,
+                "Answers": [
+                    {
+                        "Display Index": 2, "Answer Chosen": true, "Answer Hidden": false
+                    }, {
+                        "Display Index": 1, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 0, "Answer Chosen": false, "Answer Hidden": false
+                    }
+                ]
+            }
+        }, {
+            "Question ID": "Q0009",
+            "Question Type": "Closed",
+            "Extra Details": {
+                "Question Number": 5,
+                "Answered Correctly": true,
+                "Awarded Points": 1,
+                "Answers": [
+                    {
+                        "Display Index": 2, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 3, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 1, "Answer Chosen": true, "Answer Hidden": false
+                    }, {
+                        "Display Index": 0, "Answer Chosen": false, "Answer Hidden": false
+                    }
+                ]
+            }
+        }, {
+            "Question ID": "Q0008",
+            "Question Type": "Closed",
+            "Extra Details": {
+                "Question Number": 6,
+                "Answered Correctly": true,
+                "Awarded Points": 1,
+                "Answers": [
+                    {
+                        "Display Index": 2, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 0, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 1, "Answer Chosen": false, "Answer Hidden": false
+                    }, {
+                        "Display Index": 3, "Answer Chosen": true, "Answer Hidden": false
+                    }
+                ]
+            }
         }
     ]
 }

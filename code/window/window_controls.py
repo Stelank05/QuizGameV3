@@ -796,8 +796,7 @@ class WindowControls:
         for i in range(len(WindowComponents.order_answer_entries)):
             WindowComponents.order_answer_entries[i][0].configure(state = 'disabled', disabledbackground = WindowComponents.entry_colours[1].colour_code)
 
-        if question_data.answered_correctly: WindowControls.set_order_correct(question_data)
-        else: WindowControls.set_order_incorrect(question_data, question_data.entered_order)
+        WindowControls.set_order_feedback(question_data, question_data.entered_order)
 
 
     # Quiz Functions
@@ -869,15 +868,16 @@ class WindowControls:
                 question.entered_order = WindowControls.create_order_input(question)
                 question.answered_correctly = question.valid_answer(question.entered_order.copy())
                 
-                if question.answered_correctly: WindowControls.set_order_correct(question)
-                else: WindowControls.set_order_incorrect(question, question.entered_order)
+                WindowControls.set_order_feedback(question, question.entered_order)
 
         WindowComponents.current_quiz.theoretical_max += question.question_points
 
         if question.answered_correctly:
             WindowComponents.current_quiz.current_score += question.awarded_points
+            WindowComponents.current_quiz.correct_count += 1
             AudioControls.play_audio(CommonData.get_audio_from_id(question.correct_audio, 0, len(CommonData.audio_list)).audio_file)
         else:
+            WindowComponents.current_quiz.incorrect_count += 1
             AudioControls.play_audio(CommonData.get_audio_from_id(question.incorrect_audio, 0, len(CommonData.audio_list)).audio_file)
 
         WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
@@ -893,20 +893,20 @@ class WindowControls:
         # Go through User Input + Put Inputs to list with Index
         input_index: list[tuple[int, int]] = []
         for i in range(len(question.displayed_order)):
-            input_index.append((int(WindowComponents.order_answer_entries[i][0].get().strip()), i))
+            input_index.append([int(WindowComponents.order_answer_entries[i][0].get().strip()), i])
 
         # Order List by Input
         WindowControls.reorder_list(input_index, 0)
         
         # Go back through the list, dropping each input to 1-X
-        for i in range(len(input_index)): input_index[i] = (i + 1, input_index[i][1])
+        for i in range(len(input_index)): input_index[i][0] = i + 1
 
         # Reorder the list by Index
         WindowControls.reorder_list(input_index, 1)
 
         # Put new Order Indexes into new List with Displayed Item
         for i in range(len(question.displayed_order)):
-            return_list.append((input_index[i][0], question.displayed_order[i]))
+            return_list.append([input_index[i][0], question.displayed_order[i]])
 
         return return_list
     
@@ -929,11 +929,7 @@ class WindowControls:
 
         return input_index
 
-    def set_order_correct(question: PastOrderQuestion) -> None:
-        for i in range(len(question.correct_order)):
-            WindowComponents.order_answer_entries[i][0].configure(disabledbackground = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code, disabledforeground = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
-
-    def set_order_incorrect(question: PastOrderQuestion, answer: list[tuple[int, str]]) -> None:
+    def set_order_feedback(question: PastOrderQuestion, answer: list[tuple[int, str]]) -> None:
         for i in range(len(question.correct_order)):
             if answer[i][1] == question.correct_order[int(answer[i][0]) - 1]: WindowComponents.order_answer_entries[i][0].configure(disabledbackground = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code, disabledforeground = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
             else: WindowComponents.order_answer_entries[i][0].configure(disabledbackground = CommonData.get_colour_from_name("Red", 0, len(CommonData.colour_list)).colour_code, disabledforeground = CommonData.get_colour_from_name("Black", 0, len(CommonData.colour_list)).colour_code)
@@ -991,9 +987,15 @@ class WindowControls:
         QuestionDesign.make_finish_quiz_page(WindowComponents.window)
         
         # Insert Page Functions
-        WindowComponents.retake_quiz_button.configure(command = None) # I will write these Functions another time but for now they aren't entirely necessary
-        WindowComponents.review_quiz_button_finish.configure(command = WindowControls.begin_review) # I will write these Functions another time but for now they aren't entirely necessary
-        WindowComponents.exit_quiz_button_finish.configure(command = WindowControls.return_to_setup) # I will write these Functions another time but for now they aren't entirely necessary
+        WindowComponents.retake_quiz_button.configure(command = WindowControls.retake_quiz) # I will write these Functions another time but for now they aren't entirely necessary
+        WindowComponents.review_quiz_button_finish.configure(command = WindowControls.begin_review)
+        WindowComponents.exit_quiz_button_finish.configure(command = WindowControls.return_to_setup)
+
+        # Convert Quiz to Past Quiz
+        quiz_dict: dict = WindowComponents.current_quiz.create_dictionary(WindowComponents.active_user.user_id)
+        CommonData.past_quizzes.append(PastQuiz(quiz_dict, question_folder = CommonData.question_folder))
+        write_json_file(os.path.join(CommonData.quizzes_folder, f"{quiz_dict["Quiz ID"]}.json"), quiz_dict)
+
 
     def exit_quiz() -> None:
         WindowComponents.question_view.destroy()
@@ -1013,6 +1015,25 @@ class WindowControls:
         WindowComponents.quiz_setup_page.update()
         WindowComponents.quiz_setup_page.deiconify()
         
+    def retake_quiz() -> None:
+        questions: list[BaseQuestion] = []
+
+        question_data: dict
+
+        for i in range(len(WindowComponents.current_quiz.questions)):
+            question_data = CommonData.get_question(WindowComponents.current_quiz.questions[i].question_id, []).create_dictionary()
+
+            match question_data["Question Type"]:
+                case "Closed": questions.append(PastClosedQuestion(question_data, None, i + 1))
+                case "Open": questions.append(PastOpenQuestion(question_data, None, i + 1))
+                case "Order": questions.append(PastOrderQuestion(question_data, None, i + 1))
+
+        WindowComponents.current_quiz = Quiz()
+        WindowComponents.current_quiz.questions = questions
+
+        # Display First Question
+        WindowComponents.quiz_setup_page.withdraw()
+        WindowControls.next_question(WindowComponents.current_quiz.questions[0])
 
     #  Hints
 
@@ -1023,6 +1044,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.text_hint_used = True
+        WindowComponents.current_quiz.hints_used += 1
 
         WindowComponents.text_hint_output.configure(text = f"Hint Text: {question.text_hint}")
 
@@ -1033,6 +1055,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
+        WindowComponents.current_quiz.hints_used += 1
 
         answers: list[PastAnswer] = WindowComponents.quiz_answers.copy()
         buttons: list[Button] = WindowComponents.closed_answer_buttons.copy()
@@ -1056,6 +1079,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
+        WindowComponents.current_quiz.hints_used += 1
 
         WindowComponents.open_hint_output = Label(WindowComponents.question_view, text = f"Provided Word: {question.provided_word}", bg = WindowComponents.entry_colours[1].colour_code, fg = WindowComponents.entry_colours[0].colour_code, font = WindowComponents.main_font)
         WindowComponents.open_hint_output.place(x = 25, y = 260, width = 435, height = 30)
@@ -1067,6 +1091,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
+        WindowComponents.current_quiz.hints_used += 1
 
         entry_widget: Entry
         
