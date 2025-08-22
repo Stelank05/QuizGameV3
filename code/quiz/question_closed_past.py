@@ -11,12 +11,13 @@ class PastClosedQuestion (ClosedQuestion):
         self.question_number = question_number
 
         self.awarded_points: float = 0.0
-        if extra_details != None: self.awarded_points = extra_details["Awarded Points"]
-        
-        # print(self.question_id)
+
         self.answers: list[PastAnswer] = []
         if extra_details != None:
             self.answered_correctly = extra_details["Answered Correctly"]
+            self.awarded_points = extra_details["Awarded Points"]
+            self.text_hint_used = extra_details["Text Hint Used"]
+            self.relevant_hint_used = extra_details["Closed Hint Used"]
             self.answers = self.convert_answers(question_data["Answers"], extra_details["Answers"])
         else:
             self.answers = self.convert_answers(question_data["Answers"], None)
@@ -29,7 +30,6 @@ class PastClosedQuestion (ClosedQuestion):
         for i in range(len(answers)):
             if details == None: return_list.append(PastAnswer([answers[i], details]))
             else: return_list.append(PastAnswer([answers[i], details[i]]))
-            # break
 
         return return_list
     
@@ -57,6 +57,8 @@ class PastClosedQuestion (ClosedQuestion):
                 "Question Number": self.question_number,
                 "Answered Correctly": self.answered_correctly,
                 "Awarded Points": self.awarded_points,
+                "Text Hint Used": self.text_hint_used,
+                "Closed Hint Used": self.relevant_hint_used,
                 "Answers": self.make_answer_details()
             }
         }

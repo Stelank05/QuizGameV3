@@ -165,7 +165,7 @@ def name_sort_users(user_list: list[Player]) -> None:
 
         if not swap: break
 
-def id_sort_quizzes(quiz_list: list[PastQuiz]) -> None:
+def sort_quizzes_id(quiz_list: list[PastQuiz]) -> None:
     swap: bool
     temp_quiz: PastQuiz
 
@@ -181,3 +181,5 @@ def id_sort_quizzes(quiz_list: list[PastQuiz]) -> None:
                 quiz_list[j + 1] = temp_quiz
 
         if not swap: break
+
+# def sort_past_quizzes_id(quiz)

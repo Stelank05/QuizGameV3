@@ -1,12 +1,13 @@
 import functools
-import PIL.Image
-import PIL.ImageTk
+# import PIL.Image
+# import PIL.ImageTk
 
 from tkinter import *
 from tkinter import messagebox
-from tkinter import ttk
+# from tkinter import ttk
 
 from classes.colour import Colour
+
 from controls.audio_controls import AudioControls
 from controls.colour_controls import ColourControls
 from controls.generic_controls import *
@@ -112,6 +113,51 @@ class WindowControls:
             "Label Colours" : [WindowComponents.chosen_label_back.colour_id, WindowComponents.chosen_label_text.colour_id],
             "Entry Colours" : [WindowComponents.chosen_entry_back.colour_id, WindowComponents.chosen_entry_text.colour_id],
         }
+
+
+    # Past Quiz Viewing
+
+    def update_quiz_outputs(event: Event) -> None:
+        if len(WindowComponents.quiz_output.curselection()) == 0: return None
+        if not WindowComponents.quiz_output: return None
+
+        sort_quizzes_id(CommonData.past_quizzes)
+        WindowComponents.current_past_quiz = CommonData.past_quizzes[WindowComponents.quiz_output.curselection()[0]]
+
+        WindowComponents.quiz_id_output.configure(text = WindowComponents.current_past_quiz.quiz_id)
+        WindowComponents.quiz_length_output.configure(text = f"{len(WindowComponents.current_past_quiz.questions)} Questions")
+        WindowComponents.quiz_score_output.configure(text = WindowComponents.current_past_quiz.score)
+        WindowComponents.quiz_max_score_output.configure(text = WindowComponents.current_past_quiz.max_score)
+        WindowComponents.quiz_score_percentage_output.configure(text = WindowComponents.current_past_quiz.percentage)
+        WindowComponents.quiz_correct_output.configure(text = f"{WindowComponents.current_past_quiz.correct_count} Questions")
+        WindowComponents.quiz_incorrect_output.configure(text = f"{WindowComponents.current_past_quiz.incorrect_count} Questions")
+
+        WindowComponents.quiz_hints_general_output.configure(text = f"{WindowComponents.current_past_quiz.total_hints_used} Hints Used")
+        WindowComponents.quiz_hints_text_output.configure(text = f"{WindowComponents.current_past_quiz.text_hints_used} Hints Used")
+        WindowComponents.quiz_hints_closed_output.configure(text = f"{WindowComponents.current_past_quiz.closed_hints_used} Hints Used")
+        WindowComponents.quiz_hints_open_output.configure(text = f"{WindowComponents.current_past_quiz.open_hints_used} Hints Used")
+        WindowComponents.quiz_hints_order_output.configure(text = f"{WindowComponents.current_past_quiz.order_hints_used} Hints Used")
+
+    def clear_quiz_outputs() -> None:
+        WindowComponents.quiz_id_output.configure(text = "")
+        WindowComponents.quiz_length_output.configure(text = "")
+        WindowComponents.quiz_score_output.configure(text = "")
+        WindowComponents.quiz_max_score_output.configure(text = "")
+        WindowComponents.quiz_score_percentage_output.configure(text = "")
+        WindowComponents.quiz_correct_output.configure(text = "")
+        WindowComponents.quiz_incorrect_output.configure(text = "")
+
+        WindowComponents.quiz_hints_general_output.configure(text = "")
+        WindowComponents.quiz_hints_text_output.configure(text = "")
+        WindowComponents.quiz_hints_closed_output.configure(text = "")
+        WindowComponents.quiz_hints_open_output.configure(text = "")
+        WindowComponents.quiz_hints_order_output.configure(text = "")
+
+    def begin_quiz_review() -> None:
+        WindowComponents.review_mode = "Past Quiz"
+
+        WindowComponents.view_past_quiz_page.deiconify()
+        WindowControls.review_question(WindowComponents.current_past_quiz.questions[0])
 
 
     # Question Functions
@@ -221,7 +267,8 @@ class WindowControls:
         WindowComponents.toggle_image_status.configure(text = f"Display Image: {WindowComponents.display_image_questions}")
         WindowControls.display_questions()
 
-    def clear_question_list() -> None: WindowComponents.question_list.delete(0, END)
+    def clear_question_list() -> None:
+        WindowComponents.question_list.delete(0, END)
 
     def get_topic_name_list() -> list[str]:
         WindowComponents.question_topics = []
@@ -580,20 +627,24 @@ class WindowControls:
         WindowControls.update_quiz_length_setter()
 
     def update_quiz_length_setter(do_check: bool = True) -> None:
-        # if do_check and len(WindowComponents.available_questions) <= 3:
-        #     messagebox.showerror("Insufficient Questions", "Current Settings makes your Quiz too Short")
-
         total_questions: int = len(WindowComponents.available_questions)
         min_length: int = 1
 
         if total_questions == 0: min_length = 0
+        if total_questions > WindowComponents.max_quiz_length: total_questions = WindowComponents.max_quiz_length
 
         WindowComponents.quiz_length_set.configure(from_ = min_length, to = total_questions)
         WindowComponents.quiz_length_set.set(min_length)
 
     def setup_quiz() -> None:
+        if WindowComponents.quiz_length_set.get() < WindowComponents.min_quiz_length:
+            messagebox.showerror("Insufficient Questions", f"Your Quiz must contain at least {WindowComponents.min_quiz_length} Questions")
+            return 0
+        
+        WindowComponents.review_mode = "Quiz"
+
         WindowComponents.current_quiz = Quiz()
-        WindowComponents.current_quiz.select_questions()
+        WindowComponents.current_quiz.select_questions(WindowComponents.available_question_codes.copy(), int(WindowComponents.quiz_length.get()))
 
         # Display First Question
         WindowComponents.quiz_setup_page.withdraw()
@@ -603,8 +654,13 @@ class WindowControls:
     # Insert Question to Frame
 
     def insert_common_quiz_items(question: BaseQuestion, y_start: int = 75, topic_height: int = 30) -> None:
-        WindowComponents.question_number_output.configure(text = f"Question Number: {question.question_number} / {len(WindowComponents.current_quiz.questions)}")
-        WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
+        if WindowComponents.review_mode == "Quiz":
+            WindowComponents.question_number_output.configure(text = f"Question Number: {question.question_number} / {len(WindowComponents.current_quiz.questions)}")
+            WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
+        else:
+            WindowComponents.question_number_output.configure(text = f"Question Number: {question.question_number} / {len(WindowComponents.current_past_quiz.questions)}")
+            WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_past_quiz.score} / {WindowComponents.current_past_quiz.max_score}")
+
         WindowComponents.question_difficulty_output.configure(text = f"Question Difficulty: {question.question_difficulty}")
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.question_points}")
         WindowComponents.question_text_output.configure(text = f"Question:\n{question.question_text}")
@@ -617,8 +673,10 @@ class WindowControls:
         WindowComponents.submit_answer.configure(command = functools.partial(WindowControls.submit_answer, question))
 
         WindowComponents.review_next_question.configure(text = "Review Next Question")
-        if question.question_number > 1: WindowComponents.review_last_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question.question_number - 2]))
-        if question.question_number < WindowComponents.current_quiz.question_number: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question.question_number]))
+
+        if WindowComponents.review_mode == "Quiz":
+            if question.question_number > 1: WindowComponents.review_last_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question.question_number - 2]))
+            if question.question_number < WindowComponents.current_quiz.question_number: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question.question_number]))
 
         # Insert Topics into Shroud
         topic_label: Label
@@ -695,10 +753,13 @@ class WindowControls:
 
         if question_data.text_hint_used: WindowComponents.text_hint_output.configure(text = f"Hint Text: {question_data.text_hint}")
 
-        next_question: BaseQuestion = WindowComponents.current_quiz.questions[WindowComponents.current_quiz.question_number - 1]
 
-        if not WindowComponents.current_quiz.quiz_complete: WindowControls.quiz_review_controls(question_data, next_question)
-        else: WindowControls.post_quiz_review_controls(question_data)
+        if WindowComponents.review_mode == "Quiz":
+            next_question: BaseQuestion = WindowComponents.current_quiz.questions[WindowComponents.current_quiz.question_number - 1]
+            if not WindowComponents.current_quiz.quiz_complete: WindowControls.quiz_review_controls(question_data, next_question)
+            else: WindowControls.post_quiz_review_controls(question_data)
+        else:
+            WindowControls.past_quiz_review_controls(question_data)
 
     def quiz_review_controls(question_data: BaseQuestion, next_question: BaseQuestion) -> None:
         if question_data.question_number == WindowComponents.current_quiz.question_number - 1: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.next_question, next_question))
@@ -710,6 +771,13 @@ class WindowControls:
         else: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question_data.question_number]))
         WindowComponents.submit_answer.configure(text = "Exit Quiz Review", command = WindowControls.exit_review)
 
+        WindowComponents.exit_quiz_button.configure(command = WindowControls.exit_review)
+
+    def past_quiz_review_controls(question_data: BaseQuestion) -> None:
+        if question_data.question_number == len(WindowComponents.current_past_quiz.questions): WindowComponents.review_next_question.configure(command = WindowControls.exit_review)
+        else: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_past_quiz.questions[question_data.question_number]))
+
+        WindowComponents.submit_answer.configure(text = "Exit Quiz Review", command = WindowControls.exit_review)
         WindowComponents.exit_quiz_button.configure(command = WindowControls.exit_review)
 
     def insert_closed_review_info(question_data: PastClosedQuestion) -> None:
@@ -970,14 +1038,26 @@ class WindowControls:
                 WindowControls.insert_order_review_info(question)
 
     def begin_review() -> None:
-        WindowComponents.finish_quiz_page.withdraw()
-        WindowControls.review_question(WindowComponents.current_quiz.questions[0])
+        view_question: BaseQuestion
+
+        if WindowComponents.review_mode == "Quiz":
+            WindowComponents.finish_quiz_page.withdraw()
+            view_question = WindowComponents.current_quiz.questions[0]
+        else:
+            WindowComponents.view_past_quiz_page.withdraw()
+            view_question = WindowComponents.current_past_quiz.questions[0]
+        
+        WindowControls.review_question(view_question)
     
     def exit_review() -> None:
         WindowComponents.question_view.destroy()
 
-        WindowComponents.finish_quiz_page.update()
-        WindowComponents.finish_quiz_page.deiconify()
+        if WindowComponents.review_mode == "Quiz":
+            WindowComponents.finish_quiz_page.update()
+            WindowComponents.finish_quiz_page.deiconify()
+        else:
+            WindowComponents.view_past_quiz_page.update()
+            WindowComponents.view_past_quiz_page.deiconify()
     
     def finish_quiz() -> None:
         WindowComponents.current_quiz.quiz_complete = True
@@ -992,10 +1072,19 @@ class WindowControls:
         WindowComponents.exit_quiz_button_finish.configure(command = WindowControls.return_to_setup)
 
         # Convert Quiz to Past Quiz
-        quiz_dict: dict = WindowComponents.current_quiz.create_dictionary(WindowComponents.active_user.user_id)
-        CommonData.past_quizzes.append(PastQuiz(quiz_dict, question_folder = CommonData.question_folder))
-        write_json_file(os.path.join(CommonData.quizzes_folder, f"{quiz_dict["Quiz ID"]}.json"), quiz_dict)
+        quiz_dict: dict
+        
+        if type(WindowComponents.active_user) == Player: quiz_dict = WindowComponents.current_quiz.create_dictionary(WindowComponents.active_user.user_id)
+        else: quiz_dict = WindowComponents.current_quiz.create_dictionary(WindowComponents.active_user.guest_id)
 
+        past_quiz: PastQuiz = PastQuiz(quiz_dict, question_folder = CommonData.question_folder)
+        CommonData.past_quizzes.append(past_quiz)
+        write_json_file(os.path.join(CommonData.quizzes_folder, f"{quiz_dict["Quiz ID"]}.json"), quiz_dict)
+        
+        if type(WindowComponents.active_user) == Player:
+            WindowComponents.active_user.previous_attempts.append(past_quiz.quiz_id)
+            WindowComponents.active_user.update_highscore()
+            write_user_file(WindowComponents.active_user)
 
     def exit_quiz() -> None:
         WindowComponents.question_view.destroy()
@@ -1029,7 +1118,7 @@ class WindowControls:
                 case "Order": questions.append(PastOrderQuestion(question_data, None, i + 1))
 
         WindowComponents.current_quiz = Quiz()
-        WindowComponents.current_quiz.questions = questions
+        WindowComponents.current_quiz.randomise_questions(questions)
 
         # Display First Question
         WindowComponents.quiz_setup_page.withdraw()
@@ -1044,7 +1133,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.text_hint_used = True
-        WindowComponents.current_quiz.hints_used += 1
+        WindowComponents.current_quiz.text_hints_used += 1
 
         WindowComponents.text_hint_output.configure(text = f"Hint Text: {question.text_hint}")
 
@@ -1055,7 +1144,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
-        WindowComponents.current_quiz.hints_used += 1
+        WindowComponents.current_quiz.closed_hints_used += 1
 
         answers: list[PastAnswer] = WindowComponents.quiz_answers.copy()
         buttons: list[Button] = WindowComponents.closed_answer_buttons.copy()
@@ -1079,7 +1168,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
-        WindowComponents.current_quiz.hints_used += 1
+        WindowComponents.current_quiz.open_hints_used += 1
 
         WindowComponents.open_hint_output = Label(WindowComponents.question_view, text = f"Provided Word: {question.provided_word}", bg = WindowComponents.entry_colours[1].colour_code, fg = WindowComponents.entry_colours[0].colour_code, font = WindowComponents.main_font)
         WindowComponents.open_hint_output.place(x = 25, y = 260, width = 435, height = 30)
@@ -1091,7 +1180,7 @@ class WindowControls:
         WindowComponents.question_score_output.configure(text = f"Points Available: {question.awarded_points}")
 
         question.relevant_hint_used = True
-        WindowComponents.current_quiz.hints_used += 1
+        WindowComponents.current_quiz.order_hints_used += 1
 
         entry_widget: Entry
         

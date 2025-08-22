@@ -10,7 +10,7 @@ from controls.sort_functions import *
 
 from classes.audio import Audio
 from classes.colour import Colour
-from quiz.quiz_past import PastQuiz
+from classes.guest import Guest
 from classes.player import Player
 from classes.topic import Topic
 
@@ -22,6 +22,7 @@ from questions.question_order import OrderQuestion
 from quiz.question_closed_past import PastClosedQuestion
 from quiz.question_open_past import PastOpenQuestion
 from quiz.question_order_past import PastOrderQuestion
+from quiz.quiz_past import PastQuiz
 
 class CommonData:
     min_password_length: int = 10
@@ -45,7 +46,7 @@ class CommonData:
     topic_list: list[Topic] = []
 
     players: list[Player] = []
-    guests: list[Player] = []
+    guests: list[Guest] = []
 
     usable_questions: list[BaseQuestion] = []
     discarded_questions: list[BaseQuestion] = []
@@ -112,12 +113,11 @@ class CommonData:
     def load_players() -> None:
         player_files: list[str] = get_files_in_folder(CommonData.player_folder, ".json")
 
-        for player_file in player_files:CommonData.players.append(Player("Player", read_json_file(os.path.join(CommonData.player_folder, player_file))))
+        for player_file in player_files: CommonData.players.append(Player(read_json_file(os.path.join(CommonData.player_folder, player_file))))
 
     def load_guest_players() -> None:
-        player_files: list[str] = get_files_in_folder(CommonData.guests_folder, ".json")
-
-        for player_file in player_files:CommonData.players.append(Player("Guest", read_json_file(os.path.join(CommonData.player_folder, player_file))))
+        guest_files: list[str] = get_files_in_folder(CommonData.guests_folder, ".json")
+        for guest_file in guest_files: CommonData.guests.append(Guest(read_json_file(os.path.join(CommonData.guests_folder, guest_file))))
 
     def load_topics() -> None:
         topic_files: list[str] = get_files_in_folder(CommonData.topics_folder, ".json")
@@ -317,7 +317,15 @@ class CommonData:
         else: return CommonData.get_question(question_id, question_list, mid_point + 1, end_index)
 
     def get_past_quiz(quiz_id: str, start_index: int, end_index: int) -> PastQuiz:
-        return PastQuiz({})
+        sort_quizzes_id(CommonData.past_quizzes)
+        
+        if start_index > end_index: return None
+        
+        mid_point: int = math.floor((start_index + end_index) / 2)
+
+        if CommonData.past_quizzes[mid_point].quiz_id == quiz_id: return CommonData.past_quizzes[mid_point]
+        elif CommonData.past_quizzes[mid_point].quiz_id > quiz_id: return CommonData.get_past_quiz(quiz_id, start_index, mid_point - 1)
+        else: return CommonData.get_past_quiz(quiz_id, mid_point + 1, end_index)
 
     
     # Displayers (Mainly for Testing)

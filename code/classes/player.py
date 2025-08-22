@@ -1,11 +1,11 @@
 class Player:
-    def __init__(self, player_type: str, player_data: dict) -> None:
+    def __init__(self, player_data: dict) -> None:
         self.user_id: str = player_data["User ID"]
         self.username: str = player_data["Username"]
         self.password: str = player_data["Password"]
         self.password_shift: str = player_data["Password Shift"]
 
-        self.player_type: str = player_type
+        # self.player_type: str = player_type
 
         # User Colours - As ID Codes
         self.window_colours: list[str] = player_data["Colours"]["Window Colours"]
@@ -14,7 +14,9 @@ class Player:
         self.entry_colours: list[str] = player_data["Colours"]["Label Colours"]
 
         self.high_score: float = float(player_data["High Score"])
-        self.previous_attempts: list[str] = player_data["Previous Quizzes"]
+
+        self.previous_attempts: list[str] = []
+        for attempt in player_data["Previous Quizzes"]: self.previous_attempts.append(attempt)
 
     def make_dictionary(self) -> dict:
         return {
@@ -27,6 +29,8 @@ class Player:
             "Previous Quizzes": self.previous_attempts
         }
     
+    def update_highscore(self) -> None: pass
+
     def make_colour_list(self) -> dict:
         return {
             "Window Colours" : [self.window_colours[0], self.window_colours[1]],

@@ -7,22 +7,25 @@ import PIL.ImageTk
 
 from classes.audio import Audio
 from classes.colour import Colour
+from classes.guest import Guest
 from classes.player import Player
 from classes.topic import Topic
 
 from questions.question_base import BaseQuestion
 
 from quiz.answer_past import PastAnswer
+from quiz.quiz import Quiz
+from quiz.quiz_past import PastQuiz
 
 class WindowComponents:
     window: Tk
 
-    active_user: Player
+    active_user: Player | Guest
     current_edit_question: BaseQuestion = None
     current_edit_topic: Topic = None
     current_edit_colour: Colour = None
     current_edit_audio: Audio = None
-    current_quiz: type = None
+    current_quiz: Quiz = None
 
 
     # Pages
@@ -33,6 +36,7 @@ class WindowComponents:
     choose_colours: Toplevel = None
     view_account_page: Toplevel = None
     edit_account_page: Toplevel = None
+    view_past_quiz_page: Toplevel = None
 
     #  Home Page
     home_page: Toplevel = None
@@ -52,6 +56,26 @@ class WindowComponents:
     finish_quiz_page: Toplevel = None
 
     active_pages: list[Toplevel] = []
+
+
+    # View Past Quizzes Components
+    review_mode: str
+
+    quiz_output: Listbox
+    quiz_id_output: Label = None
+    quiz_length_output: Label = None
+    quiz_score_output: Label = None
+    quiz_max_score_output: Label = None
+    quiz_score_percentage_output: Label = None
+    quiz_correct_output: Label = None
+    quiz_incorrect_output: Label = None
+    quiz_hints_general_output: Label = None
+    quiz_hints_text_output: Label = None
+    quiz_hints_closed_output: Label = None
+    quiz_hints_open_output: Label = None
+    quiz_hints_order_output: Label = None
+
+    current_past_quiz: PastQuiz = None
 
 
     # New Things
@@ -202,12 +226,14 @@ class WindowComponents:
     
     # Default Colours
 
-    window_colours: list[Colour] = ["C0024", "C0001"]
-    label_colours: list[Colour] = ["C0001", "C0002"]
-    button_colours: list[Colour] = ["C0025", "C0002"]
-    entry_colours: list[Colour] = ["C0025", "C0002"]
+    window_colours: list[str] = ["C0024", "C0001"]
+    label_colours: list[str] = ["C0001", "C0002"]
+    button_colours: list[str] = ["C0025", "C0002"]
+    entry_colours: list[str] = ["C0025", "C0002"]
     minimum_contrast_ratio: float = 4.5
     main_font: tuple[str, int] = ["Calibri", 10]
+    min_quiz_length: int = 3
+    max_quiz_length: int = 25
 
     # Valid File Extensions
     # valid_audio_extensions: list[str] = [".wav", ".mp3", ".midi"]

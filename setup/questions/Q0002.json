@@ -13,7 +13,7 @@
         "Provided Word": ""
     },
     "Images" : {
-        "Is Image Question": false,
+        "Is Image Question": true,
         "Image File": "2017 Porsche 919.png"
     },
     "Answers":  {

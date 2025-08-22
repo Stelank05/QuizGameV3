@@ -7,6 +7,7 @@ from tkinter import messagebox
 from tkinter import ttk
 
 from classes.colour import Colour
+from classes.guest import Guest
 
 from controls.audio_controls import AudioControls
 from controls.colour_controls import ColourControls
@@ -66,7 +67,7 @@ class WindowDesign:
         create_account_button: Button = Button(WindowComponents.login_page, text = "Create Account", bg = WindowComponents.default_button_colours[0].colour_code, fg = WindowComponents.default_button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "Login Page", "Create Account"))
         create_account_button.place(x = 25, y = 245, width = 175, height = 30)
 
-        login_as_guest_button: Button = Button(WindowComponents.login_page, text = "Login as Guest", bg = WindowComponents.default_button_colours[0].colour_code, fg = WindowComponents.default_button_colours[1].colour_code, font = WindowComponents.main_font)#, command = WindowDesign.login_as_guest)
+        login_as_guest_button: Button = Button(WindowComponents.login_page, text = "Login as Guest", bg = WindowComponents.default_button_colours[0].colour_code, fg = WindowComponents.default_button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowDesign.login_as_guest)
         login_as_guest_button.place(x = 25, y = 280, width = 175, height = 30)
 
         exit_button: Button = Button(WindowComponents.login_page, text = "Exit", bg = WindowComponents.default_button_colours[0].colour_code, fg = WindowComponents.default_button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(exit_app, WindowComponents.window))
@@ -280,7 +281,7 @@ class WindowDesign:
         exit_button: Button = Button(WindowComponents.home_page, text = "Exit App", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(exit_app, WindowComponents.window))
         exit_button.place(x = 270, y = 225, width = 115, height = 30)
 
-    def create_quiz_setup_page() -> None:
+    def create_quiz_setup_page(back_disabled: bool = False) -> None:
         WindowComponents.quiz_setup_page = Toplevel(WindowComponents.window)
         WindowComponents.active_pages.append(WindowComponents.home_page)
         
@@ -351,6 +352,8 @@ class WindowDesign:
         # Generic Controls
         back_button: Button = Button(WindowComponents.quiz_setup_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "Setup Quiz", "Home Page"))
         back_button.place(x = 25, y = 305, width = 175, height = 30)
+
+        if back_disabled: back_button.configure(text = "Exit", command = functools.partial(exit_app, WindowComponents.window))
 
         centre_window: Button = Button(WindowComponents.quiz_setup_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowComponents.position_frame, WindowComponents.quiz_setup_page, [frame_width, frame_height]))
         centre_window.place(x = 205, y = 305, width = 175, height = 30)
@@ -678,9 +681,6 @@ class WindowDesign:
         view_past_quizzes_button: Button = Button(WindowComponents.view_account_page, text = "View Past Quizzes", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Account", "View Past Quizzes"))
         view_past_quizzes_button.place(x = 25, y = 95, width = 175, height = 30)
 
-        #view_leaderboard_button: Button = Button(WindowComponents.view_account_page, text = "View Leaderboard", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Account", "View Leaderboard"))
-        #view_leaderboard_button.place(x = 25, y = 160, width = 175, height = 30)
-
         back_button: Button = Button(WindowComponents.view_account_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Account", "Home Page"))
         back_button.place(x = 25, y = 130, width = 85, height = 30)
 
@@ -760,7 +760,114 @@ class WindowDesign:
         centre_window: Button = Button(WindowComponents.edit_account_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowComponents.position_frame, WindowComponents.edit_account_page, [frame_width, frame_height]))
         centre_window.place(x = 115, y = 325, width = 85, height = 30)
 
-    def create_view_past_quizzes_page() -> None: messagebox.showinfo("Page Doesn't Exist", "This Page Doesn't Exist Yet")
+    def create_view_past_quizzes_page() -> None:
+        WindowComponents.view_past_quiz_page = Toplevel(WindowComponents.window)
+        WindowComponents.active_pages.append(WindowComponents.view_past_quiz_page)
+
+        frame_width: int = 965
+        frame_height: int = 325
+
+        WindowComponents.view_past_quiz_page.geometry(f"{frame_width}x{frame_height}")
+        WindowComponents.view_past_quiz_page.config(bg = WindowComponents.window_colours[0].colour_code)
+
+        WindowComponents.position_frame(WindowComponents.view_past_quiz_page, [frame_width, frame_height])
+        WindowComponents.make_active(WindowComponents.view_past_quiz_page)
+
+        # Left - Quiz Listbox (Be Fancy and use Buttons?)
+        select_quiz_header: Label = Label(WindowComponents.view_past_quiz_page, text = "Select Quiz", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        select_quiz_header.place(x = 25, y = 25, width = 175, height = 30)
+
+        WindowComponents.quiz_output = Listbox(WindowComponents.view_past_quiz_page, bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_output.place(x = 25, y = 60, width = 175, height = 170)
+        WindowComponents.quiz_output.bind("<<ListboxSelect>>", WindowControls.update_quiz_outputs)
+
+        for quiz in WindowComponents.active_user.previous_attempts:
+            WindowComponents.quiz_output.insert('end', CommonData.get_past_quiz(quiz, 0, len(CommonData.past_quizzes)).__str__())
+
+        # Middle - Details about the Quiz
+        details_header: Label = Label(WindowComponents.view_past_quiz_page, text = "Quiz Details", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        details_header.place(x = 220, y = 25, width = 350, height = 30)
+
+        quiz_texts: list[str] = ["Quiz ID", "Quiz Length", "Achieved Score", "Maximum Score", "Score Percentage", "Total Questions Correct", "Total Questions Incorrect"]
+
+        quiz_id_header: Label = Label(WindowComponents.view_past_quiz_page, text = quiz_texts[0], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        quiz_id_header.place(x = 220, y = 60, width = 225, height = 30)
+        WindowComponents.quiz_id_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_id_output.place(x = 445, y = 60, width = 125, height = 30)
+
+        quiz_length_header: Label = Label(WindowComponents.view_past_quiz_page, text = quiz_texts[1], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        quiz_length_header.place(x = 220, y = 95, width = 225, height = 30)
+        WindowComponents.quiz_length_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_length_output.place(x = 445, y = 95, width = 125, height = 30)
+
+        quiz_score_header: Label = Label(WindowComponents.view_past_quiz_page, text = quiz_texts[2], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        quiz_score_header.place(x = 220, y = 130, width = 225, height = 30)
+        WindowComponents.quiz_score_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_score_output.place(x = 445, y = 130, width = 125, height = 30)
+        
+        quiz_max_score_header: Label = Label(WindowComponents.view_past_quiz_page, text = quiz_texts[3], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        quiz_max_score_header.place(x = 220, y = 165, width = 225, height = 30)
+        WindowComponents.quiz_max_score_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_max_score_output.place(x = 445, y = 165, width = 125, height = 30)
+
+        quiz_percentage_header: Label = Label(WindowComponents.view_past_quiz_page, text = quiz_texts[4], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        quiz_percentage_header.place(x = 220, y = 200, width = 225, height = 30)
+        WindowComponents.quiz_score_percentage_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_score_percentage_output.place(x = 445, y = 200, width = 125, height = 30)
+
+        quiz_correct_header: Label = Label(WindowComponents.view_past_quiz_page, text = quiz_texts[5], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        quiz_correct_header.place(x = 220, y = 235, width = 225, height = 30)
+        WindowComponents.quiz_correct_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_correct_output.place(x = 445, y = 235, width = 125, height = 30)
+
+        quiz_incorrect_header: Label = Label(WindowComponents.view_past_quiz_page, text = quiz_texts[6], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        quiz_incorrect_header.place(x = 220, y = 270, width = 225, height = 30)
+        WindowComponents.quiz_incorrect_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_incorrect_output.place(x = 445, y = 270, width = 125, height = 30)
+
+
+        # Right - Hints Used Details
+        hints_header: Label = Label(WindowComponents.view_past_quiz_page, text = "Hint Details", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hints_header.place(x = 590, y = 25, width = 350, height = 30)
+
+        hint_texts: list[str] = ["Text Hints Used", "Text Hints Used", "Closed Hints Used (50/50)", "Open Hints Used (Provide Word)", "Order Hints Used (Place One)"]
+
+        # Text Hints Used
+        hints_general_header: Label = Label(WindowComponents.view_past_quiz_page, text = hint_texts[0], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hints_general_header.place(x = 590, y = 60, width = 225, height = 30)
+        WindowComponents.quiz_hints_general_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_hints_general_output.place(x = 815, y = 60, width = 125, height = 30)
+
+        hints_general_header: Label = Label(WindowComponents.view_past_quiz_page, text = hint_texts[1], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hints_general_header.place(x = 590, y = 95, width = 225, height = 30)
+        WindowComponents.quiz_hints_text_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_hints_text_output.place(x = 815, y = 95, width = 125, height = 30)
+
+        hints_general_header: Label = Label(WindowComponents.view_past_quiz_page, text = hint_texts[2], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hints_general_header.place(x = 590, y = 130, width = 225, height = 30)
+        WindowComponents.quiz_hints_closed_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_hints_closed_output.place(x = 815, y = 130, width = 125, height = 30)
+
+        hints_general_header: Label = Label(WindowComponents.view_past_quiz_page, text = hint_texts[3], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hints_general_header.place(x = 590, y = 165, width = 225, height = 30)
+        WindowComponents.quiz_hints_open_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_hints_open_output.place(x = 815, y = 165, width = 125, height = 30)
+
+        hints_general_header: Label = Label(WindowComponents.view_past_quiz_page, text = hint_texts[4], bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hints_general_header.place(x = 590, y = 200, width = 225, height = 30)
+        WindowComponents.quiz_hints_order_output = Label(WindowComponents.view_past_quiz_page, bg = WindowComponents.label_colours[1].colour_code, fg = WindowComponents.label_colours[0].colour_code, font = WindowComponents.main_font)
+        WindowComponents.quiz_hints_order_output.place(x = 815, y = 200, width = 125, height = 30)
+
+        quiz_clear_review_button = Button(WindowComponents.view_past_quiz_page, text = "Clear Quiz Details", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.clear_quiz_outputs)
+        quiz_clear_review_button.place(x = 590, y = 235, width = 350, height = 30)
+        quiz_start_review_button = Button(WindowComponents.view_past_quiz_page, text = "Begin Quiz Review", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.begin_quiz_review)
+        quiz_start_review_button.place(x = 590, y = 270, width = 350, height = 30)
+
+        center_button: Button = Button(WindowComponents.view_past_quiz_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowComponents.position_frame, WindowComponents.view_past_quiz_page, [frame_width, frame_height]))
+        center_button.place(x = 25, y = 235, width = 175, height = 30)
+        back_button: Button = Button(WindowComponents.view_past_quiz_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Past Quizzes", "View Account"))
+        back_button.place(x = 25, y = 270, width = 175, height = 30)
+
     def create_view_leaderboard_page() -> None: messagebox.showinfo("Page Doesn't Exist", "This Page Doesn't Exist Yet")
 
 
@@ -1255,10 +1362,21 @@ class WindowDesign:
             WindowComponents.password_entry.delete(0, len(entered_password))
 
     def login_as_guest() -> None:
-        print("Login as Guest")
+        guest_dict: dict = {
+            "Guest ID": generate_guest_id(),
+            "Guest Username": generate_guest_username()
+        }
 
-        # Needs to Generate Guest ID (Guest#XXXX)
         # Creates Guest User Account, cant be re-accessed after user logs out
+        new_guest: Guest = Guest(guest_dict)
+        WindowComponents.active_user = new_guest
+
+        write_guest_file(new_guest)
+        CommonData.guests.append(new_guest)
+
+        # Load to Quiz Setup Page (Back Button disabled)
+        WindowComponents.login_page.destroy()
+        WindowDesign.create_quiz_setup_page(True)
 
     def create_account() -> None:
         username: str = WindowComponents.create_username_entry.get()
@@ -1344,7 +1462,7 @@ class WindowDesign:
             case "Usable": WindowComponents.current_edit_question = CommonData.get_usable_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.usable_questions))
             case "Discarded": WindowComponents.current_edit_question = CommonData.get_discarded_question(WindowComponents.question_keys[WindowComponents.question_list.curselection()[0]], 0, len(CommonData.discarded_questions))
 
-        WindowDesign.page_controller("Edit Question Selector", "Edit Question", True)
+        WindowDesign.page_controller("Edit Question Selector", "Edit Question", do_hide_edit = True)
 
     # Flow Controls
 
@@ -1355,8 +1473,8 @@ class WindowDesign:
             WindowComponents.choose_colours.update()
             WindowComponents.choose_colours.deiconify()
 
-    def page_controller(from_frame: str, to_frame: str, do_hide: bool = False) -> None:
-        incomplete: list[str] = ["View Past Quizzes", "View Leaderboard"] #, "Create Order Question"]
+    def page_controller(from_frame: str, to_frame: str, do_hide_edit: bool = False, do_hide_account: bool = True) -> None:
+        incomplete: list[str] = ["View Leaderboard"]
 
         if to_frame in incomplete:
             messagebox.showinfo("Page Doesn't Exist", "This Page Can't Be Displayed As It Doesn't Exist")
@@ -1370,8 +1488,8 @@ class WindowDesign:
             case "Setup Quiz": WindowComponents.quiz_setup_page.destroy()
             case "Edit Question Selector":
                 WindowComponents.question_select_visible = False
-                if not do_hide: WindowComponents.edit_question_select_page.destroy()
-                else: WindowComponents.edit_question_select_page.withdraw()
+                if do_hide_edit: WindowComponents.edit_question_select_page.withdraw()
+                else: WindowComponents.edit_question_select_page.destroy()
             case "Edit Question":
                 if WindowComponents.question_view != None and WindowComponents.question_view.winfo_exists(): WindowComponents.question_view.destroy()
                 if WindowComponents.image_preview_frame != None and WindowComponents.image_preview_frame.winfo_exists(): WindowComponents.image_preview_frame.destroy()
@@ -1383,9 +1501,10 @@ class WindowDesign:
             case "Edit Topics": WindowComponents.edit_topic_page.destroy()
             case "Edit Colours": WindowComponents.edit_colour_page.destroy()
             case "Edit Audios": WindowComponents.edit_audio_page.destroy()
-            case "View Account": WindowComponents.view_account_page.destroy()
+            case "View Account":
+                if do_hide_account: WindowComponents.view_account_page.destroy()
             case "Edit Account": WindowComponents.edit_account_page.destroy()
-            case "View Past Quizzes": pass
+            case "View Past Quizzes": WindowComponents.view_past_quiz_page.destroy()
             case "View Leaderboard": pass
 
         # Deiconify To Frame
@@ -1420,5 +1539,5 @@ class WindowDesign:
                 WindowDesign.create_edit_audio_page()
             case "View Account":WindowDesign.create_view_account_page()
             case "Edit Account": WindowDesign.create_edit_account_page()
-            case "View Past Quizzes": pass
+            case "View Past Quizzes": WindowDesign.create_view_past_quizzes_page()
             case "View Leaderboard": pass

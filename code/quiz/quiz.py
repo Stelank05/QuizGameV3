@@ -9,7 +9,7 @@ from quiz.question_closed_past import PastClosedQuestion
 from quiz.question_open_past import PastOpenQuestion
 from quiz.question_order_past import PastOrderQuestion
 
-from window.window_components import WindowComponents
+# from window.window_components import WindowComponents
 
 from common_data import CommonData
 
@@ -27,7 +27,11 @@ class Quiz:
 
         self.correct_count: int = 0
         self.incorrect_count: int = 0
-        self.hints_used: int = 0
+        
+        self.text_hints_used: int = 0
+        self.closed_hints_used: int = 0
+        self.open_hints_used: int = 0
+        self.order_hints_used: int = 0
 
         self.quiz_complete: bool = False
 
@@ -40,13 +44,17 @@ class Quiz:
             "Percentage": self.score_percentage,
             "Correct Count": self.correct_count,
             "Incorrect Count": self.incorrect_count,
-            "Hints Used": self.hints_used,
+            "Total Hints Used": self.text_hints_used + self.closed_hints_used + self.open_hints_used + self.order_hints_used,
+            "Text Hints Used": self.text_hints_used,
+            "Closed Hints Used": self.closed_hints_used,
+            "Open Hints Used": self.open_hints_used,
+            "Order Hints Used": self.order_hints_used,
             "Questions": self.create_question_list()
         }
     
     def generate_quiz_id(self) -> str:
         if len(CommonData.past_quizzes) == 0: return "PQ0001"
-        id_sort_quizzes(CommonData.past_quizzes)
+        sort_quizzes_id(CommonData.past_quizzes)
         return f"PQ{str(int(CommonData.past_quizzes[-1].quiz_id.replace("PQ", "")) + 1).rjust(4, "0")}"
     
     def create_question_list(self) -> list[dict]:
@@ -57,38 +65,31 @@ class Quiz:
 
         return return_list
 
-    def select_questions(self) -> None:
-        question_list: list[tuple[str, int]] = []
+    def select_questions(self, question_codes: list[str], quiz_length: int) -> None:
+        question_list: list[str] = []
 
-        numbers: list[int] = list(range(len(WindowComponents.available_question_codes)))
-        number: int
+        # question_codes: list[str] = WindowComponents.available_question_codes.copy()
+        question_code: str
 
-        for question in WindowComponents.available_question_codes:
-            number = random.choice(numbers)
-            question_list.append((question, number))
-            numbers.remove(number)
-
-        temp: tuple[str, int]
-        swap: bool
-
-        for i in range(len(question_list) - 1):
-            swap = False
-            for j in range(len(question_list) - i - 1):
-                if question_list[j][1] > question_list[j + 1][1]:
-                    swap = True
-                    temp = question_list[j]
-                    question_list[j] = question_list[j + 1]
-                    question_list[j + 1] = temp
-
-            if not swap: break
+        while len(question_list) < int(quiz_length):
+            question_code = random.choice(question_codes)
+            question_codes.remove(question_code)
+            question_list.append(question_code)
 
         question: BaseQuestion
 
-        for question_number in range(int(WindowComponents.quiz_length.get())): #len(question_list)):
-            question = CommonData.get_question(question_list[question_number][0], CommonData.usable_questions, 0, len(CommonData.usable_questions))
+        for question_number in range(len(question_list)):
+            question = CommonData.get_question(question_list[question_number], CommonData.usable_questions, 0, len(CommonData.usable_questions))
         
             match question.question_type:
                 case "Closed": self.questions.append(PastClosedQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Open": self.questions.append(PastOpenQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Order": self.questions.append(PastOrderQuestion(question.create_dictionary(), None, question_number + 1))
         
+    def randomise_questions(self, questions: list[BaseQuestion]) -> None:
+        question: BaseQuestion
+
+        while len(questions) > 0:
+            question = random.choice(questions)
+            questions.remove(question)
+            self.questions.append(question)

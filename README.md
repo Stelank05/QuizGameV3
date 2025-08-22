@@ -4,7 +4,9 @@ So I may've started this in December, maybe January, but I've had to deal with A
 Anyway, now it's July, and I've gotten to making good progress.<br/>
 
 <br/>(I've also decided that I can make this in a different, better way, that I'll do after I've finished this version so that I have a basis to work off for that)<br/>
-Unfinished Sections of this README indicate features that are included within the Code already, or will be in the future
+Unfinished Sections of this README indicate features that are included within the Code already, or will be in the future<br/>
+
+Sorry Aimee if you see this, but despite all the Modules you taught over the last 2 years, I didn't do any prior Design, or Wireframes, nor proper documented testing / using PyTest.
 
 ---
 
@@ -26,9 +28,12 @@ You provide a Username and a Password, and then choose the Colours you'd like fo
 You can select Window Colours, Button Colours, Label Colours, and Entry Colours. Each has Background and Foreground Options, which must have a minimum of a 4.5:1 Colour Contrast Ratio, to be legal.<br/>
 Label, Button and Entry Colours also must have a minimum of a 7:1 Colour Contrast Ratio to the Window Colour, in order to be permitted.
 ## Password Encryption
+Passwords are Encrypted using a Caesar Cypher applied individually to Consonants, Vowels, Symbols, and Digits.
+These shifts all differ, and are randomly generated at Account Creation, and each time the User changes their Password thereafter.
+As this is a (now not so) basic Quiz Game, password security wasn't a major consideration, however this is a nice attempt at some form.
 ## Guest Accounts
-These don't function yet, these will be added closer to the end of development, as I'm thinking of limiting Guest Accounts to only being able to do Quizzes.<br/>
-I also consider this a Low Priority Feature.
+Guest Accounts are a Type of Account that cannot be accessed when the user logs out.
+They use the default Colour Scheme of the Application (Colours on the Login Page), and can only complete Quizzes, being sent straight to the Quiz Setup Page.
 
 ---
 
@@ -71,22 +76,39 @@ The Items, of which there are up to 12, are displayed to the user, where they ca
 The Player will only get the Available Points if they get all the Items ordered correctly.
 ## Image Questions
 **HALF IMPLEMENTED**<br/>
-These currently half exist, an Image Question can be created and edited, however it can't previewed, used during a Quiz<br/>
-It is possible to create and edit Image Questions, however they will be unusable in the Quiz, as the Toggle to include them, like with Order Questions, is disabled.<br/>
+It is possible to create and edit Image Questions, however they will be unusable in the Quiz, as the Toggle to include them is disabled.<br/>
 May replace these with Audio Questions so I don't have to make design modifications to the page, or just not include either all together
 
 ---
 
 # Hints
+Each Question can have up to 2 Hints with it, a Text Hint, and an individualised Hint to the Question Type.
+Each Hint costs 1/3rd of the Original Points Value of the Question, rounded to the nearest .1 of a point.
 ## Text Hints
-## Closed Question Hint: 50/50
-## Open Question Hint: Provide Word
-## Order Question Hint: Place One
+Text Hints are available for inclusion on ***All*** Question Types.<br/>
+These are short pieces of text that hint at the Answer to the Question
+## Closed Question Hint: *50/50*
+*50/50* Hints are available for inclusion on ***Closed*** Question Types, where the question has 4 Answer Options.<br/>
+These hints remove 2 of the incorrect answers, leaving the player with the Correct Answer, and an Incorrect Answer.
+## Open Question Hint: *Provide Word*
+*Provide Word* Hints are available for inclusion on ***Open*** Question Types.<br/>
+These hints provide the user with one of the required (or optional) words contained within the Answer.
+## Order Question Hint: *Place One*
+*Place One* Hints are available for inclusion on ***Order*** Question Types.<br/>
+These hints provide the position of an answer, which the user is then unable to edit.
 
 ---
 
 ## Question Creation
+This Feature allows the User to create their own Questions for the Quiz, from 1 of the 3 types available.
+Users enter the Question Text, and select what Hints they'd like the Question to have, providing the relevant details.
+Users also select the Question Topics, Difficulty, Points Available, and the 2 Audio Files (Which must be different).
+Users also provide a Fun Fact for the Question, that is displayed after the user has provided their answer.
+
 ## Question Editing
+This allows Users to Edit Questions, with the ability to alter every detail of a Question.
+On Closed Questions, Answer Option Colours can also be altered.
+(NOTE: At Present, editing a question requires the reselection of its Topics)
 
 ---
 
@@ -96,11 +118,13 @@ May replace these with Audio Questions so I don't have to make design modificati
 ## Order Questions
 ## Hints
 ## Scoring
-## Question Review
 ## Retaking Quizzes
 
 ---
 
-# Future Review
+## Question Review
 ## Past Quizzes
+
+---
+
 ## Leaderboards

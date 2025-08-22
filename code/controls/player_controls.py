@@ -2,6 +2,7 @@ import math
 import os
 import random
 
+from classes.guest import Guest
 from classes.player import Player
 
 from controls.file_handler import *
@@ -24,13 +25,11 @@ def valid_int(test: str) -> bool:
 
 def generate_user_id() -> str:
     if len(CommonData.players) == 0: return "U0001"
-
     return f"U{str(int(CommonData.players[-1].user_id.replace("U", "")) + 1).rjust(4, "0")}"
 
 def generate_guest_id() -> str:
     if len(CommonData.guests) == 0: return "G0001"
-
-    return f"G{str(int(CommonData.guests[-1].user_id.replace("G", "")) + 1).rjust(4, "0")}"
+    return f"G{str(int(CommonData.guests[-1].guest_id.replace("G", "")) + 1).rjust(4, "0")}"
 
 def unique_username(username: str, account_username: str | None) -> bool:
     name_sort_users(CommonData.players)
@@ -57,6 +56,14 @@ def username_found(username: str, start_index: int, end_index: int) -> Player:
         return username_found(username, mid_point + 1, end_index)
     else:
         return None
+
+def generate_guest_username() -> str:
+    username: str = f"Guest#{random.randint(1111, 9999)}"
+
+    for guest in CommonData.guests:
+        if guest.username == username: return generate_guest_username()
+
+    return username
 
 def valid_password(password: str) -> bool:
     if len(password) < CommonData.min_password_length:
@@ -186,8 +193,8 @@ def write_user_file(new_user: Player) -> None:
     user_path: str = os.path.join(CommonData.player_folder, f"{new_user.user_id}.json")
     write_json_file(user_path, new_user.make_dictionary())
 
-def write_guest_file(new_guest: Player) -> None:
-    guest_path: str = os.path.join(CommonData.player_folder, f"{new_guest.user_id}.json")
+def write_guest_file(new_guest: Guest) -> None:
+    guest_path: str = os.path.join(CommonData.guests_folder, f"{new_guest.guest_id}.json")
     write_json_file(guest_path, new_guest.make_dictionary())
 
 """

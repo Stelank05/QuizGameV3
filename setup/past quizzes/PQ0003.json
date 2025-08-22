@@ -6,7 +6,11 @@
     "Percentage": 100.0,
     "Correct Count": 6,
     "Incorrect Count": 0,
-    "Hints Used": 0,
+    "Total Hints Used": 0,
+    "Text Hints Used": 0,
+    "Closed Hints Used": 0,
+    "Open Hints Used": 0,
+    "Order Hints Used": 0,
     "Questions": [
         {
             "Question ID": "Q0015",
@@ -15,6 +19,8 @@
                 "Question Number": 1,
                 "Answered Correctly": true,
                 "Awarded Points": 1,
+                "Text Hint Used": false,
+                "Closed Hint Used": false,
                 "Answers": [
                     {"Display Index": 0, "Answer Chosen": false, "Answer Hidden": false},
                     {"Display Index": 1, "Answer Chosen": true, "Answer Hidden": false}
@@ -27,6 +33,8 @@
                 "Question Number": 2,
                 "Answered Correctly": true,
                 "Awarded Points": 3,
+                "Text Hint Used": false,
+                "Closed Hint Used": false,
                 "Answers": [
                     {"Display Index": 0, "Answer Chosen": true, "Answer Hidden": false},
                     {"Display Index": 1, "Answer Chosen": false, "Answer Hidden": false},
@@ -41,6 +49,8 @@
                 "Question Number": 3,
                 "Answered Correctly": true,
                 "Awarded Points": 2,
+                "Text Hint Used": false,
+                "Order Hint Used": false,
                 "Displayed Answer Order": ["Challenger", "Enterprise", "Endeavour", "Columbia", "Atlantis", "Discovery"],
                 "Entered Answer Order": [
                     [3, "Challenger"], [1, "Enterprise"], [6, "Endeavour"], [2, "Columbia"], [5, "Atlantis"], [4, "Discovery"]
@@ -53,6 +63,8 @@
                 "Question Number": 4,
                 "Answered Correctly": true,
                 "Awarded Points": 1,
+                "Text Hint Used": false,
+                "Closed Hint Used": false,
                 "Answers": [
                     {"Display Index": 0, "Answer Chosen": false, "Answer Hidden": false},
                     {"Display Index": 2, "Answer Chosen": true, "Answer Hidden": false},
@@ -67,6 +79,8 @@
                 "Question Number": 5,
                 "Answered Correctly": true,
                 "Awarded Points": 2,
+                "Text Hint Used": false,
+                "Open Hint Used": false,
                 "Entered Answer": "6"
             }
         }, {
@@ -76,6 +90,8 @@
                 "Question Number": 6,
                 "Answered Correctly": true,
                 "Awarded Points": 1,
+                "Text Hint Used": false,
+                "Closed Hint Used": false,
                 "Answers": [
                     {"Display Index": 1, "Answer Chosen": false, "Answer Hidden": false},
                     {"Display Index": 2, "Answer Chosen": false, "Answer Hidden": false},
