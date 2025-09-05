@@ -1,16 +1,16 @@
 from classes.audio import Audio
 from classes.colour import Colour
-from quiz.quiz_past import PastQuiz
+from classes.guest import Guest
 from classes.player import Player
 from classes.topic import Topic
 
 from questions.answer import Answer
 from questions.question_base import BaseQuestion
 
+from quiz.quiz_past import PastQuiz
+
 def id_sort_audios(audio_list: list[Audio]) -> None:
     swap: bool
-
-    temp_audio: Audio
 
     for i in range(len(audio_list) - 1):
         swap = False
@@ -18,10 +18,7 @@ def id_sort_audios(audio_list: list[Audio]) -> None:
         for j in range(len(audio_list) - i - 1):
             if audio_list[j].audio_id > audio_list[j + 1].audio_id:
                 swap = True
-
-                temp_audio = audio_list[j]
-                audio_list[j] = audio_list[j + 1]
-                audio_list[j + 1] = temp_audio
+                audio_list[j], audio_list[j + 1] = audio_list[j + 1], audio_list[j]
 
         if not swap: break
 
@@ -30,18 +27,13 @@ def id_sort_audios(audio_list: list[Audio]) -> None:
 def name_sort_audios(audio_list: list[Audio]) -> None:
     swap: bool
 
-    temp_audio: Audio
-
     for i in range(len(audio_list) - 1):
         swap = False
 
         for j in range(len(audio_list) - i - 1):
             if audio_list[j].audio_name > audio_list[j + 1].audio_name:
                 swap = True
-
-                temp_audio = audio_list[j]
-                audio_list[j] = audio_list[j + 1]
-                audio_list[j + 1] = temp_audio
+                audio_list[j], audio_list[j + 1] = audio_list[j + 1], audio_list[j]
 
         if not swap: break
 
@@ -49,23 +41,19 @@ def name_sort_audios(audio_list: list[Audio]) -> None:
 
 def id_sort_colours(colour_list: list[Colour]) -> None:
     swap: bool
-    temp_colour: Colour
+
     for i in range(len(colour_list) - 1):
         swap = False
 
         for j in range(len(colour_list) - i - 1):
             if colour_list[j].colour_id > colour_list[j + 1].colour_id:
                 swap = True
-
-                temp_colour = colour_list[j]
-                colour_list[j] = colour_list[j + 1]
-                colour_list[j + 1] = temp_colour
+                colour_list[j], colour_list[j + 1] = colour_list[j + 1], colour_list[j]
 
         if not swap: break
 
 def name_sort_colours(colour_list: list[Colour]) -> None:
     swap: bool
-    temp_colour: Colour
 
     for i in range(len(colour_list) - 1):
         swap = False
@@ -73,16 +61,12 @@ def name_sort_colours(colour_list: list[Colour]) -> None:
         for j in range(len(colour_list) - i - 1):
             if colour_list[j].colour_name > colour_list[j + 1].colour_name:
                 swap = True
-
-                temp_colour = colour_list[j]
-                colour_list[j] = colour_list[j + 1]
-                colour_list[j + 1] = temp_colour
+                colour_list[j], colour_list[j + 1] = colour_list[j + 1], colour_list[j]
 
         if not swap: break
 
 def id_sort_topics(topic_list: list[Topic]) -> None:
     swap: bool
-    temp_topic: Topic
 
     for i in range(len(topic_list) - 1):
         swap = False
@@ -90,16 +74,12 @@ def id_sort_topics(topic_list: list[Topic]) -> None:
         for j in range(len(topic_list) - i - 1):
             if topic_list[j].topic_id > topic_list[j + 1].topic_id:
                 swap = True
-
-                temp_topic = topic_list[j]
-                topic_list[j] = topic_list[j + 1]
-                topic_list[j + 1] = temp_topic
+                topic_list[j], topic_list[j + 1] = topic_list[j + 1], topic_list[j]
 
         if not swap: break
 
 def name_sort_topics(topic_list: list[Topic]) -> None:
     swap: bool
-    temp_topic: Topic
 
     for i in range(len(topic_list) - 1):
         swap = False
@@ -107,16 +87,12 @@ def name_sort_topics(topic_list: list[Topic]) -> None:
         for j in range(len(topic_list) - i - 1):
             if topic_list[j].topic_name > topic_list[j + 1].topic_name:
                 swap = True
-
-                temp_topic = topic_list[j]
-                topic_list[j] = topic_list[j + 1]
-                topic_list[j + 1] = temp_topic
+                topic_list[j], topic_list[j + 1] = topic_list[j + 1], topic_list[j]
 
         if not swap: break
 
 def sort_questions(question_list: list[BaseQuestion]) -> None:
     swap: bool
-    temp_question: BaseQuestion
 
     for i in range(len(question_list) - 1):
         swap = False
@@ -124,16 +100,12 @@ def sort_questions(question_list: list[BaseQuestion]) -> None:
         for j in range(len(question_list) - i - 1):
             if question_list[j].question_id > question_list[j + 1].question_id:
                 swap = True
-
-                temp_question = question_list[j]
-                question_list[j] = question_list[j + 1]
-                question_list[j + 1] = temp_question
+                question_list[j], question_list[j + 1] = question_list[j + 1], question_list[j]
 
         if not swap: break
 
 def id_sort_users(user_list: list[Player]) -> None:
     swap: bool
-    temp_user: Player
 
     for i in range(len(user_list) - 1):
         swap = False
@@ -141,16 +113,12 @@ def id_sort_users(user_list: list[Player]) -> None:
         for j in range(len(user_list) - i - 1):
             if user_list[j].user_id > user_list[j + 1].user_id:
                 swap = True
-
-                temp_user = user_list[j]
-                user_list[j] = user_list[j + 1]
-                user_list[j + 1] = temp_user
+                user_list[j], user_list[j + 1] = user_list[j + 1], user_list[j]
 
         if not swap: break
 
 def name_sort_users(user_list: list[Player]) -> None:
     swap: bool
-    temp_user: Player
 
     for i in range(len(user_list) - 1):
         swap = False
@@ -158,16 +126,25 @@ def name_sort_users(user_list: list[Player]) -> None:
         for j in range(len(user_list) - i - 1):
             if user_list[j].username > user_list[j + 1].username:
                 swap = True
+                user_list[j], user_list[j + 1] = user_list[j + 1], user_list[j]
 
-                temp_user = user_list[j]
-                user_list[j] = user_list[j + 1]
-                user_list[j + 1] = temp_user
+        if not swap: break
+
+def id_sort_guests(guest_list: list[Guest]) -> None:
+    swap: bool
+
+    for i in range(len(guest_list) - 1):
+        swap = False
+
+        for j in range(len(guest_list) - i - 1):
+            if guest_list[j].guest_id > guest_list[j + 1].guest_id:
+                swap = True
+                guest_list[j], guest_list[j + 1] = guest_list[j + 1], guest_list[j]
 
         if not swap: break
 
 def sort_quizzes_id(quiz_list: list[PastQuiz]) -> None:
     swap: bool
-    temp_quiz: PastQuiz
 
     for i in range(len(quiz_list) - 1):
         swap = False
@@ -175,11 +152,126 @@ def sort_quizzes_id(quiz_list: list[PastQuiz]) -> None:
         for j in range(len(quiz_list) - i - 1):
             if quiz_list[j].quiz_id > quiz_list[j + 1].quiz_id:
                 swap = True
-
-                temp_quiz = quiz_list[j]
-                quiz_list[j] = quiz_list[j + 1]
-                quiz_list[j + 1] = temp_quiz
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
 
         if not swap: break
 
-# def sort_past_quizzes_id(quiz)
+
+# Past Quiz Sorts
+
+def order_correct(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].correct_count < quiz_list[j + 1].correct_count:
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_incorrect(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].incorrect_count < quiz_list[j + 1].incorrect_count:
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_correct_percentage(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].correct_percentage < quiz_list[j + 1].correct_percentage:
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_score(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].score < quiz_list[j + 1].score:
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_max_score(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].max_score < quiz_list[j + 1].max_score:
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_score_percentage(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].percentage < quiz_list[j + 1].percentage:
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_hints_used(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if quiz_list[j].total_hints_used < quiz_list[j + 1].total_hints_used:
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_quiz_length_hl(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if len(quiz_list[j].questions) < len(quiz_list[j + 1].questions):
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break
+
+def order_quiz_length_lh(quiz_list: list[PastQuiz]) -> None:
+    swap: bool
+
+    for i in range(len(quiz_list) - 1):
+        swap = False
+
+        for j in range(len(quiz_list) - i - 1):
+            if len(quiz_list[j].questions) > len(quiz_list[j + 1].questions):
+                swap = True
+                quiz_list[j], quiz_list[j + 1] = quiz_list[j + 1], quiz_list[j]
+
+        if not swap: break

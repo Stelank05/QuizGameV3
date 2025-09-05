@@ -25,6 +25,7 @@ from quiz.quiz import Quiz
 
 from window.answer_creator_closed import ClosedAnswerCreator
 from window.answer_creator_order import OrderAnswerCreator
+from window.leaderboard_row import LeaderboardRow
 from window.question_design import QuestionDesign
 from window.window_components import WindowComponents
 from window.window_controls import WindowControls
@@ -868,8 +869,100 @@ class WindowDesign:
         back_button: Button = Button(WindowComponents.view_past_quiz_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Past Quizzes", "View Account"))
         back_button.place(x = 25, y = 270, width = 175, height = 30)
 
-    def create_view_leaderboard_page() -> None: messagebox.showinfo("Page Doesn't Exist", "This Page Doesn't Exist Yet")
+    def create_view_leaderboard_page() -> None:
+        WindowComponents.view_leaderboard_page = Toplevel(WindowComponents.window)
+        WindowComponents.active_pages.append(WindowComponents.view_leaderboard_page)
 
+        frame_width: int = 1440
+        frame_height: int = 430
+
+        WindowComponents.view_leaderboard_page.geometry(f"{frame_width}x{frame_height}")
+        WindowComponents.view_leaderboard_page.config(bg = WindowComponents.window_colours[0].colour_code)
+
+        WindowComponents.position_frame(WindowComponents.view_leaderboard_page, [frame_width, frame_height])
+        WindowComponents.make_active(WindowComponents.view_leaderboard_page)
+
+        # Position
+        position_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Pos", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        position_header.place(x = 25, y = 25, width = 60, height = 30)
+
+        # Username
+        username_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Username", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        username_header.place(x = 90, y = 25, width = 150, height = 30)
+        
+        # Quiz Length
+        quiz_length_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Quiz Length", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        quiz_length_header.place(x = 245, y = 25, width = 120, height = 30)
+        
+        # Score Details
+        score_details_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Score", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        score_details_header.place(x = 370, y = 25, width = 170, height = 30)
+        
+        # Correct / Incorrect Counts
+        count_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Correct / Incorrect", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        count_header.place(x = 545, y = 25, width = 255, height = 30)
+        
+        # Hints Used
+        hints_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Hints Used", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        hints_header.place(x = 805, y = 25, width = 325, height = 30)
+
+        # Review Header
+        review_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Review Quiz", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        review_header.place(x = 1135, y = 25, width = 100, height = 30)
+
+        WindowComponents.quiz_rows.clear()
+        for i in range(10):
+            WindowComponents.quiz_rows.append(LeaderboardRow(WindowComponents.view_leaderboard_page, [WindowComponents.label_colours[0].colour_code, WindowComponents.label_colours[1].colour_code], WindowComponents.button_colours, WindowComponents.main_font, 60 + (35 * i)))
+
+        WindowControls.display_all_quizzes()
+
+        # Control Buttons
+        #  0. Header
+        control_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Controls", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        control_header.place(x = 1240, y = 25, width = 175, height = 30)
+
+        #  1.  Order by Correct
+        order_correct: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Correct", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_correct)
+        order_correct.place(x = 1240, y = 60, width = 175, height = 30)
+
+        #  2.  Order by Incorrect
+        order_incorrect: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Incorrect", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_incorrect)
+        order_incorrect.place(x = 1240, y = 95, width = 175, height = 30)
+
+        #  3.  Order by Correct %
+        order_correct_percentage: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Correct %", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_correct_percentage)
+        order_correct_percentage.place(x = 1240, y = 130, width = 175, height = 30)
+
+        #  4.  Order by Total Score
+        order_score: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Score", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_score)
+        order_score.place(x = 1240, y = 165, width = 175, height = 30)
+
+        #  5.  Order by Max Score
+        order_max_score: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Max Score", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_max_score)
+        order_max_score.place(x = 1240, y = 200, width = 175, height = 30)
+
+        #  6.  Order by Score %
+        order_score_percentage: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Score %", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_score_percentage)
+        order_score_percentage.place(x = 1240, y = 235, width = 175, height = 30)
+
+        #  7.  Order by Hints Used
+        order_hints: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Hints Used", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_hints_used)
+        order_hints.place(x = 1240, y = 270, width = 175, height = 30)
+
+        #  8.  Center
+        center_page: Button = Button(WindowComponents.view_leaderboard_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowComponents.position_frame, WindowComponents.view_leaderboard_page, [frame_width, frame_height]))
+        center_page.place(x = 1240, y = 305, width = 175, height = 30)
+
+        #  9.  Clear
+        clear_leaderboard: Button = Button(WindowComponents.view_leaderboard_page, text = "Clear", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.clear_quizzes)
+        clear_leaderboard.place(x = 1240, y = 340, width = 175, height = 30)
+
+        #  10. Back
+        back_button: Button = Button(WindowComponents.view_leaderboard_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Leaderboard", "Home Page"))
+        back_button.place(x = 1240, y = 375, width = 175, height = 30)
+
+        #  Order by <Difficulty>
+        #  Order by <Type>
 
     # Question Editor Frames
 
@@ -1394,7 +1487,7 @@ class WindowDesign:
 
         user_data: dict = WindowControls.jsonify_user_data()
 
-        new_user: Player = Player("Player", user_data)
+        new_user: Player = Player(user_data)
         write_user_file(new_user)
 
         WindowComponents.active_user = new_user
@@ -1474,12 +1567,6 @@ class WindowDesign:
             WindowComponents.choose_colours.deiconify()
 
     def page_controller(from_frame: str, to_frame: str, do_hide_edit: bool = False, do_hide_account: bool = True) -> None:
-        incomplete: list[str] = ["View Leaderboard"]
-
-        if to_frame in incomplete:
-            messagebox.showinfo("Page Doesn't Exist", "This Page Can't Be Displayed As It Doesn't Exist")
-            return 0
-
         # Hide From Frame
         match from_frame:
             case "Login Page": WindowComponents.login_page.destroy() 
@@ -1505,7 +1592,7 @@ class WindowDesign:
                 if do_hide_account: WindowComponents.view_account_page.destroy()
             case "Edit Account": WindowComponents.edit_account_page.destroy()
             case "View Past Quizzes": WindowComponents.view_past_quiz_page.destroy()
-            case "View Leaderboard": pass
+            case "View Leaderboard": WindowComponents.view_leaderboard_page.destroy()
 
         # Deiconify To Frame
         match to_frame:
@@ -1540,4 +1627,4 @@ class WindowDesign:
             case "View Account":WindowDesign.create_view_account_page()
             case "Edit Account": WindowDesign.create_edit_account_page()
             case "View Past Quizzes": WindowDesign.create_view_past_quizzes_page()
-            case "View Leaderboard": pass
+            case "View Leaderboard": WindowDesign.create_view_leaderboard_page()

@@ -10,8 +10,8 @@ class Player:
         # User Colours - As ID Codes
         self.window_colours: list[str] = player_data["Colours"]["Window Colours"]
         self.button_colours: list[str] = player_data["Colours"]["Button Colours"]
-        self.label_colours: list[str] = player_data["Colours"]["Entry Colours"]
-        self.entry_colours: list[str] = player_data["Colours"]["Label Colours"]
+        self.label_colours: list[str] = player_data["Colours"]["Label Colours"]
+        self.entry_colours: list[str] = player_data["Colours"]["Entry Colours"]
 
         self.high_score: float = float(player_data["High Score"])
 

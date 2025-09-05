@@ -156,7 +156,7 @@ class WindowControls:
     def begin_quiz_review() -> None:
         WindowComponents.review_mode = "Past Quiz"
 
-        WindowComponents.view_past_quiz_page.deiconify()
+        WindowComponents.view_past_quiz_page.withdraw()
         WindowControls.review_question(WindowComponents.current_past_quiz.questions[0])
 
 
@@ -941,7 +941,7 @@ class WindowControls:
         WindowComponents.current_quiz.theoretical_max += question.question_points
 
         if question.answered_correctly:
-            WindowComponents.current_quiz.current_score += question.awarded_points
+            WindowComponents.current_quiz.current_score += round(question.awarded_points, 1)
             WindowComponents.current_quiz.correct_count += 1
             AudioControls.play_audio(CommonData.get_audio_from_id(question.correct_audio, 0, len(CommonData.audio_list)).audio_file)
         else:
@@ -1055,9 +1055,12 @@ class WindowControls:
         if WindowComponents.review_mode == "Quiz":
             WindowComponents.finish_quiz_page.update()
             WindowComponents.finish_quiz_page.deiconify()
-        else:
+        elif WindowComponents.review_mode == "Past Quiz":
             WindowComponents.view_past_quiz_page.update()
             WindowComponents.view_past_quiz_page.deiconify()
+        else:
+            WindowComponents.view_leaderboard_page.update()
+            WindowComponents.view_leaderboard_page.deiconify()
     
     def finish_quiz() -> None:
         WindowComponents.current_quiz.quiz_complete = True
@@ -1207,6 +1210,84 @@ class WindowControls:
                     WindowComponents.quiz_answers[j + 1] = temp
 
             if not swap: break
+
+
+    # Leaderboard Functions
+
+    def display_quizzes() -> None:
+        disp_count: int = len(CommonData.past_quizzes)
+        if len(WindowComponents.quiz_rows) < disp_count: disp_count = len(WindowComponents.quiz_rows)
+
+        WindowControls.clear_quizzes()
+        for i in range(disp_count):
+            WindowComponents.quiz_rows[i].set_quiz(CommonData.past_quizzes[i], f"P{i + 1}")
+            WindowComponents.quiz_rows[i].review_button.configure(command = functools.partial(WindowControls.begin_past_review, CommonData.past_quizzes[i]))
+
+    def clear_quizzes() -> None:
+        for i in range(len(WindowComponents.quiz_rows)): WindowComponents.quiz_rows[i].clear_quiz()
+    
+    def begin_past_review(quiz: PastQuiz) -> None:
+        WindowComponents.current_past_quiz = quiz
+
+        WindowComponents.review_mode = "Review Quiz"
+
+        WindowComponents.view_leaderboard_page.withdraw()
+        WindowControls.review_question(WindowComponents.current_past_quiz.questions[0])
+
+    def display_all_quizzes() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
+
+    def display_correct() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        order_quiz_length_lh(CommonData.past_quizzes)
+        order_max_score(CommonData.past_quizzes)
+        order_correct_percentage(CommonData.past_quizzes)
+        order_correct(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
+
+    def display_incorrect() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        order_quiz_length_lh(CommonData.past_quizzes)
+        order_max_score(CommonData.past_quizzes)
+        order_correct_percentage(CommonData.past_quizzes)
+        order_incorrect(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
+
+    def display_correct_percentage() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        order_quiz_length_hl(CommonData.past_quizzes)
+        order_max_score(CommonData.past_quizzes)
+        order_correct_percentage(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
+
+    def display_score() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        order_quiz_length_lh(CommonData.past_quizzes)
+        order_score_percentage(CommonData.past_quizzes)
+        order_score(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
+
+    def display_max_score() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        order_quiz_length_lh(CommonData.past_quizzes)
+        order_max_score(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
+
+    def display_score_percentage() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        order_quiz_length_hl(CommonData.past_quizzes)
+        order_max_score(CommonData.past_quizzes)
+        order_score_percentage(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
+
+    def display_hints_used() -> None:
+        sort_quizzes_id(CommonData.past_quizzes)
+        order_max_score(CommonData.past_quizzes)
+        order_score_percentage(CommonData.past_quizzes)
+        order_quiz_length_hl(CommonData.past_quizzes)
+        order_hints_used(CommonData.past_quizzes)
+        WindowControls.display_quizzes()
 
 
     # Clear Functions

@@ -17,6 +17,8 @@ from quiz.answer_past import PastAnswer
 from quiz.quiz import Quiz
 from quiz.quiz_past import PastQuiz
 
+from window.leaderboard_row import LeaderboardRow
+
 class WindowComponents:
     window: Tk
 
@@ -37,6 +39,7 @@ class WindowComponents:
     view_account_page: Toplevel = None
     edit_account_page: Toplevel = None
     view_past_quiz_page: Toplevel = None
+    view_leaderboard_page: Toplevel = None
 
     #  Home Page
     home_page: Toplevel = None
@@ -76,6 +79,11 @@ class WindowComponents:
     quiz_hints_order_output: Label = None
 
     current_past_quiz: PastQuiz = None
+
+
+    # Leaderboard Page
+
+    quiz_rows: list[LeaderboardRow] = []
 
 
     # New Things

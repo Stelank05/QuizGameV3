@@ -27,8 +27,10 @@ class PastQuiz:
         self.open_hints_used: int = past_quiz_data["Open Hints Used"]
         self.order_hints_used: int = past_quiz_data["Order Hints Used"]
 
-        if question_list == None: self.load_past_questions(past_quiz_data["Questions"], question_folder)
-        else: self.questions: list[BaseQuestion] = question_list
+        if question_list == None: self.questions =self.load_past_questions(past_quiz_data["Questions"], question_folder)
+        else: self.questions = question_list
+        
+        self.correct_percentage: int = round((self.correct_count / len(self.questions)) * 100, 1)
  
     def __str__(self) -> str:
         return f"{self.quiz_id} - {len(self.questions)} Questions"

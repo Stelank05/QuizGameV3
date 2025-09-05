@@ -278,6 +278,17 @@ class CommonData:
         elif CommonData.players[mid_point].username > account_name: return CommonData.get_account_from_name(account_name, start_index, mid_point - 1)
         else: return CommonData.get_account_from_name(account_name, mid_point + 1, end_index)
     
+    def get_guest_from_id(account_id: str, start_index: int, end_index: int) -> Guest:
+        id_sort_guests(CommonData.guests)
+
+        if start_index > end_index: return None
+        
+        mid_point: int = math.floor((start_index + end_index) / 2)
+
+        if CommonData.guests[mid_point].guest_id == account_id: return CommonData.guests[mid_point]
+        elif CommonData.guests[mid_point].guest_id > account_id: return CommonData.get_guest_from_id(account_id, start_index, mid_point - 1)
+        else: return CommonData.get_guest_from_id(account_id, mid_point + 1, end_index)
+
     def get_usable_question(question_id: str, start_index: int, end_index: int) -> BaseQuestion:
         sort_questions(CommonData.usable_questions)
 

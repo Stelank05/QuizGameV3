@@ -1,27 +1,21 @@
 # QuizGameV3
 
 So I may've started this in December, maybe January, but I've had to deal with Assignments, other Things I like working on, my oversized Garden, and sleeping. That is an incomplete list.<br/>
-Anyway, now it's July, and I've gotten to making good progress.<br/>
-
-<br/>(I've also decided that I can make this in a different, better way, that I'll do after I've finished this version so that I have a basis to work off for that)<br/>
-Unfinished Sections of this README indicate features that are included within the Code already, or will be in the future<br/>
-
-Sorry Aimee if you see this, but despite all the Modules you taught over the last 2 years, I didn't do any prior Design, or Wireframes, nor proper documented testing / using PyTest.
+Anyway, now it was July when I got back to working on this, and it's early September as it was basically complete (minus Picture Questions)<br/>
 
 ---
 
-# WARNINGS
-## File Issues
+## WARNING - File Issues
 If it doesn't run properly, it might be because so far it has only been ran and tested in Visual Studio Code, with the Folder Open, not running from the main.py file, which will produce different starting files.<br/>
 There is a provision to try and offset this issue, however I'm not sure if it works, as I haven't tested it yet.
-## Required Python Packages
+## WARNING - Required Python Packages
 This Application uses the PyGame and Pillow Python Packages in order to play Audio Clips and handle Image Files, ensure you have these Packages Installed before attempting to run the program.
 
 ---
 
 # Account Details
 ## Login
-If you dont want to create an account, then use 'stephenaccount3' as the username, and 'coloursyay' as the password, in order to access the application.
+If you dont want to create an account, yet have access to the full range of functionality, then use 'stephenaccount3' as the username, and 'coloursyay' as the password, in order to access the application.
 ## Create Account
 You can create your own account, using the Create Account Page.<br/>
 You provide a Username and a Password, and then choose the Colours you'd like for your profile.<br/>
@@ -32,8 +26,9 @@ Passwords are Encrypted using a Caesar Cypher applied individually to Consonants
 These shifts all differ, and are randomly generated at Account Creation, and each time the User changes their Password thereafter.
 As this is a (now not so) basic Quiz Game, password security wasn't a major consideration, however this is a nice attempt at some form.
 ## Guest Accounts
-Guest Accounts are a Type of Account that cannot be accessed when the user logs out.
+Guest Accounts are a Type of Account that can only be used once, and cannot be accessed again once the user logs out.
 They use the default Colour Scheme of the Application (Colours on the Login Page), and can only complete Quizzes, being sent straight to the Quiz Setup Page.
+Their Quizzes are Saved, and can be reviewed by Full Accounts via the Leaderabord Page (Which Currently doesn't Exist)
 
 ---
 
@@ -113,18 +108,28 @@ On Closed Questions, Answer Option Colours can also be altered.
 ---
 
 # Quiz System
-## Closed Questions
-## Open Questions
-## Order Questions
+## Quiz Setup
+Before the Player begins a Quiz, they will have the option to select the Quiz Topics, the Types of Questions, the the difficulty of Questions, as well as the Quiz Length.<br/>
+Currently, Image Questions are permanently unavailable, as the UI Pages do not yet exist.
 ## Hints
+Hints help the Player to answer the question correctly, but come at a cost of 1/3rd of the Original Points Offering of the Question (ie. a 3 point Question will have a 1 point Penalty Cost)
 ## Scoring
+Each Question has a Score ranging from 1-4 points attatched to it.<br/>
+This score is lessened for each hint used.
+## Question Review
+The Player, during the Quiz, will have the ability to go back and review questions that they have previously answered, as well as the ability to return to the Current Question.
 ## Retaking Quizzes
+When the Player has completed a Quiz, they will have the option of redoing the Quiz, in order to better their score, if they so wish.<br/>
+The Quiz will contain all the same Questions, however the order which they are presented to the Player, and the order of Closed Question Answers, will be different.
+## Exiting the Quiz
+At any point during the Quiz, the Player will be able to exit the Quiz, this will not be saved as a Quiz Attempt, and will not effect the Players High Score.
 
 ---
 
-## Question Review
-## Past Quizzes
+## Quiz Review
+As with during a Quiz, the Player can review Quizzes that they have completed previously, either via the View Past Quizzes Page (via View Account), or via the Leaderboard Page (If it is in the Top 10 Quizzes of the chosen Sort Option), or that another Player has previously completed, via the Leaderboard Page.
 
 ---
 
 ## Leaderboards
+Leaderboards are a way for Players to compare their Quiz Attempts to other Players, with 7 Different Ways of Ordering the Leaderboard, including options based on Score, Hints Used, or Questions Answered Correctly.
