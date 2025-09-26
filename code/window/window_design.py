@@ -75,7 +75,6 @@ class WindowDesign:
         exit_button.place(x = 25, y = 315, width = 175, height = 30)
 
     def create_create_account_page() -> None:
-        # WindowComponents.login_page.withdraw()
         WindowComponents.create_account_page = Toplevel(WindowComponents.window)
 
         frame_width: int = 445
@@ -249,7 +248,7 @@ class WindowDesign:
         username_label: Label = Label(WindowComponents.home_page, text = f"Username: {WindowComponents.active_user.username}", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         username_label.place(x = 25, y = 25, width = 175, height = 30)
 
-        high_score_label: Label = Label(WindowComponents.home_page, text = f"High Score: {WindowComponents.active_user.high_score}", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        high_score_label: Label = Label(WindowComponents.home_page, text = f"High Score: {WindowComponents.active_user.high_score} / {WindowComponents.active_user.high_score_percentage}%", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         high_score_label.place(x = 210, y = 25, width = 175, height = 30)
 
         play_quiz_button: Button = Button(WindowComponents.home_page, text = "Play Quiz", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "Home Page", "Setup Quiz"))
@@ -607,7 +606,7 @@ class WindowDesign:
         WindowComponents.active_pages.append(WindowComponents.edit_audio_page)
 
         frame_width: int = 415
-        frame_height: int = 345
+        frame_height: int = 375
 
         WindowComponents.edit_audio_page.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.edit_audio_page.config(bg = WindowComponents.window_colours[0].colour_code)
@@ -617,32 +616,31 @@ class WindowDesign:
 
         # Controls
         WindowComponents.audios_listbox = Listbox(WindowComponents.edit_audio_page, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.audios_listbox.place(x = 25, y = 25, width = 175, height = 185)
+        WindowComponents.audios_listbox.place(x = 25, y = 25, width = 175, height = 215)
 
-        id_sort_audios(CommonData.audio_list)
-        for audio in CommonData.audio_list:
-            WindowComponents.audios_listbox.insert('end', f"{audio.audio_id} - {audio.audio_name}")
+        id_sort_audios(CommonData.full_audio_list)
+        for audio in CommonData.full_audio_list: WindowComponents.audios_listbox.insert('end', f"{audio.audio_id} - {audio.audio_name}")
 
         select_audio: Button = Button(WindowComponents.edit_audio_page, text = "Select Audio", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = AudioControls.select_audio)
-        select_audio.place(x = 25, y = 220, width = 175, height = 30)
+        select_audio.place(x = 25, y = 250, width = 175, height = 30)
 
         revert_audio: Button = Button(WindowComponents.edit_audio_page, text = "Revert Changes", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = AudioControls.revert_audio)
-        revert_audio.place(x = 25, y = 255, width = 175, height = 30)
+        revert_audio.place(x = 25, y = 285, width = 175, height = 30)
 
         back_button: Button = Button(WindowComponents.edit_audio_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "Edit Audios", "Home Page"))
-        back_button.place(x = 25, y = 290, width = 85, height = 30)
+        back_button.place(x = 25, y = 320, width = 85, height = 30)
 
         centre_window: Button = Button(WindowComponents.edit_audio_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowComponents.position_frame, WindowComponents.edit_audio_page, [frame_width, frame_height]))
-        centre_window.place(x = 115, y = 290, width = 85, height = 30)
+        centre_window.place(x = 115, y = 320, width = 85, height = 30)
 
         update_audio: Button = Button(WindowComponents.edit_audio_page, text = "Update Audio", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = AudioControls.update_audio)
-        update_audio.place(x = 215, y = 220, width = 175, height = 30)
+        update_audio.place(x = 215, y = 250, width = 175, height = 30)
 
         create_audio: Button = Button(WindowComponents.edit_audio_page, text = "Create Audio", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = AudioControls.create_audio)
-        create_audio.place(x = 215, y = 255, width = 175, height = 30)
+        create_audio.place(x = 215, y = 285, width = 175, height = 30)
 
         clear_audio: Button = Button(WindowComponents.edit_audio_page, text = "Clear Audio", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = AudioControls.clear_audio)
-        clear_audio.place(x = 215, y = 290, width = 175, height = 30)
+        clear_audio.place(x = 215, y = 320, width = 175, height = 30)
 
         # Right Hand Side
         audio_name_header: Label = Label(WindowComponents.edit_audio_page, text = "Audio Name", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
@@ -652,20 +650,23 @@ class WindowDesign:
         WindowComponents.audio_name_entry.place(x = 215, y = 60, width = 175, height = 30)
 
         audio_file_header: Label = Label(WindowComponents.edit_audio_page, text = "Audio File", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
-        audio_file_header.place(x = 215, y = 105, width = 175, height = 30)
+        audio_file_header.place(x = 215, y = 100, width = 175, height = 30)
 
         WindowComponents.audio_file_entry = Entry(WindowComponents.edit_audio_page, bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code, font = WindowComponents.main_font)
-        WindowComponents.audio_file_entry.place(x = 215, y = 140, width = 175, height = 30)
+        WindowComponents.audio_file_entry.place(x = 215, y = 135, width = 175, height = 30)
 
         preview_audio_button: Button = Button(WindowComponents.edit_audio_page, text = "Preview Audio", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = AudioControls.preview_audio)
-        preview_audio_button.place(x = 215, y = 180, width = 175, height = 30)
+        preview_audio_button.place(x = 215, y = 170, width = 175, height = 30)
+
+        WindowComponents.audio_type_toggle = Button(WindowComponents.edit_audio_page, text = "Audio Type: Correct", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = AudioControls.toggle_audio_type)
+        WindowComponents.audio_type_toggle.place(x = 215, y = 210, width = 175, height = 30)
 
     def create_view_account_page() -> None:
         WindowComponents.view_account_page = Toplevel(WindowComponents.window)
         WindowComponents.active_pages.append(WindowComponents.view_account_page)
 
         frame_width: int = 225
-        frame_height: int = 185
+        frame_height: int = 220
 
         WindowComponents.view_account_page.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.view_account_page.config(bg = WindowComponents.window_colours[0].colour_code)
@@ -682,11 +683,14 @@ class WindowDesign:
         view_past_quizzes_button: Button = Button(WindowComponents.view_account_page, text = "View Past Quizzes", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Account", "View Past Quizzes"))
         view_past_quizzes_button.place(x = 25, y = 95, width = 175, height = 30)
 
+        leaderboard_settings_button: Button = Button(WindowComponents.view_account_page, text = "Update Leaderboard Settings", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font , command = functools.partial(WindowDesign.page_controller, "View Account", "Leaderboard Settings")) #, do_hide_account = False))
+        leaderboard_settings_button.place(x = 25, y = 130, width = 175, height = 30)
+
         back_button: Button = Button(WindowComponents.view_account_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Account", "Home Page"))
-        back_button.place(x = 25, y = 130, width = 85, height = 30)
+        back_button.place(x = 25, y = 165, width = 85, height = 30)
 
         centre_window: Button = Button(WindowComponents.view_account_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowComponents.position_frame, WindowComponents.view_account_page, [frame_width, frame_height]))
-        centre_window.place(x = 115, y = 130, width = 85, height = 30)
+        centre_window.place(x = 115, y = 165, width = 85, height = 30)
 
     def create_edit_account_page() -> None:
         WindowComponents.edit_account_page = Toplevel(WindowComponents.window)
@@ -869,100 +873,184 @@ class WindowDesign:
         back_button: Button = Button(WindowComponents.view_past_quiz_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Past Quizzes", "View Account"))
         back_button.place(x = 25, y = 270, width = 175, height = 30)
 
+    def create_edit_leaderboard_settings_page() -> None:
+        WindowComponents.edit_leaderboard_settings_page = Toplevel(WindowComponents.window)
+        WindowComponents.active_pages.append(WindowComponents.edit_leaderboard_settings_page)
+
+        frame_width: int = 315
+        frame_height: int = 325
+
+        WindowComponents.edit_leaderboard_settings_page.geometry(f"{frame_width}x{frame_height}")
+        WindowComponents.edit_leaderboard_settings_page.config(bg = WindowComponents.window_colours[0].colour_code)
+
+        WindowComponents.position_frame(WindowComponents.edit_leaderboard_settings_page, [frame_width, frame_height])
+        WindowComponents.make_active(WindowComponents.edit_leaderboard_settings_page)
+
+        header_label: Label = Label(WindowComponents.edit_leaderboard_settings_page, text = "Edit Leaderboard Settings", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        header_label.place(x = 25, y = 25, width = 265, height = 30)
+
+        # Hide Max Score
+        hide_max_score_label: Label = Label(WindowComponents.edit_leaderboard_settings_page, text = "Max Score", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hide_max_score_label.place(x = 25, y = 60, width = 175, height = 30)
+        
+        WindowComponents.hide_max_score_button = Button(WindowComponents.edit_leaderboard_settings_page, bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.set_hide_max_score)
+        WindowComponents.hide_max_score_button.place(x = 205, y = 60, width = 85, height = 30)
+
+        # Hide Score Percentage
+        hide_score_percentage_label: Label = Label(WindowComponents.edit_leaderboard_settings_page, text = "Score Percentage", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hide_score_percentage_label.place(x = 25, y = 95, width = 175, height = 30)
+        
+        WindowComponents.hide_score_percentage_button = Button(WindowComponents.edit_leaderboard_settings_page, bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.set_hide_score_percentage)
+        WindowComponents.hide_score_percentage_button.place(x = 205, y = 95, width = 85, height = 30)
+
+        # Hide Questions Incorrect
+        hide_questions_incorrect_label: Label = Label(WindowComponents.edit_leaderboard_settings_page, text = "Incorrect Count", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hide_questions_incorrect_label.place(x = 25, y = 130, width = 175, height = 30)
+        
+        WindowComponents.hide_incorrect_count_button = Button(WindowComponents.edit_leaderboard_settings_page, bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.set_hide_incorrect_count)
+        WindowComponents.hide_incorrect_count_button.place(x = 205, y = 130, width = 85, height = 30)
+
+        # Hide Question Percentage
+        hide_question_percentage_label: Label = Label(WindowComponents.edit_leaderboard_settings_page, text = "Question Percentage", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hide_question_percentage_label.place(x = 25, y = 165, width = 175, height = 30)
+        
+        WindowComponents.hide_question_percentage_button = Button(WindowComponents.edit_leaderboard_settings_page, bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.set_hide_question_percentage)
+        WindowComponents.hide_question_percentage_button.place(x = 205, y = 165, width = 85, height = 30)
+
+        # Hide Hint Breakdown
+        hide_hint_breakdown_label: Label = Label(WindowComponents.edit_leaderboard_settings_page, text = "Hint Breakdown", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        hide_hint_breakdown_label.place(x = 25, y = 200, width = 175, height = 30)
+        
+        WindowComponents.hide_hint_breakdown_button = Button(WindowComponents.edit_leaderboard_settings_page, bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.set_hide_hint_breakdown)
+        WindowComponents.hide_hint_breakdown_button.place(x = 205, y = 200, width = 85, height = 30)
+
+        # Controls (Reset, Revert, Back)
+        back_button: Button = Button(WindowComponents.edit_leaderboard_settings_page, text = "Apply Changes", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.update_leaderboard_settings)
+        back_button.place(x = 25, y = 235, width = 265, height = 30)
+
+        back_button: Button = Button(WindowComponents.edit_leaderboard_settings_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "Leaderboard Settings", "View Account"))
+        back_button.place(x = 25, y = 270, width = 85, height = 30)
+        
+        reset_settings: Button = Button(WindowComponents.edit_leaderboard_settings_page, text = "Reset", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.reset_leaderboard_settings)
+        reset_settings.place(x = 115, y = 270, width = 85, height = 30)
+        
+        revert_settings: Button = Button(WindowComponents.edit_leaderboard_settings_page, text = "Revert", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.set_leaderboard_settings)
+        revert_settings.place(x = 205, y = 270, width = 85, height = 30)
+
+        WindowControls.set_leaderboard_settings()
+
     def create_view_leaderboard_page() -> None:
         WindowComponents.view_leaderboard_page = Toplevel(WindowComponents.window)
+        WindowComponents.view_leaderboard_page.withdraw()
         WindowComponents.active_pages.append(WindowComponents.view_leaderboard_page)
 
-        frame_width: int = 1440
         frame_height: int = 430
 
-        WindowComponents.view_leaderboard_page.geometry(f"{frame_width}x{frame_height}")
         WindowComponents.view_leaderboard_page.config(bg = WindowComponents.window_colours[0].colour_code)
-
-        WindowComponents.position_frame(WindowComponents.view_leaderboard_page, [frame_width, frame_height])
-        WindowComponents.make_active(WindowComponents.view_leaderboard_page)
 
         # Position
         position_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Pos", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
         position_header.place(x = 25, y = 25, width = 60, height = 30)
 
         # Username
-        username_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Username", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
+        username_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Player Username", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
         username_header.place(x = 90, y = 25, width = 150, height = 30)
         
         # Quiz Length
         quiz_length_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Quiz Length", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
         quiz_length_header.place(x = 245, y = 25, width = 120, height = 30)
         
+        x_value: int = 370
+        score_header_width: int = 170
+
+        if WindowComponents.active_user.hide_max_score: score_header_width -= 50
+        if WindowComponents.active_user.hide_score_percentage: score_header_width -= 70
+
         # Score Details
         score_details_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Score", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
-        score_details_header.place(x = 370, y = 25, width = 170, height = 30)
+        score_details_header.place(x = 370, y = 25, width = score_header_width, height = 30)
+        x_value += score_header_width + 5
         
+        count_header_width: int = 255
+
+        if WindowComponents.active_user.hide_incorrect_count: count_header_width -= 85
+
         # Correct / Incorrect Counts
         count_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Correct / Incorrect", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
-        count_header.place(x = 545, y = 25, width = 255, height = 30)
+        count_header.place(x = x_value, y = 25, width = count_header_width, height = 30)
+        x_value += count_header_width + 5
         
+        hint_header_width: int = 325 # (65 * 5)
+
+        if WindowComponents.active_user.hide_hint_breakdown: hint_header_width = 100
+
         # Hints Used
         hints_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Hints Used", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
-        hints_header.place(x = 805, y = 25, width = 325, height = 30)
+        hints_header.place(x = x_value, y = 25, width = hint_header_width, height = 30)
+        x_value += hint_header_width + 5
 
         # Review Header
         review_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Review Quiz", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
-        review_header.place(x = 1135, y = 25, width = 100, height = 30)
+        review_header.place(x = x_value, y = 25, width = 100, height = 30)
+        x_value += 105
 
         WindowComponents.quiz_rows.clear()
         for i in range(10):
-            WindowComponents.quiz_rows.append(LeaderboardRow(WindowComponents.view_leaderboard_page, [WindowComponents.label_colours[0].colour_code, WindowComponents.label_colours[1].colour_code], WindowComponents.button_colours, WindowComponents.main_font, 60 + (35 * i)))
+            WindowComponents.quiz_rows.append(LeaderboardRow(WindowComponents.view_leaderboard_page, WindowComponents.active_user, [WindowComponents.label_colours[0].colour_code, WindowComponents.label_colours[1].colour_code], WindowComponents.button_colours, WindowComponents.main_font, 60 + (35 * i)))
 
         WindowControls.display_all_quizzes()
 
         # Control Buttons
         #  0. Header
         control_header: Label = Label(WindowComponents.view_leaderboard_page, text = "Controls", bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
-        control_header.place(x = 1240, y = 25, width = 175, height = 30)
+        control_header.place(x = x_value, y = 25, width = 175, height = 30)
 
         #  1.  Order by Correct
         order_correct: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Correct", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_correct)
-        order_correct.place(x = 1240, y = 60, width = 175, height = 30)
+        order_correct.place(x = x_value, y = 60, width = 175, height = 30)
 
         #  2.  Order by Incorrect
         order_incorrect: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Incorrect", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_incorrect)
-        order_incorrect.place(x = 1240, y = 95, width = 175, height = 30)
+        order_incorrect.place(x = x_value, y = 95, width = 175, height = 30)
 
         #  3.  Order by Correct %
         order_correct_percentage: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Correct %", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_correct_percentage)
-        order_correct_percentage.place(x = 1240, y = 130, width = 175, height = 30)
+        order_correct_percentage.place(x = x_value, y = 130, width = 175, height = 30)
 
         #  4.  Order by Total Score
         order_score: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Score", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_score)
-        order_score.place(x = 1240, y = 165, width = 175, height = 30)
+        order_score.place(x = x_value, y = 165, width = 175, height = 30)
 
         #  5.  Order by Max Score
         order_max_score: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Max Score", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_max_score)
-        order_max_score.place(x = 1240, y = 200, width = 175, height = 30)
+        order_max_score.place(x = x_value, y = 200, width = 175, height = 30)
 
         #  6.  Order by Score %
         order_score_percentage: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Score %", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_score_percentage)
-        order_score_percentage.place(x = 1240, y = 235, width = 175, height = 30)
+        order_score_percentage.place(x = x_value, y = 235, width = 175, height = 30)
 
         #  7.  Order by Hints Used
         order_hints: Button = Button(WindowComponents.view_leaderboard_page, text = "Order by Hints Used", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.display_hints_used)
-        order_hints.place(x = 1240, y = 270, width = 175, height = 30)
+        order_hints.place(x = x_value, y = 270, width = 175, height = 30)
 
         #  8.  Center
-        center_page: Button = Button(WindowComponents.view_leaderboard_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowComponents.position_frame, WindowComponents.view_leaderboard_page, [frame_width, frame_height]))
-        center_page.place(x = 1240, y = 305, width = 175, height = 30)
+        center_page: Button = Button(WindowComponents.view_leaderboard_page, text = "Center", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font)
+        center_page.place(x = x_value, y = 305, width = 175, height = 30)
 
         #  9.  Clear
         clear_leaderboard: Button = Button(WindowComponents.view_leaderboard_page, text = "Clear", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = WindowControls.clear_quizzes)
-        clear_leaderboard.place(x = 1240, y = 340, width = 175, height = 30)
+        clear_leaderboard.place(x = x_value, y = 340, width = 175, height = 30)
 
         #  10. Back
         back_button: Button = Button(WindowComponents.view_leaderboard_page, text = "Back", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code, font = WindowComponents.main_font, command = functools.partial(WindowDesign.page_controller, "View Leaderboard", "Home Page"))
-        back_button.place(x = 1240, y = 375, width = 175, height = 30)
+        back_button.place(x = x_value, y = 375, width = 175, height = 30)
 
-        #  Order by <Difficulty>
-        #  Order by <Type>
+        x_value += 200
+
+        center_page.configure(command = functools.partial(WindowComponents.position_frame, WindowComponents.view_leaderboard_page, [x_value, frame_height]))
+        WindowComponents.position_frame(WindowComponents.view_leaderboard_page, [x_value, frame_height])
+        WindowComponents.make_active(WindowComponents.view_leaderboard_page)
+
 
     # Question Editor Frames
 
@@ -1003,7 +1091,7 @@ class WindowDesign:
         # print(difficulties)
 
         WindowComponents.difficulty_selector = ttk.Combobox(return_frame)
-        WindowComponents.difficulty_selector['values'] = ["Question Difficulty"] + difficulties
+        WindowComponents.difficulty_selector['values'] = difficulties
         WindowComponents.difficulty_selector['state'] = 'readonly'
         WindowComponents.difficulty_selector.place(x = 755, y = 270, width = 175, height = 30)
         WindowComponents.chosen_difficulty = StringVar()
@@ -1012,7 +1100,7 @@ class WindowDesign:
 
         # Question Score
         WindowComponents.question_score_selector = ttk.Combobox(return_frame)
-        WindowComponents.question_score_selector['values'] = ["Question Score"] + list(range(1, 5))
+        WindowComponents.question_score_selector['values'] = list(range(1, 5))
         WindowComponents.question_score_selector['state'] = 'readonly'
         WindowComponents.question_score_selector.place(x = 755, y = 305, width = 175, height = 30)
         WindowComponents.chosen_question_score = StringVar()
@@ -1021,7 +1109,7 @@ class WindowDesign:
 
         # Correct Answer Audio
         WindowComponents.correct_audio_selector = ttk.Combobox(return_frame)
-        WindowComponents.correct_audio_selector['values'] = ["Correct Audio"] + CommonData.audio_names
+        WindowComponents.correct_audio_selector['values'] = CommonData.correct_audio_names
         WindowComponents.correct_audio_selector['state'] = 'readonly'
         WindowComponents.correct_audio_selector.place(x = 755, y = 340, width = 175, height = 30)
         WindowComponents.chosen_correct_audio = StringVar()
@@ -1030,7 +1118,7 @@ class WindowDesign:
 
         # Incorrect Answer Audio
         WindowComponents.incorrect_audio_selector = ttk.Combobox(return_frame)
-        WindowComponents.incorrect_audio_selector['values'] = ["Incorrect Audio"] + CommonData.audio_names
+        WindowComponents.incorrect_audio_selector['values'] = CommonData.incorrect_audio_names
         WindowComponents.incorrect_audio_selector['state'] = 'readonly'
         WindowComponents.incorrect_audio_selector.place(x = 755, y = 375, width = 175, height = 30)
         WindowComponents.chosen_incorrect_audio = StringVar()
@@ -1310,8 +1398,8 @@ class WindowDesign:
         # Insert Difficulty, Score + Audios
         WindowComponents.difficulty_selector.set(WindowComponents.current_edit_question.question_difficulty)
         WindowComponents.question_score_selector.set(int(WindowComponents.current_edit_question.question_points))
-        WindowComponents.correct_audio_selector.set(CommonData.get_audio_from_id(WindowComponents.current_edit_question.correct_audio, 0, len(CommonData.audio_list)).audio_name)
-        WindowComponents.incorrect_audio_selector.set(CommonData.get_audio_from_id(WindowComponents.current_edit_question.incorrect_audio, 0, len(CommonData.audio_list)).audio_name)
+        WindowComponents.correct_audio_selector.set(CommonData.get_audio_from_id(WindowComponents.current_edit_question.correct_audio, CommonData.full_audio_list, 0, len(CommonData.full_audio_list)).audio_name)
+        WindowComponents.incorrect_audio_selector.set(CommonData.get_audio_from_id(WindowComponents.current_edit_question.incorrect_audio, CommonData.full_audio_list, 0, len(CommonData.full_audio_list)).audio_name)
 
     def edit_closed_question() -> None:
         WindowDesign.create_edit_closed_question_page()
@@ -1575,7 +1663,8 @@ class WindowDesign:
             case "Setup Quiz": WindowComponents.quiz_setup_page.destroy()
             case "Edit Question Selector":
                 WindowComponents.question_select_visible = False
-                if do_hide_edit: WindowComponents.edit_question_select_page.withdraw()
+                if do_hide_edit:
+                    WindowComponents.edit_question_select_page.withdraw()
                 else: WindowComponents.edit_question_select_page.destroy()
             case "Edit Question":
                 if WindowComponents.question_view != None and WindowComponents.question_view.winfo_exists(): WindowComponents.question_view.destroy()
@@ -1592,6 +1681,7 @@ class WindowDesign:
                 if do_hide_account: WindowComponents.view_account_page.destroy()
             case "Edit Account": WindowComponents.edit_account_page.destroy()
             case "View Past Quizzes": WindowComponents.view_past_quiz_page.destroy()
+            case "Leaderboard Settings": WindowComponents.edit_leaderboard_settings_page.destroy()
             case "View Leaderboard": WindowComponents.view_leaderboard_page.destroy()
 
         # Deiconify To Frame
@@ -1603,6 +1693,7 @@ class WindowDesign:
             case "Edit Question Selector":
                 WindowComponents.question_select_visible = True
                 WindowComponents.current_edit_question = None
+                WindowControls.display_all_questions()
                 if WindowComponents.edit_question_select_page == None or not WindowComponents.edit_question_select_page.winfo_exists(): WindowDesign.create_edit_question_selector_page()
                 else:
                     WindowComponents.edit_question_select_page.update()
@@ -1627,4 +1718,5 @@ class WindowDesign:
             case "View Account":WindowDesign.create_view_account_page()
             case "Edit Account": WindowDesign.create_edit_account_page()
             case "View Past Quizzes": WindowDesign.create_view_past_quizzes_page()
+            case "Leaderboard Settings": WindowDesign.create_edit_leaderboard_settings_page()
             case "View Leaderboard": WindowDesign.create_view_leaderboard_page()

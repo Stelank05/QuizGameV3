@@ -40,7 +40,7 @@ class QuestionDesign:
         WindowComponents.question_score_output.place(x = 285, y = 60, width = 175, height = 30)
 
         # Question Text
-        WindowComponents.question_text_output = Label(return_frame, text = "Question Text: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
+        WindowComponents.question_text_output = Label(return_frame, text = "Question Text: N/A", wraplength = 400, bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
         WindowComponents.question_text_output.place(x = 25, y = 90, width = 435, height = 65)
 
         WindowComponents.text_hint_output = Label(return_frame, text = "Hint Text: N/A", bg = WindowComponents.label_colours[0].colour_code, fg = WindowComponents.label_colours[1].colour_code, font = WindowComponents.main_font)
@@ -129,15 +129,6 @@ class QuestionDesign:
         WindowComponents.open_answer_entry.place(x = 25, y = 195, width = 435, height = 95)
 
         WindowComponents.submit_answer.place(y = 295 if not image_question else 540)
-
-        # WindowComponents.topics_shroud.place(height = 305)
-
-        # WindowComponents.review_last_question.place(y = 265)
-        # WindowComponents.review_next_question.place(y = 265)
-        # WindowComponents.exit_quiz_button.place(y = 300)
-
-        # WindowComponents.view_text_hint_button.place(x = 25, y = 335, width = 435)
-        # WindowComponents.view_relevant_hint_button.place(y = 335)
 
         if image_question:
             WindowComponents.review_last_question.place(y = 575)

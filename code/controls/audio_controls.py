@@ -43,16 +43,17 @@ class AudioControls:
         return valid_file_name and valid_file_type
     
     def update_audio_file() -> None:
-        audio_data: str = f"{CommonData.audio_list[0].audio_id},{CommonData.audio_list[0].audio_name},{CommonData.audio_list[0].audio_file}"
+        id_sort_audios(CommonData.full_audio_list)
 
-        for i in range(1, len(CommonData.audio_list)):
-            audio_data += f"\n{CommonData.audio_list[i].audio_id},{CommonData.audio_list[i].audio_name},{CommonData.audio_list[i].audio_file}"
+        audio_data: str = CommonData.full_audio_list[0].create_line() # f"{audios[0].audio_id},{audios[0].audio_name},{audios[0].audio_file},{audios[0].audio_type}"
+
+        for i in range(1, len(CommonData.full_audio_list)):
+            audio_data += f"\n{CommonData.full_audio_list[i].create_line()}" # {audios[i].audio_id},{audios[i].audio_name},{audios[i].audio_file},{audios[i].audio_type}"
 
         write_file(CommonData.audio_file, audio_data)
 
     def select_audio() -> None:
-        id_sort_audios(CommonData.audio_list)
-        WindowComponents.current_edit_audio = CommonData.audio_list[WindowComponents.audios_listbox.curselection()[0]]
+        WindowComponents.current_edit_audio = CommonData.full_audio_list[WindowComponents.audios_listbox.curselection()[0]]
         AudioControls.load_audio_details()
 
     def create_audio() -> None:
@@ -66,7 +67,8 @@ class AudioControls:
         if AudioControls.valid_audio("Create", audio_file):
             if not file_in_folder(CommonData.audio_folder, audio_parts[-1], ["mp3", "midi", "wav"]): relocate_file(audio_file, os.path.join(CommonData.audio_folder, audio_parts[-1]))
 
-            CommonData.audio_list.append(Audio([AudioControls.generate_audio_id(), WindowComponents.audio_name_entry.get(), audio_parts[-1]], os.path.join(CommonData.audio_folder, audio_parts[-1])))
+            if WindowComponents.audio_type == "Correct": CommonData.correct_audio_list.append(Audio([AudioControls.generate_audio_id(), WindowComponents.audio_name_entry.get(), audio_parts[-1], f"{WindowComponents.audio_type} Audio"], os.path.join(CommonData.audio_folder, audio_parts[-1])))
+            else: CommonData.incorrect_audio_list.append(Audio([AudioControls.generate_audio_id(), WindowComponents.audio_name_entry.get(), audio_parts[-1], f"{WindowComponents.audio_type} Audio"], os.path.join(CommonData.audio_folder, audio_parts[-1])))
 
             AudioControls.update_audio_list()
             AudioControls.update_audio_file()
@@ -87,6 +89,7 @@ class AudioControls:
             WindowComponents.current_edit_audio.audio_name = WindowComponents.audio_name_entry.get()
             WindowComponents.current_edit_audio.audio_file = audio_parts[-1]
             WindowComponents.current_edit_audio.full_file = audio_file
+            WindowComponents.current_edit_audio.audio_type = f"{WindowComponents.audio_type} Audio"
 
             AudioControls.update_audio_list()
             AudioControls.update_audio_file()
@@ -101,6 +104,13 @@ class AudioControls:
         WindowComponents.audio_name_entry.insert(0, WindowComponents.current_edit_audio.audio_name)
         WindowComponents.audio_file_entry.insert(0, WindowComponents.current_edit_audio.audio_file)
 
+        if WindowComponents.current_edit_audio.audio_type == "Correct Audio":
+            WindowComponents.audio_type = "Correct"
+            WindowComponents.audio_type_toggle.configure(text = f"Audio Type: {WindowComponents.audio_type}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else:
+            WindowComponents.audio_type = "Incorrect"
+            WindowComponents.audio_type_toggle.configure(text = f"Audio Type: {WindowComponents.audio_type}", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+
     def valid_audio(check_type: str, audio_file: str) -> bool:
         check_name: str = ""
         if check_type == "Update": check_name = WindowComponents.audio_name_entry.get()
@@ -110,27 +120,29 @@ class AudioControls:
         return True
     
     def unique_audio_name(compare_name: str) -> bool:
-        for audio in CommonData.audio_list:
+        for audio in CommonData.full_audio_list:
             if compare_name == audio.audio_name and audio != WindowComponents.current_edit_audio:
                 return False
         return True
     
     def unique_audio_file(compare_file: str) -> bool:
-        for audio in CommonData.audio_list:
+        for audio in CommonData.full_audio_list:
             if open(compare_file, "rb") == open(audio.full_file, "rb") and audio != WindowComponents.current_edit_audio:
                 return False
         return True
 
     def generate_audio_id() -> str:
-        if len(CommonData.audio_list) == 0: return "A0001"
-        id_sort_audios(CommonData.audio_list)
-        return f"A{str(int(CommonData.audio_list[-1].audio_id.replace("A", "")) + 1).rjust(4, "0")}"
+        id_sort_audios(CommonData.full_audio_list)
+
+        if len(CommonData.full_audio_list) == 0: return "A0001"
+        id_sort_audios(CommonData.full_audio_list)
+        return f"A{str(int(CommonData.full_audio_list[-1].audio_id.replace("A", "")) + 1).rjust(4, "0")}"
 
     def update_audio_list() -> None:
-        id_sort_audios(CommonData.audio_list)
+        id_sort_audios(CommonData.full_audio_list)
         WindowComponents.audios_listbox.delete(0, END)
 
-        for audio in CommonData.audio_list:
+        for audio in CommonData.full_audio_list:
             WindowComponents.audios_listbox.insert('end', f"{audio.audio_id} - {audio.audio_name}")
 
     def preview_audio() -> None:
@@ -143,3 +155,14 @@ class AudioControls:
     def clear_edit_audios_page() -> None:
         WindowComponents.audio_name_entry.delete(0, len(WindowComponents.audio_name_entry.get()))
         WindowComponents.audio_file_entry.delete(0, len(WindowComponents.audio_file_entry.get()))
+
+        WindowComponents.audio_type = "Correct"
+        WindowComponents.audio_type_toggle.configure(text = f"Audio Type: {WindowComponents.audio_type}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+
+    def toggle_audio_type() -> None:
+        WindowComponents.audio_type = "Correct" if WindowComponents.audio_type == "Incorrect" else "Incorrect"
+
+        if WindowComponents.audio_type == "Correct":
+            WindowComponents.audio_type_toggle.configure(text = f"Audio Type: {WindowComponents.audio_type}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else:
+            WindowComponents.audio_type_toggle.configure(text = f"Audio Type: {WindowComponents.audio_type}", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)

@@ -127,9 +127,17 @@ At any point during the Quiz, the Player will be able to exit the Quiz, this wil
 ---
 
 ## Quiz Review
-As with during a Quiz, the Player can review Quizzes that they have completed previously, either via the View Past Quizzes Page (via View Account), or via the Leaderboard Page (If it is in the Top 10 Quizzes of the chosen Sort Option), or that another Player has previously completed, via the Leaderboard Page.
+As with during a Quiz, the Player can review Quizzes that they have completed previously, either via the View Past Quizzes Page (via View Account), or via the Leaderboard Page (If it is in the Top 10 Quizzes of the chosen Sort Option), or that another Player has previously completed, via the Leaderboard Page.<br/>
+Since the Last Update I have fixed an issue that meant you could not go back to an earlier Question while reviewing from either the Past Quizzes Page, the Leaderboard, or the End of Quiz Page.
 
 ---
 
 ## Leaderboards
 Leaderboards are a way for Players to compare their Quiz Attempts to other Players, with 7 Different Ways of Ordering the Leaderboard, including options based on Score, Hints Used, or Questions Answered Correctly.
+## Leaderboard Settings
+The Leaderboard now has a Settings Page, found under *View Account* and then *Update Leaderboard Settings*, Players can select whether they can see:
+- The Max Score for a Given Quiz
+- The Score Percentage for a Given Quiz
+- The Number of Incorrect Questions for a Given Quiz
+- The Question Correct Percentage for a Given Quiz
+- The Breakdown of Hints Used for a Given Quiz

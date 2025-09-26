@@ -13,6 +13,7 @@ from controls.colour_controls import ColourControls
 from controls.generic_controls import *
 from controls.player_controls import *
 from controls.question_controller import QuestionController
+from controls.sort_functions_quiz import *
 from controls.sort_functions import *
 from controls.topic_controls import TopicControls
 
@@ -103,7 +104,14 @@ class WindowControls:
             "Password Shift": shift_key,
             "Colours": WindowControls.make_colour_list(),
             "High Score": 0,
-            "Previous Quizzes": []
+            "Previous Quizzes": [],
+            "Leaderboard Settings": {
+                "Hide Max Score": False,
+                "Hide Score Percentage": True,
+                "Hide Incorrect Count": True,
+                "Hide Question Percentage": False,
+                "Hide Hint Breakdown": False
+            }
         }
     
     def make_colour_list() -> dict:
@@ -161,6 +169,13 @@ class WindowControls:
 
 
     # Question Functions
+
+    def reset_controls() -> None:
+        WindowComponents.chosen_question_type.set("Question Type")
+        WindowComponents.chosen_question_topic.set("Question Topic")
+        WindowComponents.chosen_image_question.set("Is Image Question")
+        WindowComponents.chosen_question_difficulty.set("Question Difficulty")
+        WindowComponents.chosen_question_usability.set("Question Usability")
 
     def display_questions() -> None:
         if not WindowComponents.display_all and (WindowComponents.chosen_question_topic.get() == "Question Topic" or WindowComponents.chosen_question_type == "Question Type"):
@@ -368,7 +383,9 @@ class WindowControls:
         WindowComponents.question_difficulty_output.configure(text = f"Question Difficulty: {preview["Question Difficulty"]}")
         WindowComponents.question_score_output.configure(text = f"Question Score: {preview["Question Points"]}")
         WindowComponents.question_text_output.configure(text = f"Question:\n{preview["Question Text"]}")
-        WindowComponents.text_hint_output.configure(text = f"Hint Text: {preview["Hints"]["Text Hint"]}")
+        
+        if WindowComponents.add_text_hint: WindowComponents.text_hint_output.configure(text = f"Hint Text: {preview["Hints"]["Text Hint"]}")
+        else: WindowComponents.text_hint_output.configure(text = "Text Hint Not Included")
 
         # Insert Topics into Shroud
         topic_label: Label
@@ -459,14 +476,23 @@ class WindowControls:
         match question_type:
             case "Closed":
                 for answer in WindowComponents.answers: answer.clear()
+
                 WindowComponents.add_50_50_hint = False
                 WindowComponents.relevant_hint_button.configure(text = f"Add 50/50 Hint: {WindowComponents.add_50_50_hint}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
             case "Open":
+                WindowComponents.relevant_hint_entry.delete(0, len(WindowComponents.relevant_hint_entry.get()))
+                WindowComponents.open_answer_required.delete(0, len(WindowComponents.open_answer_required.get()))
+                WindowComponents.open_answer_acceptable.delete(0, len(WindowComponents.open_answer_acceptable.get()))
+
                 WindowComponents.add_provide_word_hint = False
-                # WindowComponents.relevant_hint_button.configure(text = f"Add Provide Word Hint: {WindowComponents.add_provide_word_hint}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+                WindowComponents.relevant_hint_button.configure(text = f"Add Provide Word Hint: {WindowComponents.add_provide_word_hint}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
             case "Order":
+                for answer in WindowComponents.order_answers: answer.clear()
+                
+                WindowComponents.relevant_hint_entry.delete(0, len(WindowComponents.relevant_hint_entry.get()))
+
                 WindowComponents.add_place_one_hint = False
-                # WindowComponents.relevant_hint_button.configure(text = f"Add Place One Hint: {WindowComponents.add_place_one_hint}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+                WindowComponents.relevant_hint_button.configure(text = f"Add Place One Hint: {WindowComponents.add_place_one_hint}", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
 
     def view_image_preview() -> None: # Needs beautifying (I think thats done now)
         if not QuestionController.valid_image_file():
@@ -764,18 +790,25 @@ class WindowControls:
     def quiz_review_controls(question_data: BaseQuestion, next_question: BaseQuestion) -> None:
         if question_data.question_number == WindowComponents.current_quiz.question_number - 1: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.next_question, next_question))
         else: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question_data.question_number]))
+
+        if question_data.question_number > 1: WindowComponents.review_last_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question_data.question_number - 2]))
+
         WindowComponents.submit_answer.configure(text = "Return to Current Question", command = functools.partial(WindowControls.next_question, next_question))
         
     def post_quiz_review_controls(question_data: BaseQuestion) -> None:
         if question_data.question_number == WindowComponents.current_quiz.question_number: WindowComponents.review_next_question.configure(command = WindowControls.exit_review)
         else: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question_data.question_number]))
-        WindowComponents.submit_answer.configure(text = "Exit Quiz Review", command = WindowControls.exit_review)
 
+        if question_data.question_number > 1: WindowComponents.review_last_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_quiz.questions[question_data.question_number - 2]))
+
+        WindowComponents.submit_answer.configure(text = "Exit Quiz Review", command = WindowControls.exit_review)
         WindowComponents.exit_quiz_button.configure(command = WindowControls.exit_review)
 
     def past_quiz_review_controls(question_data: BaseQuestion) -> None:
         if question_data.question_number == len(WindowComponents.current_past_quiz.questions): WindowComponents.review_next_question.configure(command = WindowControls.exit_review)
         else: WindowComponents.review_next_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_past_quiz.questions[question_data.question_number]))
+
+        if question_data.question_number > 1: WindowComponents.review_last_question.configure(command = functools.partial(WindowControls.review_question, WindowComponents.current_past_quiz.questions[question_data.question_number - 2]))
 
         WindowComponents.submit_answer.configure(text = "Exit Quiz Review", command = WindowControls.exit_review)
         WindowComponents.exit_quiz_button.configure(command = WindowControls.exit_review)
@@ -809,7 +842,9 @@ class WindowControls:
         for answer in WindowComponents.quiz_answers:
             answer_button = WindowComponents.closed_answer_buttons[answer.display_index]
 
-            if answer.answer_hidden: answer_button.place_forget()
+            if answer.answer_hidden:
+                answer_button.destroy()
+                continue
 
             if answer.answer_chosen and answer.correct_answer:
                 answer_background = CommonData.get_colour_from_name("Green", 0, len(CommonData.colour_list)).colour_code
@@ -943,10 +978,10 @@ class WindowControls:
         if question.answered_correctly:
             WindowComponents.current_quiz.current_score += round(question.awarded_points, 1)
             WindowComponents.current_quiz.correct_count += 1
-            AudioControls.play_audio(CommonData.get_audio_from_id(question.correct_audio, 0, len(CommonData.audio_list)).audio_file)
+            AudioControls.play_audio(CommonData.get_audio_from_id(question.correct_audio, CommonData.full_audio_list, 0, len(CommonData.full_audio_list)).audio_file)
         else:
             WindowComponents.current_quiz.incorrect_count += 1
-            AudioControls.play_audio(CommonData.get_audio_from_id(question.incorrect_audio, 0, len(CommonData.audio_list)).audio_file)
+            AudioControls.play_audio(CommonData.get_audio_from_id(question.incorrect_audio,CommonData.full_audio_list,  0, len(CommonData.full_audio_list)).audio_file)
 
         WindowComponents.current_score_output.configure(text = f"Score: {WindowComponents.current_quiz.current_score} / {WindowComponents.current_quiz.theoretical_max}")
         fun_fact_label: Label = Label(WindowComponents.question_view, text = f"Fun Fact: {question.fun_fact}", wraplength = 600, bg = WindowComponents.window_colours[1].colour_code, fg = WindowComponents.window_colours[0].colour_code, font = WindowComponents.main_font)
@@ -1086,7 +1121,7 @@ class WindowControls:
         
         if type(WindowComponents.active_user) == Player:
             WindowComponents.active_user.previous_attempts.append(past_quiz.quiz_id)
-            WindowComponents.active_user.update_highscore()
+            WindowControls.update_user_high_score()
             write_user_file(WindowComponents.active_user)
 
     def exit_quiz() -> None:
@@ -1126,6 +1161,19 @@ class WindowControls:
         # Display First Question
         WindowComponents.quiz_setup_page.withdraw()
         WindowControls.next_question(WindowComponents.current_quiz.questions[0])
+
+    def update_user_high_score() -> None:
+        quiz_list: list[PastQuiz] = []
+
+        for quiz in WindowComponents.active_user.previous_attempts: quiz_list.append(CommonData.get_past_quiz(quiz, 0, len(CommonData.past_quizzes)))
+        
+        sort_quizzes_id(quiz_list)
+        order_quiz_length_hl(quiz_list)
+        order_max_score(quiz_list)
+        order_score_percentage(quiz_list)
+
+        WindowComponents.active_user.high_score = quiz_list[0].score
+        WindowComponents.active_user.high_score_percentage = quiz_list[0].percentage
 
     #  Hints
 
@@ -1220,11 +1268,11 @@ class WindowControls:
 
         WindowControls.clear_quizzes()
         for i in range(disp_count):
-            WindowComponents.quiz_rows[i].set_quiz(CommonData.past_quizzes[i], f"P{i + 1}")
+            WindowComponents.quiz_rows[i].set_quiz(CommonData.past_quizzes[i], WindowComponents.active_user, f"P{i + 1}")
             WindowComponents.quiz_rows[i].review_button.configure(command = functools.partial(WindowControls.begin_past_review, CommonData.past_quizzes[i]))
 
     def clear_quizzes() -> None:
-        for i in range(len(WindowComponents.quiz_rows)): WindowComponents.quiz_rows[i].clear_quiz()
+        for i in range(len(WindowComponents.quiz_rows)): WindowComponents.quiz_rows[i].clear_quiz(WindowComponents.active_user)
     
     def begin_past_review(quiz: PastQuiz) -> None:
         WindowComponents.current_past_quiz = quiz
@@ -1289,6 +1337,83 @@ class WindowControls:
         order_hints_used(CommonData.past_quizzes)
         WindowControls.display_quizzes()
 
+
+    # Leaderboard Settings Functions
+
+    def set_leaderboard_settings() -> None:
+        WindowComponents.max_score = "Hidden" if WindowComponents.active_user.hide_max_score else "Visible"
+        WindowComponents.score_percentage = "Hidden" if WindowComponents.active_user.hide_score_percentage else "Visible"
+        WindowComponents.incorrect_count = "Hidden" if WindowComponents.active_user.hide_incorrect_count else "Visible"
+        WindowComponents.question_percentage = "Hidden" if WindowComponents.active_user.hide_questions_percentage else "Visible"
+        WindowComponents.hint_breakdown = "Hidden" if WindowComponents.active_user.hide_hint_breakdown else "Visible"
+
+        if WindowComponents.max_score == "Visible": WindowComponents.hide_max_score_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else: WindowComponents.hide_max_score_button.configure(text = "Hidden", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+
+        if WindowComponents.score_percentage == "Visible": WindowComponents.hide_score_percentage_button.configure(text = "Visible", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        else: WindowComponents.hide_score_percentage_button.configure(text = "Hidden", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        
+        if WindowComponents.incorrect_count == "Visible": WindowComponents.hide_incorrect_count_button.configure(text = "Visible", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        else: WindowComponents.hide_incorrect_count_button.configure(text = "Hidden", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        
+        if WindowComponents.question_percentage == "Visible": WindowComponents.hide_question_percentage_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else: WindowComponents.hide_question_percentage_button.configure(text = "Hidden", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        
+        if WindowComponents.hint_breakdown == "Visible": WindowComponents.hide_hint_breakdown_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else: WindowComponents.hide_hint_breakdown_button.configure(text = "Hidden", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+
+    def set_hide_max_score() -> None:
+        WindowComponents.max_score = "Hidden" if WindowComponents.max_score == "Visible" else "Visible"
+
+        if WindowComponents.max_score == "Visible": WindowComponents.hide_max_score_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else: WindowComponents.hide_max_score_button.configure(text = "Hidden", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+
+    def set_hide_score_percentage() -> None:
+        WindowComponents.score_percentage = "Hidden" if WindowComponents.score_percentage == "Visible" else "Visible"
+        
+        if WindowComponents.score_percentage == "Visible": WindowComponents.hide_score_percentage_button.configure(text = "Visible", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        else: WindowComponents.hide_score_percentage_button.configure(text = "Hidden", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        
+    def set_hide_incorrect_count() -> None:
+        WindowComponents.incorrect_count = "Hidden" if WindowComponents.incorrect_count == "Visible" else "Visible"
+        
+        if WindowComponents.incorrect_count == "Visible": WindowComponents.hide_incorrect_count_button.configure(text = "Visible", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        else: WindowComponents.hide_incorrect_count_button.configure(text = "Hidden", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        
+    def set_hide_question_percentage() -> None:
+        WindowComponents.question_percentage = "Hidden" if WindowComponents.question_percentage == "Visible" else "Visible"
+        
+        if WindowComponents.question_percentage == "Visible": WindowComponents.hide_question_percentage_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else: WindowComponents.hide_question_percentage_button.configure(text = "Hidden", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        
+    def set_hide_hint_breakdown() -> None:
+        WindowComponents.hint_breakdown = "Hidden" if WindowComponents.hint_breakdown == "Visible" else "Visible"
+        
+        if WindowComponents.hint_breakdown == "Visible": WindowComponents.hide_hint_breakdown_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        else: WindowComponents.hide_hint_breakdown_button.configure(text = "Hidden", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+
+    def update_leaderboard_settings() -> None:
+        WindowComponents.active_user.hide_max_score = True if WindowComponents.max_score == "Hidden" else False
+        WindowComponents.active_user.hide_score_percentage = True if WindowComponents.score_percentage == "Hidden" else False
+        WindowComponents.active_user.hide_incorrect_count = True if WindowComponents.incorrect_count == "Hidden" else False
+        WindowComponents.active_user.hide_questions_percentage = True if WindowComponents.question_percentage == "Hidden" else False
+        WindowComponents.active_user.hide_hint_breakdown = True if WindowComponents.hint_breakdown == "Hidden" else False
+
+        write_user_file(WindowComponents.active_user)
+
+    def reset_leaderboard_settings() -> None:
+        WindowComponents.max_score = "Visible"
+        WindowComponents.score_percentage = "Hidden"
+        WindowComponents.incorrect_count = "Hidden"
+        WindowComponents.question_percentage = "Visible"
+        WindowComponents.hint_breakdown = "Visible"
+
+        WindowComponents.hide_max_score_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        WindowComponents.hide_score_percentage_button.configure(text = "Hidden", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        WindowComponents.hide_incorrect_count_button.configure(text = "Hidden", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        WindowComponents.hide_question_percentage_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        WindowComponents.hide_hint_breakdown_button.configure(text = "Visible", bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
+        
 
     # Clear Functions
 

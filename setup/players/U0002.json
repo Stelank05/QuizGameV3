@@ -10,5 +10,14 @@
         "Entry Colours": ["C0011", "C0002"]
     },
     "High Score": 0.0,
-    "Previous Quizzes": []
+    "High Score Percentage": 0.0,
+    "Previous Quizzes": [],
+    "Leaderboard Settings":
+    {
+        "Hide Max Score": false,
+        "Hide Score Percentage": false,
+        "Hide Incorrect Count": false,
+        "Hide Question Percentage": false,
+        "Hide Hint Breakdown": false
+    }
 }

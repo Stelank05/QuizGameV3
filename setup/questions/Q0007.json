@@ -1,1 +1,24 @@
-{"Question ID": "Q0007", "Discarded Question": true, "Question Type": "Open", "Question Text": "this is a test question", "Question Difficulty": "Easy", "Question Points": 1, "Question Topics": ["T0006"], "Hints": {"Add Text Hint": true, "Text Hint": "correct", "Add Provide Word Hint": true, "Provided Word": "correct"}, "Images": {"Is Image Question": false, "Image File": ""}, "Answers": {"Required Words": ["correct"], "Acceptable Words": ["incorrect", "answer"]}, "Fun Fact": "this is the fun fact", "Correct Audio": "A0001", "Incorrect Audio": "A0006"}
+{
+    "Question ID": "Q0007",
+    "Discarded Question": false,
+    "Question Type": "Closed",
+    "Question Text": "Jack Antonoff first worked with Taylor Swift on which Album?",
+    "Question Difficulty": "Easy",
+    "Question Points": "2",
+    "Question Topics": ["T0008"],
+    "Hints": {
+        "Add Text Hint": false, "Text Hint": "", "Add 50/50 Hint": false
+    },
+    "Images": {
+        "Is Image Question": false, "Image File": ""
+    },
+    "Answers": [
+        {"Answer Text": "1989", "Answer Back Colour": "C0011", "Answer Text Colour": "C0002", "Correct Answer": true, "Answer Number": 1},
+        {"Answer Text": "Red", "Answer Back Colour": "C0010", "Answer Text Colour": "C0002", "Correct Answer": false, "Answer Number": 2},
+        {"Answer Text": "Reputation", "Answer Back Colour": "C0001", "Answer Text Colour": "C0002", "Correct Answer": false, "Answer Number": 3},
+        {"Answer Text": "Speak Now", "Answer Back Colour": "C0028", "Answer Text Colour": "C0002", "Correct Answer": false, "Answer Number": 4}
+    ],
+    "Fun Fact": "They first worked together on 'Sweeter Than Fiction', for the Film 'One Chance', before collaborating on 1989",
+    "Correct Audio": "A0001",
+    "Incorrect Audio": "A0005"
+}

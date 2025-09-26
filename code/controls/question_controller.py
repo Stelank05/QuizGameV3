@@ -95,8 +95,8 @@ class QuestionController:
             },
             "Answers" : QuestionController.get_closed_answers(),
             "Fun Fact": WindowComponents.fun_fact_entry.get(),
-            "Correct Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), 0, len(CommonData.audio_list)).audio_id,
-            "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), 0, len(CommonData.audio_list)).audio_id
+            "Correct Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), CommonData.full_audio_list, 0, len(CommonData.correct_audio_list)).audio_id,
+            "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), CommonData.full_audio_list, 0, len(CommonData.correct_audio_list)).audio_id
         }
 
     def create_open_dict() -> dict:
@@ -120,8 +120,8 @@ class QuestionController:
             },
             "Answers" : QuestionController.get_open_answers(),
             "Fun Fact": WindowComponents.fun_fact_entry.get(),
-            "Correct Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), 0, len(CommonData.audio_list)).audio_id,
-            "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), 0, len(CommonData.audio_list)).audio_id
+            "Correct Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), CommonData.full_audio_list, 0, len(CommonData.correct_audio_list)).audio_id,
+            "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), CommonData.full_audio_list, 0, len(CommonData.correct_audio_list)).audio_id
         }
     
     def create_order_dict() -> dict:
@@ -145,8 +145,8 @@ class QuestionController:
             },
             "Answers" : QuestionController.get_order_answers(),
             "Fun Fact": WindowComponents.fun_fact_entry.get(),
-            "Correct Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), 0, len(CommonData.audio_list)).audio_id,
-            "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), 0, len(CommonData.audio_list)).audio_id
+            "Correct Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), CommonData.full_audio_list, 0, len(CommonData.correct_audio_list)).audio_id,
+            "Incorrect Audio" : CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), CommonData.full_audio_list, 0, len(CommonData.correct_audio_list)).audio_id
         }
 
 
@@ -278,8 +278,8 @@ class QuestionController:
         # Difficulty, Score + Audios
         WindowComponents.current_edit_question.question_difficulty = WindowComponents.chosen_difficulty.get()
         WindowComponents.current_edit_question.question_points = WindowComponents.chosen_question_score.get()
-        WindowComponents.current_edit_question.correct_audio = CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), 0, len(CommonData.audio_list)).audio_id
-        WindowComponents.current_edit_question.incorrect_audio = CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), 0, len(CommonData.audio_list)).audio_id
+        WindowComponents.current_edit_question.correct_audio = CommonData.get_audio_from_name(WindowComponents.chosen_correct_audio.get(), CommonData.full_audio_list, 0, len(CommonData.correct_audio_list)).audio_id
+        WindowComponents.current_edit_question.incorrect_audio = CommonData.get_audio_from_name(WindowComponents.chosen_incorrect_audio.get(), CommonData.full_audio_list, 0, len(CommonData.incorrect_audio_list)).audio_id
 
         # Topics
         WindowComponents.current_edit_question.question_topics = QuestionController.compile_topic_list()
@@ -293,7 +293,7 @@ class QuestionController:
         WindowComponents.current_edit_question.add_50_50_hint = WindowComponents.add_50_50_hint
 
         # Answers
-        WindowComponents.current_edit_question.answers = QuestionController.get_closed_answers()
+        WindowComponents.current_edit_question.answers = ClosedQuestion.create_answers(QuestionController.get_closed_answers())
 
         QuestionController.question_file = os.path.join(CommonData.question_folder, f"{WindowComponents.current_edit_question.question_id}.json")
         write_json_file(QuestionController.question_file, WindowComponents.current_edit_question.create_dictionary())

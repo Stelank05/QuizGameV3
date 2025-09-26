@@ -41,7 +41,9 @@ class CommonData:
     audio_file: str
     colour_file: str
 
-    audio_list: list[Audio] = []
+    full_audio_list: list[Audio] = []
+    correct_audio_list: list[Audio] = []
+    incorrect_audio_list: list[Audio] = []
     colour_list: list[Colour] = []
     topic_list: list[Topic] = []
 
@@ -53,7 +55,9 @@ class CommonData:
 
     past_quizzes: list[PastQuiz] = []
 
-    audio_names: list[str] = []
+    full_audio_names: list[str] = []
+    correct_audio_names: list[str] = []
+    incorrect_audio_names: list[str] = []
     colour_names: list[str] = []
     topic_names: list[str] = []
 
@@ -100,8 +104,15 @@ class CommonData:
         for i in range(len(audios)):
             audio_data = audios[i].split(',')
 
-            CommonData.audio_list.append(Audio(audio_data, os.path.join(CommonData.audio_folder, audio_data[2])))
-            CommonData.audio_names.append(CommonData.audio_list[-1].audio_name)
+            CommonData.full_audio_list.append(Audio(audio_data, os.path.join(CommonData.audio_folder, audio_data[2])))
+            CommonData.full_audio_names.append(audio_data[1])
+
+            if audio_data[3] == "Correct Audio":
+                CommonData.correct_audio_list.append(CommonData.full_audio_list[-1])
+                CommonData.correct_audio_names.append(CommonData.full_audio_names[-1])
+            else:
+                CommonData.incorrect_audio_list.append(CommonData.full_audio_list[-1])
+                CommonData.incorrect_audio_names.append(CommonData.full_audio_names[-1])
 
     def load_colours() -> None:
         colours: list[str] = read_file(CommonData.colour_file)
@@ -188,8 +199,8 @@ class CommonData:
 
     # Getters
 
-    def get_audio_from_id(audio_id: str, start_index: int, end_index: int) -> Audio:
-        id_sort_audios(CommonData.audio_list)
+    def get_audio_from_id(audio_id: str, audio_list: Audio, start_index: int, end_index: int) -> Audio:
+        id_sort_audios(audio_list)
         
         if start_index > end_index: return None
         
@@ -197,20 +208,20 @@ class CommonData:
 
         # if mid_point < 0 or mid_point > len(CommonData.audio_list)
 
-        if CommonData.audio_list[mid_point].audio_id == audio_id: return CommonData.audio_list[mid_point]
-        elif CommonData.audio_list[mid_point].audio_id > audio_id: return CommonData.get_audio_from_id(audio_id, start_index, mid_point - 1)
-        else: return CommonData.get_audio_from_id(audio_id, mid_point + 1, end_index)
+        if audio_list[mid_point].audio_id == audio_id: return audio_list[mid_point]
+        elif audio_list[mid_point].audio_id > audio_id: return CommonData.get_audio_from_id(audio_id, audio_list, start_index, mid_point - 1)
+        else: return CommonData.get_audio_from_id(audio_id, audio_list, mid_point + 1, end_index)
 
-    def get_audio_from_name(audio_name: str, start_index: int, end_index: int) -> Audio:
-        name_sort_audios(CommonData.audio_list)
+    def get_audio_from_name(audio_name: str, audio_list: Audio, start_index: int, end_index: int) -> Audio:
+        name_sort_audios(audio_list)
         
         if start_index > end_index: return None
         
         mid_point: int = math.floor((start_index + end_index) / 2)
 
-        if CommonData.audio_list[mid_point].audio_name == audio_name: return CommonData.audio_list[mid_point]
-        elif CommonData.audio_list[mid_point].audio_name > audio_name: return CommonData.get_audio_from_name(audio_name, start_index, mid_point - 1)
-        else: return CommonData.get_audio_from_name(audio_name, mid_point + 1, end_index)
+        if audio_list[mid_point].audio_name == audio_name: return audio_list[mid_point]
+        elif audio_list[mid_point].audio_name > audio_name: return CommonData.get_audio_from_name(audio_name, audio_list, start_index, mid_point - 1)
+        else: return CommonData.get_audio_from_name(audio_name, audio_list, mid_point + 1, end_index)
 
     def get_colour_from_id(colour_id: str, start_index: int, end_index: int) -> Colour:
         id_sort_colours(CommonData.colour_list)

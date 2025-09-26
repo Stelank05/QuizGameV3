@@ -39,6 +39,7 @@ class WindowComponents:
     view_account_page: Toplevel = None
     edit_account_page: Toplevel = None
     view_past_quiz_page: Toplevel = None
+    edit_leaderboard_settings_page: Toplevel = None
     view_leaderboard_page: Toplevel = None
 
     #  Home Page
@@ -86,6 +87,19 @@ class WindowComponents:
     quiz_rows: list[LeaderboardRow] = []
 
 
+    # Leaderboard Settings Page
+    hide_max_score_button: Button = None
+    hide_score_percentage_button: Button = None
+    hide_incorrect_count_button: Button = None
+    hide_question_percentage_button: Button = None
+    hide_hint_breakdown_button: Button = None
+
+    max_score: str = "Visible"
+    score_percentage: str = "Hidden"
+    incorrect_count: str = "Hidden"
+    question_percentage: str = "Visible"
+    hint_breakdown: str = "Visible"
+
     # New Things
 
     #  Edit Topic Page Features
@@ -107,6 +121,9 @@ class WindowComponents:
     audios_listbox: Listbox
     audio_name_entry: Entry
     audio_file_entry: Entry
+
+    audio_type: str = "Correct"
+    audio_type_toggle: Button
 
     #  Edit Question Selector Features
     question_select_visible: bool = False

@@ -80,7 +80,7 @@ class Quiz:
 
         for question_number in range(len(question_list)):
             question = CommonData.get_question(question_list[question_number], CommonData.usable_questions, 0, len(CommonData.usable_questions))
-        
+            
             match question.question_type:
                 case "Closed": self.questions.append(PastClosedQuestion(question.create_dictionary(), None, question_number + 1))
                 case "Open": self.questions.append(PastOpenQuestion(question.create_dictionary(), None, question_number + 1))

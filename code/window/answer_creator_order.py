@@ -22,4 +22,7 @@ class OrderAnswerCreator:
             self.include_button.configure(bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code)
             self.answer_input.configure(bg = WindowComponents.entry_colours[1].colour_code, fg = WindowComponents.entry_colours[0].colour_code)
         
-        # Invert Button Colours
+    def clear(self) -> None:
+        self.include_button.configure(bg = WindowComponents.entry_colours[1].colour_code, fg = WindowComponents.entry_colours[0].colour_code)
+        self.answer_input.delete(0, len(self.answer_input.get()))
+        self.answer_input.configure(bg = WindowComponents.entry_colours[0].colour_code, fg = WindowComponents.entry_colours[1].colour_code)

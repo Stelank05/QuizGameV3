@@ -9,9 +9,9 @@ class ClosedQuestion(BaseQuestion):
         self.add_50_50_hint: bool = question_data["Hints"]["Add 50/50 Hint"]
 
         # Answers
-        self.answers: list[Answer] = self.create_answers(question_data["Answers"])
+        self.answers: list[Answer] = ClosedQuestion.create_answers(question_data["Answers"])
 
-    def create_answers(self, answers: list[dict]) -> list[Answer]:
+    def create_answers(answers: list[dict]) -> list[Answer]:
         return_list: list[Answer] = []
 
         for answer in answers:

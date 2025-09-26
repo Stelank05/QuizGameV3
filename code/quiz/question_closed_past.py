@@ -21,8 +21,7 @@ class PastClosedQuestion (ClosedQuestion):
             self.answers = self.convert_answers(question_data["Answers"], extra_details["Answers"])
         else:
             self.answers = self.convert_answers(question_data["Answers"], None)
-
-        self.randomise_display_order()
+            self.randomise_display_order()
 
     def convert_answers(self, answers: list[dict], details: list[dict] | None) -> list[PastAnswer]:
         return_list: list[PastAnswer] = []

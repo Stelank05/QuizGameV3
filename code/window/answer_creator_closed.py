@@ -94,7 +94,7 @@ class ClosedAnswerCreator:
         if self.answer_number == 1: self.correct_answer = True
 
         if self.correct_answer: self.is_correct_answer.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
-        else: self.is_correct_answer.configure(bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        else: self.is_correct_answer.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
 
         self.is_correct_answer.configure(text = f"Correct Answer: {self.correct_answer}")
 

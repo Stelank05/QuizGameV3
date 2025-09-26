@@ -1,1 +1,22 @@
-{"User ID": "U0003", "Username": "leaderboards", "Password": "vuelxohzjemm", "Password Shift": "PUOM", "Colours": {"Window Colours": ["C0024", "C0001"], "Button Colours": ["C0018", "C0002"], "Label Colours": ["C0009", "C0002"], "Entry Colours": ["C0013", "C0002"]}, "High Score": 0.0, "Previous Quizzes": []}
+{
+    "User ID": "U0003",
+    "Username": "leaderboards",
+    "Password": "vuelxohzjemm",
+    "Password Shift": "PUOM",
+    "Colours": {
+        "Window Colours": ["C0024", "C0001"],
+        "Button Colours": ["C0018", "C0002"],
+        "Label Colours": ["C0009", "C0002"],
+        "Entry Colours": ["C0013", "C0002"]
+    },
+    "High Score": 0.0,
+    "High Score Percentage": 0.0,
+    "Previous Quizzes": [],
+    "Leaderboard Settings": {
+        "Hide Max Score": false,
+        "Hide Score Percentage": false,
+        "Hide Incorrect Count": false,
+        "Hide Question Percentage": false,
+        "Hide Hint Breakdown": false
+    }
+}

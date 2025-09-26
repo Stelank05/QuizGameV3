@@ -14,9 +14,17 @@ class Player:
         self.entry_colours: list[str] = player_data["Colours"]["Entry Colours"]
 
         self.high_score: float = float(player_data["High Score"])
+        self.high_score_percentage: float = float(player_data["High Score Percentage"])
 
         self.previous_attempts: list[str] = []
         for attempt in player_data["Previous Quizzes"]: self.previous_attempts.append(attempt)
+
+        # Leaderboard Settings
+        self.hide_max_score: bool = player_data["Leaderboard Settings"]["Hide Max Score"]
+        self.hide_score_percentage: bool = player_data["Leaderboard Settings"]["Hide Score Percentage"]
+        self.hide_incorrect_count: bool = player_data["Leaderboard Settings"]["Hide Incorrect Count"]
+        self.hide_questions_percentage: bool = player_data["Leaderboard Settings"]["Hide Question Percentage"]
+        self.hide_hint_breakdown: bool = player_data["Leaderboard Settings"]["Hide Hint Breakdown"]
 
     def make_dictionary(self) -> dict:
         return {
@@ -26,10 +34,10 @@ class Player:
             "Password Shift": self.password_shift,
             "Colours": self.make_colour_list(),
             "High Score": self.high_score,
-            "Previous Quizzes": self.previous_attempts
+            "High Score Percentage": self.high_score_percentage,
+            "Previous Quizzes": self.previous_attempts,
+            "Leaderboard Settings": self.make_settings_dict()
         }
-    
-    def update_highscore(self) -> None: pass
 
     def make_colour_list(self) -> dict:
         return {
@@ -39,6 +47,15 @@ class Player:
             "Entry Colours" : [self.entry_colours[0], self.entry_colours[1]]
         }
     
+    def make_settings_dict(self) -> dict:
+        return {
+            "Hide Max Score": self.hide_max_score,
+            "Hide Score Percentage": self.hide_score_percentage,
+            "Hide Incorrect Count": self.hide_incorrect_count,
+            "Hide Question Percentage": self.hide_questions_percentage,
+            "Hide Hint Breakdown": self.hide_hint_breakdown
+        }
+
     def display_player(self) -> None:
         print("Details:")
         print(f"User ID: {self.user_id}")
