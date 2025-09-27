@@ -1693,9 +1693,9 @@ class WindowDesign:
             case "Edit Question Selector":
                 WindowComponents.question_select_visible = True
                 WindowComponents.current_edit_question = None
-                WindowControls.display_all_questions()
                 if WindowComponents.edit_question_select_page == None or not WindowComponents.edit_question_select_page.winfo_exists(): WindowDesign.create_edit_question_selector_page()
                 else:
+                    WindowControls.display_all_questions()
                     WindowComponents.edit_question_select_page.update()
                     WindowComponents.edit_question_select_page.deiconify()
             case "Edit Question":
