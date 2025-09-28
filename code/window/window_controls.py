@@ -4,7 +4,6 @@ import functools
 
 from tkinter import *
 from tkinter import messagebox
-# from tkinter import ttk
 
 from classes.colour import Colour
 
@@ -927,6 +926,7 @@ class WindowControls:
     def submit_answer(question: BaseQuestion) -> None:
         if question.question_type == "Closed" and WindowComponents.selected_answer == None: return 0
         if question.question_type == "Open" and WindowComponents.open_answer_entry.get("1.0", END)[:-1] == "": return 0
+        if question.question_type == "Order" and not WindowControls.order_answered_entered(question): return 0    
 
         fun_fact_y_level: int = 330
         correct_answer: bool = False
@@ -1013,6 +1013,11 @@ class WindowControls:
 
         return return_list
     
+    def order_answered_entered(question: PastOrderQuestion) -> bool:
+        for i in range(len(question.displayed_order)):
+            if WindowComponents.order_answer_entries[i][0].get() == "": return False
+        return True
+
     def reorder_list(input_index: list[tuple[int, int]], index: int) -> list[tuple[int, int]]:
         swap: bool
         temp: tuple[int, int]
@@ -1143,6 +1148,8 @@ class WindowControls:
         WindowComponents.quiz_setup_page.deiconify()
         
     def retake_quiz() -> None:
+        WindowComponents.finish_quiz_page.destroy()
+        
         questions: list[BaseQuestion] = []
 
         question_data: dict
