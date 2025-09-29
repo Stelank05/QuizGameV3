@@ -368,7 +368,7 @@ class WindowControls:
         else: WindowComponents.relevant_hint_button.configure(bg = WindowComponents.button_colours[0].colour_code, fg = WindowComponents.button_colours[1].colour_code)
 
     def toggle_image_question() -> None:
-        WindowComponents.is_image_question = False # not WindowComponents.is_image_question
+        WindowComponents.is_image_question = not WindowComponents.is_image_question
 
         WindowComponents.image_question_button.configure(text = f"Image Question: {WindowComponents.is_image_question}")
 
