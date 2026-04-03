@@ -1434,12 +1434,13 @@ class WindowDesign:
             # answer_number += 1
 
         # Set Unincluded Answers (If Applicable)
-        if answer_number < 3:
-            while answer_number < 4:
-                WindowComponents.answers[answer_number].include_answer = False
-                WindowComponents.answers[answer_number].include_button.configure(text = f"Include Answer: False", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+        answer_number: int = len(WindowComponents.current_edit_question.answers)
 
-                answer_number += 1
+        while answer_number < 4:
+            WindowComponents.answers[answer_number].include_answer = False
+            WindowComponents.answers[answer_number].include_button.configure(text = f"Include Answer: False", bg = WindowComponents.button_colours[1].colour_code, fg = WindowComponents.button_colours[0].colour_code)
+
+            answer_number += 1
 
         # Set 'Create Question' to 'Update Question'
         WindowComponents.create_question.configure(text = "Update Question", command = QuestionController.update_closed_question)
